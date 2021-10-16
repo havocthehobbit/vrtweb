@@ -1,0 +1,6 @@
+need to change package to 
+	// menu stops working with react router --newer history verions - react router dom 5 only compatable with "history" 4
+	history ^4.10.1
+	
+	// install legacy version of rsuite else it doesnt work
+	npm i rsuite-table --save --legacy-peer-deps

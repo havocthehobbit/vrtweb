@@ -1,0 +1,7 @@
+nodemon app.js  ; netstat -nltp | grep 3001 |sed -e 's/\//  /g' | awk '{ print "\nkill -9 ", $7}'  | xargs -t -I {} sh -c "{}"
+
+
+// if node mon doesnt auto restart , it can be caused by netowrk issues or containers , try using legacy mode 
+nodemon -L app.js 
+
+

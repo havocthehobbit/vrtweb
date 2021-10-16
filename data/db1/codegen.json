@@ -1,0 +1,18 @@
+{
+
+    "all" : [],
+    "types" : [
+        { "name" : "javascript" , "type" : "language"},
+        { "name" : "golang" , "type" : "language" },
+        { "name" : "python" , "type" : "language" },
+        { "name" : "bash" , "type" : "terminal" },
+        { "name" : "aix" , "type" : "terminal" },
+        { "name" : "c#" , "type" : "language" },
+        { "name" : "c++" , "type" : "language" },
+        { "name" : "c" , "type" : "language" },
+        { "name" : "rust" , "type" : "language" },
+        { "name" : "vbscript" , "type" : "language" },
+        { "name" : "gdscript" , "type" : "language" },
+        { "name" : "delphi" , "type" : "language" }
+    ]
+}
