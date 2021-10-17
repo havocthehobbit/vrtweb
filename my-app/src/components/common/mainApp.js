@@ -381,41 +381,8 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                                 </Route> 
                                                             )
                                                         }()
-                                                    }
-                                                    {
-                                                        function(){
-                                                            newRoutesE.push(
-                                                                <Route key={i2} path="/firstpage" exact={true}>
-                                                                    {
-                                                                        function(){
-                                                                            if (loggedin){
-                                                                                return ( <Firstpage/> )
-                                                                            }else{
-                                                                                return ( <Redirect to="/" /> )
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                </Route>
-                                                            )
-                                                        }()
-                                                    }
-                                                    {
-                                                        function(){
-                                                            newRoutesE.push(
-                                                                <Route key={i2} path="/secondpage" exact={true}>
-                                                                    {
-                                                                        function(){                               
-                                                                            if (loggedin){
-                                                                                return ( <Secondpage/> )
-                                                                            }else{
-                                                                                return ( <Redirect to="/" /> )
-                                                                            }
-                                                                        }
-                                                                    }                       
-                                                                </Route>
-                                                            )
-                                                        }()
-                                                    }
+                                                    }                                                    
+                                                   
                                                     {
                                                         function(){
                     
