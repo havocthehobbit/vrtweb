@@ -1,18 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
 
-import { BrowserRouter as Router, NavLink } from 'react-router-dom';
-import { Link, Switch, Route, useRouteMatch, useParams } from 'react-router-dom';
-
-
-import Main from './components/common/main'
 import MainApp from './components/common/mainApp'
-import Input2 from './components/common/input2'
-
-import Login  from './components/common/login'
-import Firstpage from './components/common/firstpage'
-import Secondpage from './components/common/secondpage'
-
 
 import { Provider } from 'react-redux'
 import  store  from './components/redux1/redux1'

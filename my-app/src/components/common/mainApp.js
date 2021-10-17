@@ -17,8 +17,6 @@ import Codegenc from './codegenc'
 
 import {customMenu} from  "../custom/custommenus"
 
-
-
 import $gl from "./global"
 
 import _ from "lodash"
