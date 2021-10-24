@@ -2,6 +2,7 @@
 
 # dependencies
 /my-app/node_modules
+/my-app/src/components/custom
 /my-app/.pnp
 /my-app/.pnp.js
 
