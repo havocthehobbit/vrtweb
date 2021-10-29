@@ -34,6 +34,14 @@
         ...
     uuid_sort -
         ...
+    csv_to_json_simple - 
+        parse csv as json/jsObject
+        (csv,delim,cb) ; delim=","
+    searchJS -
+        ...
+        searchJS( [{ name :"joane"} , { name : "rob" }] ,"j" , "name" )
+        or
+        searchJS( { data : [{ name:"rob"},{ name:"abe"}] , key : "name" , search:"ro" } )
 
     internal system
     =================
