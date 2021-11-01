@@ -863,10 +863,10 @@ var loginUser=function( params ){
                                     //console.log("---3" )    
                                 });
                                 //console.log("---2" )
-                                if (!ret_data.sent_resposne){
+                                //if (!ret_data.sent_resposne){
                                     ret_data.sent_resposne=true
                                    cb(ret_data)
-                                }
+                                //}
                                 return; 
                             })
                             
@@ -874,26 +874,26 @@ var loginUser=function( params ){
                         }else{
                             if (!ret_data.sent_resposne){
                                 ret_data.sent_resposne=true
-                                 cb(ret_data)
+                                 //cb(ret_data)
                             }
                         }
                     }else{
                         if (!ret_data.sent_resposne){
                             ret_data.sent_resposne=true
-                            cb(ret_data) 
+                            //cb(ret_data) 
                         }
                     }
                 })
             }else{
                 if (!ret_data.sent_resposne){
                     ret_data.sent_resposne=true
-                    cb(ret_data)
+                   //cb(ret_data)
                 }
             }
         }else{
             if (!ret_data.sent_resposne){
                 ret_data.sent_resposne=true
-                cb(ret_data)
+                //cb(ret_data)
             }
         }
    
@@ -932,18 +932,7 @@ app.post("/isAuth", mds.users.verifyJWTroute ,function(req,res){
 
 })
 
-var csv_parse=function( csv ,fn1){
-    var cb=function(){}
-    if (!_.isUndefined(fn1)){ 
-        cb=fn1;
-    }
-    csvparse(csv.trim(), {
-             columns: true
-            }, function(err, records){               
-                //console.log(records)
-                cb(records)
-            })
-}
+
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
