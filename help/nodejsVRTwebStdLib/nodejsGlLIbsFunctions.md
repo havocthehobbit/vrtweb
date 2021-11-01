@@ -41,7 +41,20 @@
         (csv,delim,cb) ; delim=","
     
     json_to_csv -
+        (jsObj , cb)
 
+    csv_parse - 
+        parse/convert csv to js object or json
+        (strCSV , cb)
+        ...
+
+    tsv_parse - 
+        parse/convert csv to js object or json
+        (strTSV , cb)
+        ...
+
+    tsv_to_csv - 
+        (jsObj , cb)
 
     searchJS -
         ...
