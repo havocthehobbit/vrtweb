@@ -116,7 +116,7 @@ var server = http.listen( $vserv.data.port , $vserv.data.host  , function () {
     
       console.log("server is listening at http://%s:%s", host, port)
       console.log(reactbuildpath)
-      console.log( "if react dev mode start with: export REACT_APP_DEV_NODE_PORT=3018 ; npm start ")
+      console.log( `if react dev mode start with (my-app/startdev.sh): export REACT_APP_DEV_NODE_PORT=${port} ; npm start `)
       console.log(new Date())
 });
 
@@ -801,14 +801,15 @@ var loginUser=function( params ){
     var ret_data={
         data : { loggedin : false  , auth : false },
         status : 0,
-        error : ""
+        error : "",
+        sent_resposne : false
     }
 
     var bd=params; 
 
     
     //console.log("all users " , data.data)
-    
+     
     var login_confirmed=false;
     mds.users.fetchUsersDetails( {} , function(data){
         if (_.isUndefined(data)){
@@ -862,14 +863,37 @@ var loginUser=function( params ){
                                     //console.log("---3" )    
                                 });
                                 //console.log("---2" )
-                                cb(ret_data)
+                                if (!ret_data.sent_resposne){
+                                    ret_data.sent_resposne=true
+                                   cb(ret_data)
+                                }
                                 return; 
                             })
                             
                             //return;
+                        }else{
+                            if (!ret_data.sent_resposne){
+                                ret_data.sent_resposne=true
+                                 cb(ret_data)
+                            }
+                        }
+                    }else{
+                        if (!ret_data.sent_resposne){
+                            ret_data.sent_resposne=true
+                            cb(ret_data) 
                         }
                     }
                 })
+            }else{
+                if (!ret_data.sent_resposne){
+                    ret_data.sent_resposne=true
+                    cb(ret_data)
+                }
+            }
+        }else{
+            if (!ret_data.sent_resposne){
+                ret_data.sent_resposne=true
+                cb(ret_data)
             }
         }
    

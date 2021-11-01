@@ -110,7 +110,9 @@ export const isAuth=function(){
         .then(response => response.json())
         .then(data => { 
             cb(data);
-        } )
+        } ).catch(error => {
+            console.log(error);
+        })
 
 }
 
@@ -160,6 +162,8 @@ export const logout=function(){
         .then(response => response.json())
         .then(data => { 
             cb(data);
+        }).catch(error => {
+            alert(error);
         })
     
 
@@ -224,6 +228,8 @@ function Login({loggedin , login , logout , addval}){
                 .then(response => response.json())
                 .then(data => {                     
                     cb(data);
+                }).catch(error => {
+                    console.log(error,error.message);
                 })            
        
     }
