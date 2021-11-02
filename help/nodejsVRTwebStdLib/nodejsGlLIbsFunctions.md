@@ -34,6 +34,9 @@
         run multiple ssh commands        
         (cmd , {conn : {host : str, port : int [, username : str] [,password : str]}} , cb)
         ...cmd : eg : "uptime\nls -la\nexit\n" 
+    ssh_prompt :
+        ([],{conn ; {}},cb)
+
     sdate-
         ...
     stime-
