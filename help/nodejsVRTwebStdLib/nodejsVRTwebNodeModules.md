@@ -16,6 +16,7 @@ gl.mds. -
     readline   
     SFTPClient - ssh2-sftp-client
     ssh2
+    SSH2Shell
     moment - moment-timezone
     async
     crypto

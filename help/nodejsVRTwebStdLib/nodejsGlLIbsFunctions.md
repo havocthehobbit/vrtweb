@@ -19,21 +19,32 @@
         ...
     sftp_putDir -
         ...
-    sftp_list - list contents of a remote folder
+    sftp_list - 
+        list contents of a remote folder
         ...
 
-    shell - run shell command on local server
+    shell - 
+        run shell command on local server
         ( strCommand ) -  
     
+    ssh - 
+        (cmd , {conn : {host : str, port : int [, username : str] [,password : str]}} , cb)
+        ...
+    ssh_shell
+        run multiple ssh commands        
+        (cmd , {conn : {host : str, port : int [, username : str] [,password : str]}} , cb)
+        ...cmd : eg : "uptime\nls -la\nexit\n" 
     sdate-
         ...
     stime-
         ...
 
-    uuid - generate uunique uid
+    uuid - generate uunique uid uuid V1
+        () --> returns str
         ...
     
     uuid_sort -
+        [] --> returns array
         ...
     
     csv_to_json_simple - 
