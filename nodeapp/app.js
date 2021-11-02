@@ -4,7 +4,11 @@ var $gl = require("./l_node_modules/global.js").gl;
 
 var express = $gl.mds.express
 var app = express();
+var protocolH="http"
 var http = $gl.mds.http.Server(app);
+
+
+
 
 var fs = $gl.mds.fs;
 var path =$gl.mds.path;
@@ -35,16 +39,24 @@ app.use(express.urlencoded({extended: true})); //Parse URL-encoded bodies
 
 var cors = $gl.mds.cors;
 const { emitKeypressEvents } = $gl.mds.readline;
-app.use( cors({origin: [
-  /http/     // regular expression to allow any source server anything cause * is not allowed
-], credentials: true} 
-) );
 
+var cors_param={
+                    origin: [
+                                /http/     // regular expression to allow any source server anything cause * is not allowed
+                            ]
+                    , credentials: true
+                    ,methods: ["GET", "POST"]
+                }
+var cors_paramsF1=cors( cors_param ) 
+app.use( cors_paramsF1 );
+
+const io = $gl.mds.socketio(http,  { cors : cors_param } );
 
 var mdsfn={} ;
 var mds={} ;
 var mdsc={} ;
 var auto_mod_folders=[]
+
 
 var temp_DIR = path.join(__dirname, 'l_node_modules_fn');
 mdsfn=$gl.autoLoadModules(temp_DIR , true);
@@ -108,6 +120,11 @@ app.use(  express.static(pub ) );
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+
+
+
+
+
 var server = http.listen( $vserv.data.port , $vserv.data.host  , function () { 
     
     
@@ -118,12 +135,104 @@ var server = http.listen( $vserv.data.port , $vserv.data.host  , function () {
       console.log(reactbuildpath)
       console.log( `if react dev mode start with (my-app/startdev.sh): export REACT_APP_DEV_NODE_PORT=${port} ; npm start `)
       console.log(new Date())
+
+
+
+            
+        // dynamic module routes 
+
+        //console.log ( "dynamic module : ",mds.kcs_mod.app )
+        var gl_bundle={ app : app,mds :mds , mdsfn : mdsfn , vserv : $vserv, pub : pub ,debug_0 ,http : http , io : io}
+        var dyn_routes={}
+        var dyn_routes_names={}
+
+        _.each(mds, function(r1 , l_modulename){    
+            if ( !_.isUndefined(r1["__app"] ) ){
+                _.each(r1["__app"], function(r , prop){
+                    var mapp=r
+                    var lapp={ name : "" , route : "" , type : "" , cb : function(){} }
+                                
+                    if (!_.isUndefined( mapp.route) ){
+                        lapp.route= mapp.route;
+                    }
+                    if (!_.isUndefined( mapp.name) ){
+                        lapp.name= mapp.name;
+                        if (lapp.route===""){
+                            lapp.route="/" + lapp.name;
+                        }
+                    }
+                    if ( lapp.route==="" || lapp.route==="/"  ){
+                        lapp.route="/prop"
+                        //console.log( "Warning!!! : one of your api/libs for module" + prop + " does not have a route or a name so would not be accessable as an api !!!")
+                        //return
+                    }
+                    if ( lapp.name===""){
+                        lapp.name=l_modulename
+                    }
+
+                    if ( !_.isUndefined( mapp.type) ){
+                        if ( mapp.type==="get" || mapp.type==="GET"){                  
+                            lapp.type="get";
+                        }
+                        if ( mapp.type==="post" || mapp.type==="POST"){
+                            lapp.type="post";
+                        }
+                        
+                    }else{
+                        lapp.type="get"
+                    }
+                    if (!_.isUndefined( mapp.cb) ){
+                        lapp.cb= mapp.cb;
+                    }
+                    if (!_.isUndefined( mapp.fn) ){
+                        lapp.cb= mapp.fn;
+                    }
+                    if (!_.isUndefined( mapp.callback) ){
+                        lapp.cb= mapp.callback;
+                    }
+
+                    dyn_routes_names[lapp.name]={}
+                    dyn_routes[lapp.name]={}
+
+                    app[lapp.type]( lapp.route ,function(req, res , next) { 
+                        var other = gl_bundle;
+                        other.next=next
+                        lapp.cb(req, res ,  other ) 
+                    })
+
+                })
+            
+            }
+            if ( !_.isUndefined(r1["run_after_init"] ) ){
+                r1["run_after_init"](gl_bundle)
+            }
+        })
+        // end of dynamic modules routes
+
+});
+
+
+var interval
+io.on("connection", (socket) => {
+    console.log("New socket.IO client connected");
+    if (interval) {
+      clearInterval(interval);
+    }
+    interval = setInterval(() => getApiAndEmit(socket), 60000);
+    socket.on("disconnect", () => {
+      console.log("socket.IO Client disconnected");
+      clearInterval(interval);
+    });
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+const getApiAndEmit = socket => {
+    const response = new Date();
+    // Emitting a new message. Will be consumed by the client
+    socket.emit("FromAPI", response);
+};
 
 var debug_0={};
 
@@ -196,73 +305,6 @@ var template_o={
     }
 
 }
-
-// dynamic module routes 
-
-//console.log ( "dynamic module : ",mds.kcs_mod.app )
-var gl_bundle={ app : app,mds :mds , mdsfn : mdsfn , vserv : $vserv, pub : pub ,debug_0 }
-var dyn_routes={}
-var dyn_routes_names={}
-
-_.each(mds, function(r1 , l_modulename){    
-    if ( !_.isUndefined(r1["__app"] ) ){
-        _.each(r1["__app"], function(r , prop){
-            var mapp=r
-            var lapp={ name : "" , route : "" , type : "" , cb : function(){} }
-                        
-            if (!_.isUndefined( mapp.route) ){
-                lapp.route= mapp.route;
-            }
-            if (!_.isUndefined( mapp.name) ){
-                lapp.name= mapp.name;
-                if (lapp.route===""){
-                    lapp.route="/" + lapp.name;
-                }
-            }
-            if ( lapp.route==="" || lapp.route==="/"  ){
-                lapp.route="/prop"
-                //console.log( "Warning!!! : one of your api/libs for module" + prop + " does not have a route or a name so would not be accessable as an api !!!")
-                //return
-            }
-            if ( lapp.name===""){
-                lapp.name=l_modulename
-            }
-
-            if ( !_.isUndefined( mapp.type) ){
-                if ( mapp.type==="get" || mapp.type==="GET"){                  
-                    lapp.type="get";
-                }
-                if ( mapp.type==="post" || mapp.type==="POST"){
-                    lapp.type="post";
-                }
-                
-            }else{
-                lapp.type="get"
-            }
-            if (!_.isUndefined( mapp.cb) ){
-                lapp.cb= mapp.cb;
-            }
-            if (!_.isUndefined( mapp.fn) ){
-                lapp.cb= mapp.fn;
-            }
-            if (!_.isUndefined( mapp.callback) ){
-                lapp.cb= mapp.callback;
-            }
-
-            dyn_routes_names[lapp.name]={}
-            dyn_routes[lapp.name]={}
-
-            app[lapp.type]( lapp.route ,function(req, res , next) { 
-                var other = gl_bundle;
-                other.next=next
-                lapp.cb(req, res ,  other ) 
-            })
-
-        })
-    
-    }
-})
-// end of dynamic modules routes
 
 
 app.post("/news" ,function(req , res){

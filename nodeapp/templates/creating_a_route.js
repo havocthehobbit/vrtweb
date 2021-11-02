@@ -6,7 +6,32 @@ var $gl = require("../l_node_modules/global.js").gl; // this contanes some extra
 
 var main={
             auto_run : function(){ 
-                console.log("auto_running test3")},
+                console.log("auto_running test3")
+            },
+            run_after_init : function(params){ // params : { http: http , io : io} // io = socket.io 
+                    //console.log("after init params : " , params)
+    
+                    var interval
+                    params.io.on("connection", (socket) => {
+                        console.log("New socket.IO 2client connected");
+                        if (interval) {
+                        clearInterval(interval);
+                        }
+                        interval = setInterval(() => getApiAndEmit(socket), 60000);
+                        socket.on("disconnect", () => {
+                        console.log("socket.IO 2cClient disconnected");
+                         clearInterval(interval);
+                        });
+                    });
+    
+    
+                    const getApiAndEmit = socket => {
+                        const response = {date : new Date(), "res2" : "res2" };
+                        // Emitting a new message. Will be consumed by the client
+                        socket.emit("FromAPI", response);
+                    };
+    
+            },
             __app : [ // must be named __app to create a route
                 {   
                     name  : "test3",

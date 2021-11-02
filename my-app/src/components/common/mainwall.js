@@ -12,11 +12,16 @@ import Notes from "./notes";
 
 import ComponentsAss from './assistant'
 
+import socketIOClient from "socket.io-client";
+
 const Assistant=ComponentsAss.Assistant
 
 var host=$gl.fn.getHost();
 var port=$gl.fn.getPort()
 var protocall=$gl.fn.getProtocall();
+
+const socketioENDPOINT = protocall + "//" + host + ":" + port;
+
 
 const mapStateToProps = function(state , owsProps){
     return {
@@ -167,27 +172,49 @@ export const AddNews=function(){
     )
 }
 
-
+var initCountMainWall=0;
 function Mainwall({ global , globalChange}){
 
     var [newsout ,newsoutSet]=useState([])
     var [showAddNews ,setShowAddNews]=useState(false)
     var [canAddNews ,setCanAddNews]=useState(false)
 
+    var [socketIOresponse ,setSocketIOresponse]=useState("")
+
+    
+
     useEffect(() => {
-        fetchNews(function(ret){
-            newsarr=ret.data
-            newsoutSet(newsarr);
-            
-            $gl.fetchPerms(function(perms){                
-                _.each(perms.data,(val, prop)=>{
-                    if (prop==="newsedit"){
-                        setCanAddNews(true);
-                    }
-                    return true
+        initCountMainWall++
+       
+        if (initCountMainWall===1){
+            fetchNews(function(ret){
+                newsarr=ret.data
+                newsoutSet(newsarr);
+                
+                $gl.fetchPerms(function(perms){                
+                    _.each(perms.data,(val, prop)=>{
+                        if (prop==="newsedit"){
+                            setCanAddNews(true);
+                        }
+                        return true
+                    })
                 })
             })
-        })
+
+       
+            const socket = socketIOClient(socketioENDPOINT,{
+                withCredentials: true,
+                //extraHeaders: {
+                //    'Access-Control-Allow-Origin':'*',
+                //    'Accept': 'application/json',
+                //    'Content-Type': 'application/json'
+                //}
+            });
+            socket.on("FromAPI", data => {
+                console.log("socket from Backend : " , data)
+                setSocketIOresponse(data);
+            });
+        }
 
         return () => {
             //cleanup

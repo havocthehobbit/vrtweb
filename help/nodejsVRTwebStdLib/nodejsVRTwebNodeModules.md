@@ -8,7 +8,7 @@ gl.mds. -
     _ - lodash
     assert
     cookieParser
-    csvparse
+    csvparse - csv-parse
     csvstringify - csv-stringify
     multer
     jsonwebtoken
@@ -23,4 +23,5 @@ gl.mds. -
     bcrypt - bcryptjs
     nodemailer
     xml2js - .parseString
+    dotenv
         
