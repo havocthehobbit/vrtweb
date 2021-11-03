@@ -9,28 +9,36 @@ var main={
                 console.log("auto_running test3")
             },
             run_after_init : function(params){ // params : { http: http , io : io} // io = socket.io 
-                    //console.log("after init params : " , params)
-    
-                    var interval
-                    params.io.on("connection", (socket) => {
-                        console.log("New socket.IO 2client connected");
-                        if (interval) {
-                        clearInterval(interval);
-                        }
-                        interval = setInterval(() => getApiAndEmit(socket), 60000);
-                        socket.on("disconnect", () => {
-                        console.log("socket.IO 2cClient disconnected");
-                         clearInterval(interval);
-                        });
+                //console.log("after init params : " , params)
+
+                // create a public path for images and pub files etc
+                ///*
+                var pubpath=__dirname + "/" + ".." + "/" +  "my-app" + "/"  + "pub_files" +"/" + "testmodule"
+                var pub= $gl.mds.path.resolve( pubpath );                
+                params.app.use( "/testmodule" , params.express.static(pub ) ); // http://testmodule/WhatEverIsInThisPathOfSecondParameter
+                //*/
+                
+                // socket io example
+                var interval
+                params.io.on("connection", (socket) => {
+                    console.log("New socket.IO 2client connected");
+                    if (interval) {
+                    clearInterval(interval);
+                    }
+                    interval = setInterval(() => getApiAndEmit(socket), 60000);
+                    socket.on("disconnect", () => {
+                    console.log("socket.IO 2cClient disconnected");
+                     clearInterval(interval);
                     });
-    
-    
-                    const getApiAndEmit = socket => {
-                        const response = {date : new Date(), "res2" : "res2" };
-                        // Emitting a new message. Will be consumed by the client
-                        socket.emit("FromAPI", response);
-                    };
-    
+                });
+
+
+                const getApiAndEmit = socket => {
+                    const response = {date : new Date(), "res2" : "res2" };
+                    // Emitting a new message. Will be consumed by the client
+                    socket.emit("FromAPI", response);
+                };
+
             },
             __app : [ // must be named __app to create a route
                 {   

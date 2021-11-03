@@ -24,4 +24,5 @@ gl.mds. -
     nodemailer
     xml2js - .parseString
     dotenv
+    socketio - socket.io
         

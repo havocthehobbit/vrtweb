@@ -142,7 +142,7 @@ var server = http.listen( $vserv.data.port , $vserv.data.host  , function () {
         // dynamic module routes 
 
         //console.log ( "dynamic module : ",mds.kcs_mod.app )
-        var gl_bundle={ app : app,mds :mds , mdsfn : mdsfn , vserv : $vserv, pub : pub ,debug_0 ,http : http , io : io}
+        var gl_bundle={ app : app,express : express,mds :mds , mdsfn : mdsfn , vserv : $vserv, pub : pub ,debug_0 ,http : http , io : io}
         var dyn_routes={}
         var dyn_routes_names={}
 
