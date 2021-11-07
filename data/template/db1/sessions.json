@@ -1,0 +1,18 @@
+{
+    "sessions": {
+        "all": {
+            "bob": {
+                "userid": "bob",
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJib2IiLCJpYXQiOjE2Mjk0OTg4NDV9.UDcj0F-COxQLQ9H9tj_vd_cDrFNX4MCZp7oyyj9OzDM",
+                "lastupdated": "2021-08-20T22:34:05.377Z",
+                "uuid": "3"
+            },
+            "bobn": {
+                "userid": "bobn",
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJib2JuIiwiaWF0IjoxNjM1ODAwNjUwfQ.5PLFZ9Tv9jlwz6_WvZsy5249jpdGdEtw0ru1p1-WUt8",
+                "lastupdated": "2021-11-01T21:04:10.520Z",
+                "uuid": "4"
+            }
+        }
+    }
+}

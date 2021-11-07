@@ -1,0 +1,14 @@
+{
+    "host" : "localhost",
+    "port" : 3001,
+
+    "use_dot_env_secrets" : false, 
+    "dot_env_secrets_path" : "./",
+    "jwt_secret" : "jwtSecret_randomtest1244",
+    "cookieSecret" : "some_secret_1234",
+
+    "use_db_localfile" : true,
+    "db_localfile" : "db1",
+
+    "app_setup_notes" : ""
+}

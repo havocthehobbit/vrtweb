@@ -7,8 +7,11 @@
 /my-app/.pnp
 /my-app/.pnp.js
 
+#nodejs files
 /nodeapp/node_modules
 /nodeapp/package-lock.json
+
+/nodeapp/l_node_modules_auto_*
 
 # testing
 /my-app/coverage
@@ -28,8 +31,10 @@
 /my-app/yarn-error.log*
 
 # all data except somefiles''
-/data
-!/data/template
-!/data/schema
+/data/setting.json
+/data/db1
+/data/dbs
+#/data/template
+#/data/schema
 
 /ignoreme

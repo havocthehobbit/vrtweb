@@ -1,0 +1,11 @@
+{
+
+    "groups" : [
+        { "name" : "users" , "roles" : ["users"] },
+        { "name" : "newsupdateusers" , "roles" : ["newsupdates"] },
+        { "name" : "admin" , "roles" : ["admin" , "users"] },
+        { "name" : "internalmodder" , "roles" : ["mainappcoder"] }
+        
+    ]
+
+}
