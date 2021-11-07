@@ -10,3 +10,7 @@ echo "installing nodejs dependancy packages for this project"
 cd ../../nodeapp/ ; npm i ; cd -
 echo "installing reactjs dependancy packages for this project"
 cd ../../my-app/ ; npm i --force ; cd -
+
+echo "creating empty database "
+cp -Rp ../../data/template/db1 ../../data/template 
+echo "login as 'admin'  ; password '' ;(password blank) ;please change password after logging in "

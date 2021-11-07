@@ -2,11 +2,13 @@
 
 # dependencies
 /my-app/node_modules
+/my-app/package-lock.json
 /my-app/src/components/custom
 /my-app/.pnp
 /my-app/.pnp.js
 
 /nodeapp/node_modules
+/nodeapp/package-lock.json
 
 # testing
 /my-app/coverage
@@ -24,5 +26,10 @@
 /my-app/npm-debug.log*
 /my-app/yarn-debug.log*
 /my-app/yarn-error.log*
+
+# all data except somefiles''
+/data
+!/data/template
+!/data/schema
 
 /ignoreme

@@ -35,7 +35,16 @@
         (cmd , {conn : {host : str, port : int [, username : str] [,password : str]}} , cb)
         ...cmd : eg : "uptime\nls -la\nexit\n" 
     ssh_prompt :
-        ([],{conn ; {}},cb)
+        run multiple command and respond to prompts 
+         ( [{ cmd:str,prompt:str, response:str ,write:str ,noENTER:str,cb :()},{}], {conn : {host:str,username:str,pass:str,port : int}}, cb : (sshOuput) )
+         .... eg : # example uses 3 parameter, it also prints out the answer to read input(q) that waited for an answer in variable q.
+         (
+             [
+                 { cmd : "echo name" },{ cmd : "read q" , prompt : "read q", write:"bob123" ,cb :()=>{console.log("log123")} },{ cmd : "ls -la" },{ cmd : ("echo hello $q" }
+             ]
+            ,{conn:{host : "localhost", port : 22 , username : "user123" ,password : "123" }  }
+            ,function(data){console.log("result : " ,data)}  
+         )
 
     sdate-
         ...
