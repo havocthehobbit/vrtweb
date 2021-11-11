@@ -18,11 +18,11 @@ cp -Rp ../../data/template/db1 ../../data
 echo "creating settings json file "
 cp -p ../../data/template/settings.json ../../data
 
-echo "please change youre host IP address in data/setting.json from localhost to your WSL IP address"
-ip a l | grep net | grep -vE "localhost|inet6|127\.0\.0\.1|grep"
-
 echo "building react"
 cd ../../my-app/ ; npm run build; cd -
+
+echo "please change youre host IP address in data/setting.json from localhost to your WSL IP address"
+ip a l | grep net | grep -vE "localhost|inet6|127\.0\.0\.1|grep"
 
 echo "login as 'admin'  ; password '' ;(password blank) ;please change password after logging in "
 echo "globaly install nodemon; sudo npm i -g nodemon"

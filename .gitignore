@@ -31,7 +31,7 @@
 /my-app/yarn-error.log*
 
 # all data except somefiles''
-/data/setting.json
+/data/settings.json
 /data/db1
 /data/dbs
 #/data/template
