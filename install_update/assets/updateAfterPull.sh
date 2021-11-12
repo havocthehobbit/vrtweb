@@ -1,6 +1,9 @@
 cd ../../nodeapp/ ; git pull ; cd -
 cd ../../nodeapp/ ; npm i -s ; cd -
 cd ../../my-app/ ; npm i -s --force ; cd -
+echo "ccreate data/usershome"
+mkdir -p ../../data/usershome
+
 echo "you may need to upgrade nodejs to minimum required verion which is "
 echo ""
 echo "to do this run"

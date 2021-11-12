@@ -978,7 +978,7 @@ app.post("/isAuth", mds.users.verifyJWTroute ,function(req,res){
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, '../data' );
+        cb(null, '../data/usershome' );
     },
     filename: (req, file, cb) => {
         //console.log("saving : " ,file);
@@ -990,7 +990,7 @@ const storage = multer.diskStorage({
 //const upload = multer({ dest: '../data' });
 const upload = multer({ storage: storage });
 
-app.post('/csv', upload.single('file'), function (req, res) {
+app.post('/uploadfiles', upload.single('file'), function (req, res) {
     const fileRows = [];
     //console.log("csv uploading")
     // open uploaded file

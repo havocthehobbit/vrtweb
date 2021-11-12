@@ -1,5 +1,5 @@
 import _, { functionsIn } from "lodash";
-
+import csvparse from "csv-parse"
 
 
 
@@ -7,6 +7,19 @@ var $gl={
 
     fn : {}
 
+}
+
+var csv_parse=function( csv ,fn1){
+    var cb=function(){}
+    if (!_.isUndefined(fn1)){ 
+        cb=fn1;
+    }
+    csvparse(csv.trim(), {
+             columns: true
+            }, function(err, records){               
+                //console.log(records)
+                cb(records)
+            })
 }
 
 
