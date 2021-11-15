@@ -17,8 +17,8 @@ echo "creating empty database "
 cp -Rp ../../data/template/db1 ../../data
 echo "creating settings json file "
 cp -p ../../data/template/settings.json ../../data
-echo "ccreate data/usershome"
-mkdir -p ../../data/usershome
+echo "ccreate data/usershome and uploads_temp"
+mkdir -p ../../data/usershome/uploads_temp
 
 echo "building react"
 cd ../../my-app/ ; npm run build; cd -

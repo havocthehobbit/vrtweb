@@ -6,18 +6,20 @@
     get_json_db_sync - 
         [var str=](filepath,filepath[,callback]) - 
     save_json_db - load json file synchronously
-        (filepath,JSONdata,callback)
+        (filepath,JSONdata,callback)   
     save_file -
         (filepath,text,callback)
+    load_file - load file text
+        (filepath,callback(text,err))   
     
     sftp_get - fetch file over sftp.        
         (remoteHostPath,localPath, {ftp : {host : str, port : int [, username : str] [,password : str]}}, path)
-    sftp_getDir - get directory/folder files and contents
+    sftp_getDir - get directory/folder files and contents  // all conents of directoru , does not create directry itself
         ...
     sftp_put - 
         (localPath,remoteHostPath, {ftp : {host : str, port : int [, username : str] [,password : str]}}, path)
         ...
-    sftp_putDir -
+    sftp_putDir - // all conents of directoru , does not create directry itself
         ...
     sftp_list - 
         list contents of a remote folder

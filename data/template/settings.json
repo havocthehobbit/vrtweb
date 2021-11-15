@@ -10,5 +10,11 @@
     "use_db_localfile" : true,
     "db_localfile" : "db1",
 
-    "app_setup_notes" : ""
+    "app_setup_notes" : "",
+
+    "httpProtoString" : "http",
+    "sslkey" : "../.cert/key.pem",
+    "sslcert" : "../.cert/cert.pem",
+
+    "uploads" :"../data/usershome"
 }

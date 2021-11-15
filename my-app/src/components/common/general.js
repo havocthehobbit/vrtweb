@@ -1,4 +1,4 @@
-
+import { useEffect, useState,Component} from "react"
 //import {connect} from 'react-redux'
 import _, { set } from "lodash"
 import $gl from "./global"
@@ -49,17 +49,43 @@ export const Upload=function(props){
     if (!_.isUndefined(props.type)){
         type=props.type
     }
+    var blobOrText="text"
+    if (!_.isUndefined(props.type)){
+        blobOrText=props.blobOrText
+    }
     var extradata=""
     if (!_.isUndefined(props.extradata)){
         extradata=props.extradata
     }
+    
+    if (!_.isUndefined(props.extra)){
+        extradata=props.extra
+    }
+    var buttonUploadStyle={}
+    if (!_.isUndefined(props.buttonUploadStyle)){
+        buttonUploadStyle=props.buttonUploadStyle
+    }
+    var buttonFileStyle={}
+    if (!_.isUndefined(props.buttonFileStyle)){
+        buttonFileStyle=props.buttonFileStyle
+    }
+    var buttonInputStyle={}
+    if (!_.isUndefined(props.buttonInputStyle)){
+        buttonInputStyle=props.buttonInputStyle
+    }
+    
 
     var [uploadFile,setUploadFile]=useState({ csv : ""});
     var [csvJson,setCsvJson]=useState([]);
 
-    var upload=function(){
+    var upload=function(cb ,extra){
         let formData = new FormData();
-        formData.append('file', uploadFile.upload);
+        formData.append('file', uploadFile.upload );
+
+        var extra={}
+        extra.type=type
+        extra=_.merge(extra,extradata)
+        formData.append('extra',JSON.stringify(extra));
 
         let file = uploadFile.upload
         var fr=new FileReader();                                      
@@ -68,7 +94,22 @@ export const Upload=function(props){
             //console.log(fr.result);
             var newdata=fr.result; // can do something with this in the front end
             window.$newuploaddata=newdata; // Global Var : can do something with this in the front end
-           
+           console.log(newdata)
+          
+          
+
+            //var fparams=new $gl.fetchPostCors("upload");
+            var fparams=new $gl.fetchPostCors("upload");
+
+            fparams.body=formData
+            var url=protocall + "//" + host + ":" + port + "/uploadfiles";
+            
+            fetch(url, fparams
+            )
+            .then(response => response.json())
+            .then(data => {             
+                    cb(data);
+            })
 
         }
     }
@@ -78,13 +119,14 @@ export const Upload=function(props){
     return (
         <div>
             <button
+                style={buttonUploadStyle}
                 onClick={function(){
-                    upload()
+                    upload(function(){})
                     
                     }
-                }
+                } 
             >Upload</button>
-            <input
+            <input  style={buttonInputStyle}
                         type="file"
                         ref={(input) => { filesInput = input }}
                         name="file"

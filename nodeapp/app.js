@@ -1,11 +1,23 @@
 console.log(new Date())
 
 var $gl = require("./l_node_modules/global.js").gl;
+var lib_settings = require("./l_node_modules/global.js").settings;
+var $vserv =new lib_settings()
 
 var express = $gl.mds.express
 var app = express();
-var protocolH="http"
-var http = $gl.mds.http.Server(app);
+var protocolH=$vserv.data.httpProtoString
+var http
+if (protocolH==="http"){
+    http = $gl.mds.http.Server(app);
+}else {   
+    var sslkey= $gl.mds.fs.readFileSync($vserv.data.sslkey);
+    var sslcert= $gl.mds.fs.readFileSync($vserv.data.sslcert);
+    http = $gl.mds.https.Server({ key : sslkey , cert : sslcert },app);
+    
+
+}
+//var http = $gl.mds.http.Server(app);
 
 
 
@@ -24,9 +36,7 @@ const multer = $gl.mds.multer;
 var jwt = $gl.mds.jsonwebtoken;
 
 var $test_data = require("./l_node_modules/test_data.js").test_data;
-var lib_settings = require("./l_node_modules/global.js").settings;
 
-var $vserv =new lib_settings()
 
 
 app.use(cookieParser($vserv.data.cookieSecret));
@@ -121,7 +131,7 @@ app.use(  express.static(pub ) );
 
 
 
-
+var uploadsApps={ types : {} , general : {} }
 
 
 
@@ -131,7 +141,7 @@ var server = http.listen( $vserv.data.port , $vserv.data.host  , function () {
       var host = server.address().address ;
       var port = server.address().port ;
     
-      console.log("server is listening at http://%s:%s", host, port)
+      console.log("server is listening at " + protocolH + "://%s:%s", host, port)
       console.log(reactbuildpath)
       console.log( `if react dev mode start with (my-app/startdev.sh): export REACT_APP_DEV_NODE_PORT=${port} ; npm start `)
       console.log(new Date())
@@ -205,6 +215,38 @@ var server = http.listen( $vserv.data.port , $vserv.data.host  , function () {
             }
             if ( !_.isUndefined(r1["run_after_init"] ) ){
                 r1["run_after_init"](gl_bundle)
+            }
+            if ( !_.isUndefined(r1["uploads"] ) ){
+                if ( !_.isUndefined(r1["uploads"]["types"] ) ){
+                    _.each(r1["uploads"]["types"], function(r , prop){
+                    
+                        var mapp=r;
+                        var lapp={}
+
+                        if (!_.isUndefined( mapp.name) ){
+                            lapp.name= mapp.name;
+                        }else{
+                            console.log("name is not included in one of the update types of custom plugins")
+                        }
+
+                        if (!_.isUndefined( mapp.cb) ){
+                            lapp.cb= mapp.cb;
+                        }
+                        if (!_.isUndefined( mapp.fn) ){
+                            lapp.cb= mapp.fn;
+                        }
+                        if (!_.isUndefined( mapp.callback) ){
+                            lapp.cb= mapp.callback;
+                        }
+
+                        
+                        _.each(r1["uploads"]["types"], function(r , prop){
+                                uploadsApps.types[r.name]=lapp   
+                            
+                        })
+                    
+                    })
+                }
             }
         })
         // end of dynamic modules routes
@@ -975,57 +1017,161 @@ app.post("/isAuth", mds.users.verifyJWTroute ,function(req,res){
 })
 
 
+var uploads_db_temp={ 
+    all : {}
+}
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, '../data/usershome' );
+        //console.log("uploading gilename desitnation", req.vrtweb)
+        var uploads_path=$vserv.data.uploads
+        if (!_.isUndefined(req.vrtweb)){
+            var vrtweb=req.vrtweb
+            if (vrtweb.subfolder){
+                if (vrtweb.subfolder!==""){
+                    uploads_path=uploads_path + "/" + vrtweb.subfolder
+                } 
+            }
+        }
+        console.log(uploads_path)
+        cb(null, uploads_path );
     },
     filename: (req, file, cb) => {
         //console.log("saving : " ,file);
         //cb(null, Date.now() + path.extname(file.originalname));
-        cb(null, file.originalname);
+        //console.log("uploading gilename filename", req.body.extra , file)
+
+        var newname=""
+        newname=file.originalname
+
+        var use_random=true;
+        if (!_.isUndefined(req.vrtweb)){
+            var vrtweb=req.vrtweb
+            if (!_.isUndefined(vrtweb.newname_random)){
+                
+                use_random=vrtweb.newname_random
+            
+            }
+        }
+        if (use_random){
+            newname=Date.now() + path.extname(file.originalname) 
+        }
+        
+        //console.log("newname : ", newname)
+
+        cb(null, newname);
     }
+    // filters : // lookup in documentation , use to filter files out
 });
 
 //const upload = multer({ dest: '../data' });
+
 const upload = multer({ storage: storage });
 
-app.post('/uploadfiles', upload.single('file'), function (req, res) {
+//app.post('/uploadfiles', upload.single('file'), function (req, res) {
+app.post('/uploadfiles',  function (req, res) {
     const fileRows = [];
-    //console.log("csv uploading")
-    // open uploaded file
-
-    ////req.file
-    //console.log( "file " ,req.file)
-    try {
-        return res.status(201).json({
-            message: 'File uploded successfully'
-        });
-    } catch (error) {
-        console.error(error);
+ 
+    var token=req.headers["x-auth-token"];
+    if (!token || _.isUndefined(token)){
+        token=req.cookies.token;
     }
-    /*
-    csv.fromPath(req.file.path)
-      .on("data", function (data) {
-        fileRows.push(data); // push each row
-      })
-      .on("error", function () {
-          res.status(500).json({
-              message: "Failed to upload file"
-          });
-      })
-      .on("end", function () {
-        console.log(fileRows)
-        fs.unlinkSync(req.file.path);   // remove temp file
-        
 
-        //process "fileRows" and respond
+    var locals={};
+    mds.users.verifyJWT(token ,function(tkdata){
         
-         res.jsonp({
-            message: "Upload Completed!"
-         });
-         
-      })
-      */
+        //console.log( "cookies get::: " ,req.cookies ) ; //console.log( "cookiesSigned get ::: " ,req.signedCookies  ) ;      //console.log( "jwt info ::: " ,  tkdata )
+
+        if (tkdata.status==="success"){
+            if ( tkdata.data.rt_jwt_isAuth ){
+                var userid=tkdata.data.userid ; 
+
+                var vrtweb={  extra : req.body , userid : userid , newname : "", subfolder : "uploads_temp" , newpath : "" , cb_before : function(){} , memfile : {} } 
+                
+                
+                _.each(uploadsApps.general,function(r2,propname){
+                    
+                })
+
+                req.vrtweb=vrtweb // accessable by other multier funcitons but exlude req.body variables passed through as those can only be accessed after an upload is complete by the upload callback
+                var runupload=upload.single('file')
+                runupload(req,res,function(err){ // this callback will run on completion , unfortunately multier in most circumstances processes file upload before other posted vatiabls in body so need to do any changes after , so rather handle your upload as a temp file and make name changes after 
+                    //console.log("csv uploading")
+                    // open uploaded file
+                    if (err){
+                        console.log("upload error : ", err)
+                        return
+                    }
+
+                    var extra={}
+                    if (!_.isUndefined(req.body.extra)){
+                        extra=JSON.parse(req.body.extra)
+                    }                
+                    var file={}
+                    if (!_.isUndefined(req.file)){
+                        file=req.file
+                    }                    
+                    var inobj={}
+                    try {
+
+                            //console.log("uploaded", req.body.extra)
+
+                            res.status(201).json({
+                                message: 'File uploded successfully'
+                            })
+
+                            uploads_db_temp.all[req.file.filename]={ file : file , extra : extra , name : file.filename, userid : userid , date : new Date() }
+
+                            
+                            var freg_path=$vserv.data.uploads + "/" + "filereg.json"
+
+                            var fr_exists=false
+                            fr_exists=$gl.file_exists_sync(freg_path)
+                            
+                            var newfreg=uploads_db_temp.all
+                            
+                            var run_custom_upload_cb=function(freg1){ 
+                                if (!_.isUndefined(extra.type)){                                    
+                                    _.each(uploadsApps.types,function(r2,propname){
+                                        if (propname===extra.type){
+                                            if (!_.isUndefined(r2.cb)){
+                                                inobj={ freg : freg,extra : extra , type : extra.type, file : file ,req : req ,res : res , vrtweb : vrtweb }
+                                                r2.cb(inobj, function(cust_ret_data){
+
+                                                })
+
+                                            }
+                                        }
+                                    })
+                                }
+                            }
+                            
+                            if (fr_exists){ 
+                                $gl.get_json_db( freg_path ,function(freg){
+                                    var temp=_.merge(freg.all , newfreg )
+                                    freg.all=temp;
+                                    $gl.save_json_db( freg_path,freg,function(){
+                                        run_custom_upload_cb(freg)
+                                    })
+                                })
+                            }else{
+                                var freg={ all : newfreg }
+
+                                $gl.save_json_db( freg_path,freg,function(){
+                                    run_custom_upload_cb(freg)
+                                })
+                            }
+
+                            return ;
+                    } catch (error) {
+                        console.error(error);
+                    }
+                })
+            }
+        }
+    })
+
+
+    
 });
 

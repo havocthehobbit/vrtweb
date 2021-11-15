@@ -64,7 +64,8 @@ function eraseCookie(name) {
 }
 $gl.eraseCookie=eraseCookie;
 
-var fetchPostCors=function(){
+var fetchPostCors=function(params){
+        
         var obj={        
                     method: 'POST',
                     mode: 'cors',
@@ -77,6 +78,19 @@ var fetchPostCors=function(){
                         'Content-Type': 'application/json'
                     }          
                     
+        }
+        
+
+        if (!_.isUndefined( params)){
+            if (_.isPlainObject(params)){
+
+            }else{
+                if (params==="upload"){
+                    delete obj.headers.Accept
+                    delete obj.headers["Content-Type"]
+                }
+            }
+
         }
     
     return obj    
