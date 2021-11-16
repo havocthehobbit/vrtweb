@@ -1135,7 +1135,7 @@ app.post('/uploadfiles',  function (req, res) {
                                     _.each(uploadsApps.types,function(r2,propname){
                                         if (propname===extra.type){
                                             if (!_.isUndefined(r2.cb)){
-                                                inobj={ freg : freg,extra : extra , type : extra.type, file : file ,req : req ,res : res , vrtweb : vrtweb }
+                                                inobj={ fileid : req.file.filename, freg : freg,extra : extra , type : extra.type, file : file ,req : req ,res : res , vrtweb : vrtweb }
                                                 r2.cb(inobj, function(cust_ret_data){
 
                                                 })
@@ -1174,4 +1174,43 @@ app.post('/uploadfiles',  function (req, res) {
 
     
 });
+
+
+app.post("/download",function(req,res){
+    var bd=req.body;
+    //console.log(bd)
+
+    var token=req.headers["x-auth-token"];
+    if (!token || _.isUndefined(token)){
+        token=req.cookies.token;
+    }
+
+    var locals={};
+    mds.users.verifyJWT(token ,function(tkdata){
+        
+        //console.log( "cookies get::: " ,req.cookies ) ; //console.log( "cookiesSigned get ::: " ,req.signedCookies  ) ;      //console.log( "jwt info ::: " ,  tkdata )
+        //console.log(" --- " , uploads_db_temp)
+        if (tkdata.status==="success"){
+            if ( tkdata.data.rt_jwt_isAuth ){
+                var userid=tkdata.data.userid ; 
+                
+                var freg_path=$vserv.data.uploads + "/" + "filereg.json"
+                $gl.get_json_db( freg_path , function(fdata){
+                    uploads_db_temp=fdata
+                    if (!_.isUndefined(uploads_db_temp.all[bd.fileid])){
+                        
+                        var file=uploads_db_temp.all[bd.fileid]
+                        console.log(file)
+
+                        //to download
+                        const fileout = file.file.path  
+                        res.download(fileout);
+                    }else{
+
+                    }
+                })
+            }
+        }
+    })
+})
 

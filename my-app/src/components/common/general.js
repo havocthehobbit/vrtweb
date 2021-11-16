@@ -14,7 +14,7 @@ export const Iframe=function(props){
     if (!_.isUndefined(props.src)){
         src=props.src
     }
-    var style=""
+    var style={}
     if (!_.isUndefined(props.style)){
         style=props.style
     }
@@ -36,7 +36,9 @@ export const Iframe=function(props){
 
 
     return (
-        <iframe src={src} style={style} title={title} width={width} height={height} />
+        <div>
+            <iframe src={src} style={style} title={title} width={width} height={height} />
+        </div>
     )
 }
 
@@ -45,7 +47,7 @@ export const Upload=function(props){
     if (!_.isUndefined(props.newfilename)){
         newfilename=props.newfilename
     }
-    var type=""
+    var type={}
     if (!_.isUndefined(props.type)){
         type=props.type
     }
@@ -153,5 +155,106 @@ export const Upload=function(props){
                         }
                 />    
         </div>
+    )
+}
+
+
+export const Download=function(props){
+
+    
+    var style={}
+    if (!_.isUndefined(props.style)){
+        style=props.style
+    }
+
+    var fileid=""
+    if (!_.isUndefined(props.fileid)){
+        fileid=props.fileid
+    }
+    var type=""
+    if (!_.isUndefined(props.type)){
+        type=props.type
+    }
+    var fetchfilename=""
+    if (!_.isUndefined(props.fetchfilename)){
+        fetchfilename=props.fetchfilename
+    }
+    var filename="download"
+    if (!_.isUndefined(props.filename)){
+        filename=props.filename
+    }
+        
+    var label="download"
+    if (!_.isUndefined(props.label)){
+        label=props.label
+    }
+    
+    
+    var [someval,setSomeval]=useState("somevalue123")
+    
+    
+    function fetchSomething(){
+        var args=arguments;
+
+        var cb=function(){}
+        
+        var userid="";
+        var password=""
+        var loginFnType="login"
+
+        if ( args.length > 0){
+            if (_.isPlainObject(args[0])){
+                if (!_.isUndefined(args[0].cb)){
+                    cb=args[0].cb
+                }
+                
+            }
+
+            if (args.length > 1){
+                cb=args[1];
+            }
+            if (_.isFunction(args[0]) ){
+                cb=args[0]
+            }
+        }
+
+        
+        var fparams=new $gl.fetchPostCors();
+
+        fparams.body=JSON.stringify( { type : type , fileid : fileid , filename : filename , fetchfilename : fetchfilename} );
+        var url=protocall + "//" + host + ":" + port + "/download";
+        
+        fetch(url, fparams
+        )
+        .then(response => response.blob())
+        .then(data => {             
+                cb(data);
+        })
+
+
+    }
+
+    var clickme=function(){
+        fetchSomething(function(data){
+            const href = window.URL.createObjectURL(data);
+            const a = document.createElement("a");
+            a.download = filename;
+            a.href = href;
+            a.click();
+            a.href = '';
+
+
+            console.log(data)
+        })
+    }
+
+    return (
+                <div>
+                    <button
+                            style={{}}
+                            onClick={clickme}
+                    >download</button>
+                </div>
+
     )
 }

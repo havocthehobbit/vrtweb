@@ -59,6 +59,11 @@ function fetchSomething(){
 
 var testmain_count=0
 export const Testmain=(props)=>{
+    var style={}
+    if (!_.isUndefined(props.style)){
+        style=props.style
+    }
+
     var [someval,setSomeval]=useState("somevalue123")
 
     useEffect(()=>{
@@ -81,7 +86,7 @@ export const Testmain=(props)=>{
             <button
                 onClick={someFn /*run a function */ }
             >
-                Click Me
+                {label}
             </button>
         </div>
     )
