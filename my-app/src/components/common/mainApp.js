@@ -201,15 +201,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                 )
                             } 
 
-                            var TL_WFH=false;
-                            if (TL_WFH){
-                                all_menus_arr.push(
-                                    <div key={++key_menu}>
-                                        <Link to='/wfh'><div style={ctdivs_style_small} >WFH</div></Link> 
-                                    </div>
-                                )
-                            }
-
+                          
                             var internal_dev=false;                            
 
                             _.each( userDetail.details.groups,function(val,i){
@@ -226,14 +218,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                 )
                             }
 
-                            if (false){
-                                all_menus_arr.push(
-                                    <div key={++key_menu}>
-                                        <Link to='/Calls'><div style={ctdivs_style_small} >calls</div></Link> 
-                                    </div>
-                                )
-                            }
-
+                         
                             _.each( customMenu,function(r,i){
                                 var isAllowed=false;
 

@@ -1,6 +1,6 @@
 import _, { functionsIn } from "lodash";
 import csvparse from "csv-parse"
-
+import { v4 as uuidv4 } from 'uuid';
 
 
 var $gl={
@@ -235,6 +235,8 @@ var getUserDetail=function(){
 }
 
 $gl.getUserDetail=getUserDetail;
+
+$gl.uuid=uuidv4
 
 export default $gl;
 
