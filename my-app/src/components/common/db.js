@@ -1,9 +1,20 @@
 import { useEffect, useState,Component} from "react"
 import _ from "lodash";
 import $gl from "../common/global";
+import { cmpPos } from "codemirror";
 
 
-
+// getdata - cb(data) ,dbstyle , tablestyle , viewstyle , relationshipstyle
+/* data - 
+            { name : "web1" , type : "mongodb" , dbtype : "big_data", 
+            uuid : "123" , colcount : 0 , 
+            tables : { all:[
+            { name : "users" , uuid : "1" , colcount : 0 }   
+            ]} ,
+            views : {all:[]} , 
+            relationships : {all:[]} },
+        ]
+}*/
 class DatabaseObj extends Component {    
     constructor(props) {
         super(props); // always needed in scontructer
@@ -44,11 +55,22 @@ class DatabaseObj extends Component {
         }
         
 
+        var data={}
+        if (props.data!==undefined){
+            data=props.data;
+        }
+
+        var opts={}
+        if (props.opts!==undefined){
+            opts=props.opts;
+        }
+
         this.state={  style : style , children : props.children , mainName : "noname" ,someval : "someval1",
                       databases : { all : [] }, database : _.clone(this.defs.database )  , current : {}, dbname : "",
                       params : _.clone(this.defs.params),
                       width :  width , height : height ,
-                      dbstyle : dbstyle , tablestyle :tablestyle , viewstyle : viewstyle , relationshipstyle : relationshipstyle
+                      dbstyle : dbstyle , tablestyle :tablestyle , viewstyle : viewstyle , relationshipstyle : relationshipstyle,
+                      data : data , opts : opts
 
         } 
   
@@ -56,6 +78,51 @@ class DatabaseObj extends Component {
 
     componentDidMount(){
         //initialise
+        var tt=this
+
+        var updatestate=false;
+        var state={}
+        if (!_.isEmpty(this.state.opts)){
+            updatestate=true
+        }
+
+        if (!_.isEmpty(this.state.data)){
+            updatestate=true
+
+            state.databases=this.state.data
+
+            tt.validateInputData(state.databases)
+        }
+
+        if (updatestate){
+            tt.setState(state)
+        }
+
+
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if (_.isFunction(this.props.fn)){
+            //this.props.fn()
+
+        }
+
+        if (prevState.databases !== this.state.database){
+            if (!_.isEmpty(this.state.data)){
+                
+               // this.setState({ data : this.state.database } )
+            }
+        }
+    }
+
+    validateInputData=function(data){
+        
+    }
+
+    getData=function(cb){
+        var tt=this
+        var data=_.clone(tt.state.databases)
+        cb(data)
     }
 
     tt=this
@@ -75,7 +142,8 @@ class DatabaseObj extends Component {
 
     render (){
         var tt=this
-     
+        
+        
 
         var dblist=function(){
             var dbE=[]
@@ -212,6 +280,12 @@ class DatabaseObj extends Component {
             ,
             tt.style
         )
+
+
+        if (_.isFunction(tt.props.getdata)){
+            tt.getData(tt.props.getdata)
+        }
+
         return (
 
                 <div style={style}>
@@ -277,7 +351,7 @@ class TablesObj extends Component {
 
         this.state={  style : style , children : props.children , mainName : "noname" ,someval : "someval1",
                         tables : {all:[]} , table : {} , current : {} , tbname : "",
-                        db : db , dbname : db.name
+                        db : db , dbname : db.name , colname : "" , col : _.clone(this.defs.col)
     
         } 
   
@@ -309,6 +383,7 @@ class TablesObj extends Component {
     }
 
     defs={
+        table : { name : "" , uuid : "" , colcount : 0 , cols : { all : [] } },
         col : { name : "" , length : 0 , type : "string" , keys : {} , index : {} } 
     }
 
@@ -364,14 +439,14 @@ class TablesObj extends Component {
                                         //var record=tt.state.tables.all[iter]
                                         var record=tables.all[iter]
 
-                                        
+                                        var current={  name : record.name , uuid : record.uuid, tb : record ,
+                                                        table : tt , iter : iter
+                                                    } 
 
                                         tt.setState( { table : record },
                                                         ()=>{ 
                                                             
-                                                                tt.setState( { current : {  name : record.name , uuid : record.uuid, tb : record ,
-                                                                                table : tt 
-                                                                                        } 
+                                                                tt.setState( { current : current
                                                                             },
                                                                             ()=>{ }
                                                                 )
@@ -388,7 +463,7 @@ class TablesObj extends Component {
            
             return (
                 <div style={{ color : "black", width : undefined , height : undefined , background : "white"}}>
-                    <label>tables - db : {db.db.name}</label>
+                    <label>tables - tb : {tt.state.table.name} - db : {db.db.name}</label>
                     <br/>
                     <input type="input" value={tt.state.tbname}
                             onChange={
@@ -409,8 +484,10 @@ class TablesObj extends Component {
                                     }
                                 }
                                 
-                                var dbrec={ name : "" , uuid : $gl.uuid() , colcount : 0 }
+                                var dbrec=_.clone(tt.defs.table)
                                     dbrec.name=tt.state.tbname
+                                    dbrec.uuid=$gl.uuid()
+                                    dbrec.cols=_.clone(tt.defs.cols)
                                     //var temp=_.clone(tt.state.tables);
                                     var temp=_.clone(tables);
                                     var exists=false;
@@ -445,7 +522,157 @@ class TablesObj extends Component {
             )
         }()
 
+        var listcols=function(){
+            var colsE=[]
+
+            var table
+            var cols
+            //console.log( "table  " ,tt.state.table)
+            if (_.isUndefined(tt.state.table)){
+                table=_.clone(tt.defs.table)
+            }else{
+                table=tt.state.table
+            }
+
+            if (_.isUndefined(table.cols)){
+                cols={all :[]}
+                table.cols=cols;
+            }else{
+                cols=table.cols
+            }
+            
+            
+            cols.all.forEach(function(r,i){
+                colsE.push(
+                    <div key={i} iter={i}
+                        onClick={
+                            function(e){
+                                // set current col
+                                var iter=e.target.getAttribute("iter")
+                                var rec=cols.all[iter]
+                                //console.log("rec : " ,rec)
+
+                                tt.setState( { col : rec  } )
+                            }
+                        }
+                    >
+                        {r.name}
+                    </div>
+
+                )
+
+            })
+
+
+            
+
+            return (
+                <div>
+                    <label>columns</label>
+                    <br/>
+                    <input 
+                            value={tt.state.colname}
+                            onChange={
+                                function(e){
+                                    tt.setState({ colname : e.target.value})
+                                }
+                            }
+                    />
+                    <button
+                        onClick={
+                            function(){
+                                var dbrec=_.clone(tt.defs.col)
+                                dbrec.name=tt.state.colname
+                                dbrec.uuid=$gl.uuid()
+                                dbrec.col=_.clone(tt.defs.col)
+                                //var temp=_.clone(tt.state.tables);
+                                var temp=_.clone(cols);
+
+                                //var cols=_.clone(tt.current.tb.cols)
+
+                                var exists=false;
+                                //tt.state.tables.all.forEach(function(r,i){
+                                cols.all.forEach(function(r,i){
+                                    if (r.name===dbrec.name){
+                                        exists=true
+                                    }
+                                })
+                                if (!exists){ // #add record
+                                    temp.all.push(dbrec)
+                                    cols=temp;
+                                    tt.setState({ cols : temp  },function(){
+                                        //console.log("tb db : ", tt.db )
+                                    })
+
+                                    //tt.updatedb()
+                                   
+
+
+                                }else{
+                                    alert( dbrec.name + " - already exists")
+                                }           
+                            }
+                        }
+                    >
+                        add
+                    </button>
+                    <br/>
+                    {colsE}
+                </div>
+            )
+        }()
         
+        var colform=function(){
+            var propsContWidth=300
+            var propsheight=20
+            var labelsWidth=100
+            var valWidth=150
+            var valFontSize=20
+
+            var formE=[]
+            
+            var fcol={ name : "" , type : "string"}
+            
+            if (!_.isEmpty(tt.state.col)){
+                fcol.name=tt.state.col.name
+                fcol.type=tt.state.col.type
+            }
+
+           // console.log("fcol : " ,fcol)
+
+            _.each(fcol,function(r,p){
+                formE.push(
+                                <div key={p} style={{ color : "black" ,background : "white"}}>
+                                    
+                                    <div style={{ width : propsContWidth}}>
+                                        <label style={{width : labelsWidth , height : undefined }}>{p}</label>
+                                        :
+                                        <input style={{width : valWidth , height : undefined, float : "right" , fontSize : valFontSize}} 
+                                            value={r}
+                                            onChange={
+                                                function(e){
+
+                                                }
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                )
+            })
+
+            return (
+                <div
+                    style={{position : "relative" , color : "black"}}
+                >
+                    <label>col details </label>
+                    <br/>
+                    {formE}
+                    
+                </div>
+            )
+        }()
+
+       
         var style=_.merge( { margin: 4,color : "black", width : tt.props.width  , height : tt.props.height  , background : "white"},
                             tt.style)
 
@@ -453,15 +680,21 @@ class TablesObj extends Component {
 
             <div style={style}>
                 <div  
-                    style={{width : undefined , position : "relative"}}
+                    style={{width : 500 , position : "relative" , float : "left"}}
                 >
                     {listtables}
                 </div>
                 <div 
-                    style={{}}
+                    style={{width : 250 , top : 50, position : "relative" , float : "left"}}
                 >
-                    
+                    {listcols}
                 </div>
+                <div 
+                    style={{width : 250 , position : "relative" }}
+                >
+                    {colform}
+                </div>
+               
                
             </div>
         )
