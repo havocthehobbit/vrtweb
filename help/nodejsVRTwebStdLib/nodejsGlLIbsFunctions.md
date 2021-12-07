@@ -87,7 +87,9 @@
         or
         searchJS( { data : [{ name:"rob"},{ name:"abe"}] , key : "name" , search:"ro" } )
     
-    
+    ,initMongoDB -
+        ...
+        (params,cb) { // paramse : { connection : { host : "localhost" , dbname : "some_db", dbpass : "" , dbuser : "" , dbport : "" }  }
 
     internal system
     =================
