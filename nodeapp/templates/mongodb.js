@@ -1,12 +1,20 @@
 
 
 
-var $gl = require("../l_node_modules/global.js").gl;
+var $gl = require("../l_node_modules/global.js").gl; 
 var _=$gl.mds.lodash
 
 var main={
     auto_run : function(){ 
-        console.log("auto_running kcs")}
+        console.log("auto_running mongodb")
+        
+        $gl.initMongoDBadmin({ connection : {} } , function( a  , b){
+
+            console.log( "mongoddb test " , a , "err : " ,b )
+        })
+    
+    
+    }
     ,table : "../data/dbs/kcs/calltypes.json"
     ,__app : [ // must be named __app to create a route
         {   
@@ -15,10 +23,7 @@ var main={
             type : "get",
             cb : function(req, res,corestuff){ // or fn or callback 
 
-                $gl.initMongoDBadmin({ connection : {} } , function( a  , b){
-
-                    console.log( "mongoddb test " , a , "err : " ,b )
-                })
+                
             
             } 
         },
