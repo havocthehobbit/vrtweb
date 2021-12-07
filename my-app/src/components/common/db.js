@@ -122,7 +122,16 @@ class DatabaseObj extends Component {
     getData=function(cb){
         var tt=this
         var data=_.clone(tt.state.databases)
-        cb(data)
+        cb(data) 
+    }
+
+    onSave=function(data){
+
+    }
+
+    save=function(data){
+
+        this.onsave(data)
     }
 
     tt=this
@@ -293,12 +302,20 @@ class DatabaseObj extends Component {
                     <div  
                         style={dbstyle}
                     >   
-                         <div >
-                           {dblist}
-                        </div>
                         <div >
-                             {paramslist}
-                        </div>
+                            <div style={{ position : "relative" , width : 300 , float : "left"}}>
+                                <div  >
+                                    {dblist}
+                                </div>
+                                <div >
+                                    {paramslist}
+                                </div>                               
+                            </div>                               
+                            <div style={{ position : "relative" , width : 300 , float : "left"}} >
+                                <DBEdtitorObj db={tt.state.current} width={200} height={100} />
+                            </div>
+                            <div style={{ "clear" : "left"}}/>
+                         </div>
                     </div>
                     <div 
                         style={{ position : "relative"}}
@@ -1115,12 +1132,97 @@ class RelationshipsObj extends Component {
     }
 }
 
+
+
+class DBEdtitorObj extends Component {
+    constructor(props) {
+        super(props); // always needed in scontructer
+                        
+        var style={}
+        if (props.style!==undefined){
+            style=props.style;
+        }
+
+        var db={ name : "" , db : { name : ""}}
+        if (props.db!==undefined){
+            db=props.db;
+            this.db=db
+
+            
+        }
+
+        var width=undefined
+        if (props.width!==undefined){
+            width=props.width;
+        }
+
+        var height=undefined
+        if (props.height!==undefined){
+            height=props.height;
+        }
+
+
+        //console.log( "db in prop ", db)
+
+        this.state={  style : style , children : props.children , mainName : "noname" ,someval : "someval1",                       
+                        db : db , dbname : db.name,
+                        height : width , width : width
+    
+        } 
+  
+    }
+
+    componentDidMount(){
+        //initialise
+    }
+
+    updateAndNotify(){
+
+    }
+
+    componentDidUpdate(prevProps) {
+        var tt=this
+        var db={}
+        tt.state.db=this.props.db 
+        tt.state.dbname=db.name
+        db=this.props.db 
+        this.db=db
+        
+        //console.log("update " , tt.db)
+        
+
+        if (prevProps.db !== this.props.db) {
+            tt.setState({ dbname : db.name , db : db})
+            //console.log("set")
+        }
+    }
+
+    render(){
+        
+        var tt=this
+        var style={position : "relative", margin: 4,color : "black", width : tt.state.width , height : tt.state.height , 
+                    background : "white"}
+        return(
+        <div style={{style}}
+          
+        >
+            <label>Data Editor</label>
+            <br/>
+            <input /><button>create DB instance</button>
+            <br/>
+
+        </div>)
+    }
+
+    }
+
 export const Database=DatabaseObj
 
 
 export const Tables=TablesObj
 export const Views=ViewsObj
 export const Relationships=RelationshipsObj
+export const DBEdtitor=DBEdtitorObj
 
 
 
