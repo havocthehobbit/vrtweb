@@ -8,8 +8,15 @@ var main={
     auto_run : function(){ 
         console.log("auto_running mongodb")
         
-        $gl.initMongoDBadmin({ connection : {} } , function( a  , b){
+        $gl.initMongoDBadmin({ connection : {} } , function( mdb  , b){
 
+            if (mdb.status){ // succesful connect
+                //example query , lookup mongodb driver nodejs api 3.6 for more 
+                //var user=db.collection("users");
+
+            }
+
+            //var user=db.collection("users");
             console.log( "mongoddb test " , a , "err : " ,b )
         })
     
@@ -32,7 +39,9 @@ var main={
             route : "/mongodb", // if route not included it will defualt to to name
             type : "post",
             cb : function(req, res,corestuff){ // or fn or callback 
-                
+
+
+                    
                     res.send("testing mongodb" )
                 
                 
