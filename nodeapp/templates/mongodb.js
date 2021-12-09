@@ -8,20 +8,31 @@ var main={
     auto_run : function(){ 
         console.log("auto_running mongodb")
         
-        $gl.initMongoDBadmin({ connection : {} } , function( mdb  , b){
+        //$gl.initMongoDBadmin({ connection : { dbhost : "" , dbport : "", dbname : ""dbuser : "" ,dbpass : ""  } } , function( mdb ){
+        $gl.initMongoDB({ connection : {} } , function( mdb ){
 
-            if (mdb.status){ // succesful connect
-                //example query , lookup mongodb driver nodejs api 3.6 for more 
-                //var user=db.collection("users");
+            //console.log( "mongoddb test " , a , "err : " ,b )
+            this.db=mdb.db
+            this.dbclient=mdb.client
+            this.dbstatus=mdb.status
+        })
 
-            }
+        $gl.initMongoDBadmin({ connection : {} } , function( mdb ){
 
-            //var user=db.collection("users");
-            console.log( "mongoddb test " , a , "err : " ,b )
+            //console.log( "mongoddb test " , a , "err : " ,b )
+            this.dbAdmin=mdb.db
+            this.dbclientAdmin=mdb.client
+            this.dbstatusAdmin=mdb.status
         })
     
     
     }
+    ,dbstatus : false
+    ,dbstatusAdmin : false
+    ,db : {}
+    ,dbAdmin : {}
+    ,dbclient : ()=>{}
+    ,dbclientAdmin : ()=>{}
     ,table : "../data/dbs/kcs/calltypes.json"
     ,__app : [ // must be named __app to create a route
         {   
@@ -39,9 +50,7 @@ var main={
             route : "/mongodb", // if route not included it will defualt to to name
             type : "post",
             cb : function(req, res,corestuff){ // or fn or callback 
-
-
-                    
+                
                     res.send("testing mongodb" )
                 
                 
