@@ -9,7 +9,7 @@ var main={
         console.log("auto_running mongodb")
         
         //$gl.initMongoDBadmin({ connection : { dbhost : "" , dbport : "", dbname : ""dbuser : "" ,dbpass : ""  } } , function( mdb ){
-        $gl.initMongoDB({ connection : {} } , function( mdb ){
+        $gl.initMongoDB({ connection : { dbuser : "admin" , dbname : "admin"} } , function( mdb ){
 
             //console.log( "mongoddb test " , a , "err : " ,b )
             this.db=mdb.db
