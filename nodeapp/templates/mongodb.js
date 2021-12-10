@@ -9,12 +9,91 @@ var main={
         console.log("auto_running mongodb")
         
         //$gl.initMongoDBadmin({ connection : { dbhost : "" , dbport : "", dbname : ""dbuser : "" ,dbpass : ""  } } , function( mdb ){
-        $gl.initMongoDB({ connection : { dbuser : "admin" , dbname : "admin"} } , function( mdb ){
+        $gl.initMongoDB({ connection : { dbuser : "admin" , dbname : "db1"} } , function( mdb ){
 
             //console.log( "mongoddb test " , a , "err : " ,b )
             this.db=mdb.db
             this.dbclient=mdb.client
-            this.dbstatus=mdb.status
+            this.dbstatus=mdb.status 
+
+
+            
+            console.log( "dbstatus - " , this.dbstatus)
+
+            
+            //everything from this point could be put in a get or post route
+            /////////////////////////////////////////////////////////////////////////
+            if (!this.dbstatus){
+                console.log( "failed admin mongoDB connection" )
+                return
+            }
+
+
+            //updateOne() // replaceOne() // updateMany()
+            //https://docs.mongodb.com/drivers/node/v3.6/fundamentals/crud/write-operations/upsert/
+
+            var users = db.collection('users');
+            //findOne({ title: "The Room" }, {  sort: { "imdb.rating": -1 }, projection: { _id: 0, title: 1, imdb: 1 },}).toArray(function(err, docs) { 
+                    // projection - only returns selected fields (like views) // 
+            //find({ title: "The Room" }, {  sort: { "imdb.rating": -1 }, projection: { _id: 0, title: 1, imdb: 1 },}).toArray(function(err, docs) { 
+                    // projection - only returns selected fields (like views) //
+            //users.insertOne( { "userid" : "testuser"} , function(){
+            //users.insertMany( [ { "userid" : "testuser" }, { "userid" : "testuser2"}], { ordered: true }, function(){ // ordered:true  prevents adding other docs if one fails
+            //users.updateOne( { "userid" : "testuser"} ,{ "$set" : { "email" : "...@....com"}}, {upsert : true }, function(){   // upsert is to insert or update if it alreay exists          
+            //users.updateMany( { rated: "G" },{ $inc: { num_mflix_comments: 2} }  , function(){}) // { $match: { runtime: { $lt: 15 } } } 
+            //users.deleteOne({ "userid" : "testuser"} , function(){
+            //.deleteMany("userid" : "testuser"} , function(){
+            // users.countDocuments({ countries: "Canada" })
+            // users.watch([ { $match: { runtime: { $lt: 15 } } } ]) // watch for changes  
+                // or changeStream = collection.watch();  changeStream.on("change", next => { // process any change event console.log("received a change to the collection: \t", next); });
+            //users.bulkWrite([  // do all of the above at onces in an array of commands
+                users.updateOne( { "userid" : "testuser"} ,{ "$set" : { "email" : "...@....com"}}, {upsert : true }, function(){
+
+                console.log("new user")
+
+                users.find({}).toArray(function(err, docs) { 
+                    console.log("find users : " , err , docs)
+                })
+            })
+
+            //other 
+                //aggregreate example - link multiple collections or chain multiple tasks/functions(link,find ,sort then group etc... )
+                    /* //syntax
+                        db.collection(collectionName).aggregate(pipelineArray, {
+                        cursor: {}
+                        }, function(error, result) {
+                        ...
+                        });
+                    */
+                    /*
+                        var defCursor = {};
+                        var cursor = db.collection(collectionName).aggregate([
+                            {
+                                $lookup: {
+                                            from: "someSecondCollectionName",
+                                            localField: "localId",
+                                            foreignField: "_id",
+                                            as: "someData"
+                                        }
+                            },
+                            {
+                                $match: {
+                                            "localId": someId
+                                        }
+                            }
+                        ],defCursor,null);
+                        cursor.toArray(function(err, docs) {
+                            console.log("Some data: ", docs);
+                            callback(err, docs);
+                            //db.close();
+                        }
+                    */
+                //or
+                //aggregate(pipeline, options, callback)
+                    // this.aggregate( [{ $unwind : "$tags" },{$group: {_id: '$tags', count: { $sum: 1} }},{$sort: { count: 1 }}] ).cursor({}).exec();
+                
+                //users.createIndex()
+
         })
 
         $gl.initMongoDBadmin({ connection : {} } , function( mdb ){
@@ -23,7 +102,38 @@ var main={
             this.dbAdmin=mdb.db
             this.dbclientAdmin=mdb.client
             this.dbstatusAdmin=mdb.status
-        })
+
+            console.log( "dbstatusAdmin - " , this.dbstatusAdmin)
+
+            //https://mongodb.github.io/node-mongodb-native/3.6/api/Collection.html
+            //addUser(username, password, options, callback)  // removeUser(username, options, callback)
+
+            if (!this.dbstatusAdmin){
+                console.log( "failed admin mongoDB connection" )
+                return
+            }
+
+            var db=this.dbAdmin
+            db.listDatabases(function(err, dbs) {
+
+               var autocreateDB=[
+                   { name : "db1"}
+               ]
+                
+                if (dbs.databases.length > 0){
+                    var ds=dbs.databases
+                    //console.log( "dbs : " ,  ds)
+                    console.log( "databases : \n==============" )
+                    ds.forEach((r,i) => {
+                        console.log( "db name : " , r.name)
+                    });
+                };
+                
+                
+                
+            });
+
+        })   
     
     
     }
