@@ -32,6 +32,8 @@ const myReducer=function(state =initialState , action ){
       newState.global=action.payload
       console.log(action.payload)
     }
+
+   
     return  newState;
 }
 

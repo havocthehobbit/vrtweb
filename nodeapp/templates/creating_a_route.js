@@ -45,7 +45,7 @@ var main={
                     name  : "test3",
                     route : "/test3", // if route not included it will defualt to to name
                     type : "get", // get or post
-                    cb : function(req, res, corestuff){ // or fn or callback that will run once route is claled , // corestuff ,gives you some extra modules , parameters and values to use 
+                    cb : function(req, res, corestuff){ // or fn or callback that will run once route is called , // corestuff ,gives you some extra modules , parameters and values to use  // eg : { app : app,express : express,mds :mds , mdsfn : mdsfn , vserv : $vserv, pub : pub ,debug_0 ,http : http , io : io}
                         res.send("testing test3")
                     } 
 
@@ -60,6 +60,41 @@ var main={
                     } 
 
 
+                },
+                { // secure example using JWT web token validation
+                    name  : "getStuff",
+                    route : "/getStuff", // if route not included it will defualt to to name
+                    type : "post", // get or post
+                    cb : function(req, res, corestuff){ //  // corestuff ,gives you some extra modules , parameters and values to use  // eg : { app : app,express : express,mds :mds , mdsfn : mdsfn , vserv : $vserv, pub : pub ,debug_0 ,http : http , io : io}
+                        var bd=req.body // get data sent from front end
+                        corestuff.mds.users.verifyLoginAPI({ req : req},function(vd){ // validate user token is allowed to run options
+                            if (vd.allowed){ // 
+                                switch(bd.type) { // if for example type var string was sent in body data then can run a selection 
+                                    case "getData":
+                                      // code block
+                                      // somefunction( bd.someFEdata , (data)=>{ res.jsonp({ data : data , status ; "success", ,bStatus : true}) })
+                                      break;
+                                    case "getAllData":
+                                        // code block
+                                        break;
+                                    case "addData":
+                                      // code block
+                                      break;
+                                    case "updateData":
+                                        // code block
+                                        break;
+                                    case "delData":
+                                        // code block
+                                        break;
+                                    default:
+                                      // code block unspecified type
+                                }
+                           
+                            }else{
+                                res.jsonp({ status : "failed" ,bStatus : false})
+                            }
+                        })
+                    }
                 }
             ]
         

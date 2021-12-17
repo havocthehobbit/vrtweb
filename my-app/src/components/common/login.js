@@ -219,7 +219,7 @@ function Login({loggedin , login , logout , addval}){
                     { "userid" : userid, password : password , "loginFnType" : loginFnType }
                 ),
                 headers: {
-                    'x-auth-token': getCookie("token"),
+                    //'x-auth-token': getCookie("token"),
                     'Access-Control-Allow-Origin':'*',
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'                

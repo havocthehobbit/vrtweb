@@ -1,0 +1,8 @@
+{
+    "loginPage" : {
+        "loginPic" : "" , "hasLoginPic" : false , "loginPicStyle" : {"padding" : 30 , "margin" : 30},
+        "loginBoxStyle" : {} 
+
+    }
+    
+}

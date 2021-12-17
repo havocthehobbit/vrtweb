@@ -17,10 +17,6 @@ if (protocolH==="http"){
     
 
 }
-//var http = $gl.mds.http.Server(app);
-
-
-
 
 var fs = $gl.mds.fs;
 var path =$gl.mds.path;
@@ -28,16 +24,18 @@ var path =$gl.mds.path;
 var _ = $gl.mds.lodash;
 
 var cookieParser = $gl.mds.cookieParser;
-//var cookie = require('cookie'); 
+var cookieExpires = 315360000000 //10 * 365 * 24 * 60 * 60 * 1000 === 315360000000, or 10 years in milliseconds
+if (!_.isUndefined($vserv.data.cookieExpires)){
+    cookieExpires=$vserv.data.cookieExpires
+}
 
-var csvparse = $gl.mds.csvparse
 
 const multer = $gl.mds.multer;
+
 var jwt = $gl.mds.jsonwebtoken;
+jwtoptions=$vserv.data.jwtoptions
 
 var $test_data = require("./l_node_modules/test_data.js").test_data;
-
-
 
 app.use(cookieParser($vserv.data.cookieSecret));
 
@@ -58,7 +56,7 @@ var cors_param={
                     ,methods: ["GET", "POST"]
                 }
 var cors_paramsF1=cors( cors_param ) 
-app.use( cors_paramsF1 );
+app.use( "*" , cors_paramsF1 );
 
 const io = $gl.mds.socketio(http,  { cors : cors_param } );
 
@@ -366,28 +364,44 @@ app.post("/news" ,function(req , res){
     if (req.body.type===""){
 
     }
-    if (req.body.type==="get"){
-        mds.news_o.get({}, function(new_data){
-            ret_data.data=new_data.all
-    
-            res.jsonp(ret_data)
-        })
-    }
-    if (req.body.type==="add"){
-        mds.news_o.add(req.body.data, function(new_data){
-            ret_data.data=new_data
-    
-            res.jsonp(ret_data)
-        })
-    }
-    // console.log( "getGroupsFromUser : " , mds.users.getGroupsFromUser("bob") )
-    // console.log( "getRolesFromGroups : " ,  mds.users.getRolesFromGroups( mds.users.getGroupsFromUser("bob") ) )
-    // console.log( "getProgramsFromRoles : " , mds.users.getProgramsFromRoles( mds.users.getRolesFromGroups( mds.users.getGroupsFromUser("bob") ) ) )
 
-    // console.log( "checkUserAccessToProgram : " , mds.users.checkUserAccessToProgram("bob" , ["news" , "admingeneralpage"]))
-    
-    // mds.news_o.getDemo({}, function(new_data){
-    
+    var bd=req.body
+
+    //var token=req.headers["x-auth-token"];
+    //if (!token || _.isUndefined(token)){
+    //    token=req.cookies.token;
+    //}
+
+    //mds.users.verifyLoginAPI(token,function(tkdata){
+    mds.users.verifyLoginAPI({ req : req},function(vd){
+        if (vd.allowed){ 
+                //console.log(JSON.stringify(vd.details,null,2))
+                if (req.body.type==="get"){
+                    mds.news_o.get({}, function(new_data){
+                        ret_data.data=new_data.all
+                
+                        res.jsonp(ret_data)
+                    })
+                }
+                if (req.body.type==="add"){
+                    mds.news_o.add(req.body.data, function(new_data){
+                        ret_data.data=new_data
+                
+                        res.jsonp(ret_data)
+                    })
+                }
+                // console.log( "getGroupsFromUser : " , mds.users.getGroupsFromUser("bob") )
+                // console.log( "getRolesFromGroups : " ,  mds.users.getRolesFromGroups( mds.users.getGroupsFromUser("bob") ) )
+                // console.log( "getProgramsFromRoles : " , mds.users.getProgramsFromRoles( mds.users.getRolesFromGroups( mds.users.getGroupsFromUser("bob") ) ) )
+
+                // console.log( "checkUserAccessToProgram : " , mds.users.checkUserAccessToProgram("bob" , ["news" , "admingeneralpage"]))
+                
+                // mds.news_o.getDemo({}, function(new_data){
+       
+        }else{
+            res.jsonp(ret_data)
+        }
+    })
 })
 
 
@@ -422,7 +436,7 @@ app.post("/notes" ,function(req , res){
 
                 switch(cmd){                    
                     case "getUserNotes":                        
-                        mds.users.fetchUsersDetail(userid ,function(dta2){                            
+                        mds.users.fetchUserDetail(userid ,function(dta2){                            
                             mds.notes.getUserNotes(dta2.uuid,function(dta){                               
                                 
                                 ret_data.data=dta;
@@ -439,7 +453,7 @@ app.post("/notes" ,function(req , res){
                         if (inp_data.type==="usermain"){
                             notetype="usermain"
                         }
-                        mds.users.fetchUsersDetail(userid ,function(dta2){                            
+                        mds.users.fetchUserDetail(userid ,function(dta2){                            
                             mds.notes.saveUserNote(
                                 {   useruuid : dta2.uuid,
                                     body : inp_data.data,
@@ -504,7 +518,7 @@ app.post("/codegen" ,function(req , res){
                             return
                         }
                         //console.log("pr.uuid "  , pr.uuid)
-                        mds.users.fetchUsersDetail(userid ,function(dta2){                            
+                        mds.users.fetchUserDetail(userid ,function(dta2){                            
                             mds.codegen.getProject(pr,function(dta){                               
                                 
                                 ret_data.data=dta.rec;
@@ -525,7 +539,7 @@ app.post("/codegen" ,function(req , res){
                             return
                         }
                         */
-                        mds.users.fetchUsersDetail(userid ,function(dta2){                            
+                        mds.users.fetchUserDetail(userid ,function(dta2){                            
                             //pr.useruuid=dta2.uuid; // add user id
                             
                             mds.codegen.listProjects(  pr
@@ -547,7 +561,7 @@ app.post("/codegen" ,function(req , res){
                             return
                         }
                         
-                        mds.users.fetchUsersDetail(userid ,function(dta2){                            
+                        mds.users.fetchUserDetail(userid ,function(dta2){                            
                             pr.useruuid=dta2.uuid; // add user id
                             
                             mds.codegen.saveProject(  pr
@@ -633,7 +647,7 @@ app.post("/dates" ,function(req , res){
                             //ret_data.data.ooo=dta;
                             var arr=[]
                             _.each(dta,function(r,i){
-                                mds.users.fetchUsersDetailByUUIDSync(r.uuid ,function(dta2){
+                                mds.users.fetchUserDetailByUUIDSync(r.uuid ,function(dta2){
                                     var rec={}
                                     rec.name=dta2.name
                                     rec.surname=dta2.surname
@@ -665,7 +679,7 @@ app.post("/dates" ,function(req , res){
                             //ret_data.data.ooo=dta;
                             var arr=[]
                             _.each(dta,function(r,i){
-                                mds.users.fetchUsersDetailByUUIDSync(r.uuid ,function(dta2){
+                                mds.users.fetchUserDetailByUUIDSync(r.uuid ,function(dta2){
                                     var rec={}
                                     rec.name=dta2.name
                                     rec.surname=dta2.surname
@@ -737,8 +751,6 @@ app.post("/users" ,function(req , res){
                                 ret_data.data.roles=rles;
                                 res.jsonp(ret_data)
 
-                                //mds.users.fetchUsersDetail(userid,function(usr){                                 
-                                //});
                             });
 
                         })       ;
@@ -761,7 +773,7 @@ app.post("/users" ,function(req , res){
                         mds.users.getGroupsFromUser(userid,function(grps){
                             ret_data.data.groups= grps;
                             
-                            mds.users.fetchUsersDetails(userid,function(usr){ 
+                            mds.users.fetchUserDetail(userid,function(usr){ 
                                 //console.log(usr)
                                 res.jsonp(ret_data)
 
@@ -809,10 +821,7 @@ app.post("/users" ,function(req , res){
 
 })
 
-
-
-
-
+/*
 app.get("/login" ,function(req , res){
     //console.log( "cookies get::: " ,req.cookies )  
     //console.log( "cookiesSigned get ::: " ,req.signedCookies  ) 
@@ -820,6 +829,7 @@ app.get("/login" ,function(req , res){
     res.send("test")
 
 })
+*/
 
 app.post("/logout",function(req,res){
     var ret_data={
@@ -852,10 +862,13 @@ app.post("/login" ,function(req , res){
 
 })
 
+
 debug_0["login"]={};
 debug_0["login"]["token"]={}
 debug_0["login"]["token"]["on"]=false;
 debug_0["login"]["token"]["level"]=1;
+
+
 
 var loginUser=function( params ){
     var cb=function(){}
@@ -920,9 +933,9 @@ var loginUser=function( params ){
 
                             
                             //process.env.ACCESS_TOKEN_SECRET , create an enviroment variable rather then store secret in this source file
-                            jwt.sign({ userid : bd.userid } , $vserv.data.jwt_secret, { }  , function(err , newtoken){
+                            jwt.sign({ userid : bd.userid } , $vserv.data.jwt_secret, jwtoptions  , function(err , newtoken){
                                 //jwt.sign({ userid : bd.userid } , "secretwords", { expiresIn: 24 * 60 * 60}  , function(err , newtoken){
-                            
+                                var curr_date=new Date()
                                 if (err){
                                     console.log("error registoring user token " , err )
                                 }else{
@@ -933,7 +946,7 @@ var loginUser=function( params ){
                                 //reqres.res.setHeader('Set-Cookie', cookie.serialize('foo', 'bar', { httpOnly: true }))
                                 const oneDayToSeconds = 24 * 60 * 60;
                                 
-                                const expires=new Date(Number(new Date()) + 315360000000) //10 * 365 * 24 * 60 * 60 * 1000 === 315360000000, or 10 years in milliseconds
+                                const expires=new Date(Number(new Date()) + cookieExpires) //10 * 365 * 24 * 60 * 60 * 1000 === 315360000000, or 10 years in milliseconds
                                 reqres.res.cookie('token', token, { 
                                             //maxAge : oneDayToSeconds ,  // was ignoring this for some reason and expiring withing 5 minuts 
                                             expires : expires,
@@ -943,7 +956,7 @@ var loginUser=function( params ){
                                 //console.log( "cookies ::: " ,reqres.req.cookies )  
                                 //console.log( "cookiesSigned ::: " ,reqres.req.signedCookies  )
                                 //console.log("---1" , ret_data)
-                                mds.users.sessionUserUpdate({ userid : bd.userid, token : token , uuid :  r.uuid},function(){
+                                mds.users.sessionUserUpdate({ userid : bd.userid, token : token , uuid :  r.uuid, curr_date : curr_date , cookie_exp_date : expires , jwtoptions },function(){
                                     //console.log("---3" )    
                                 });
                                 //console.log("---2" )

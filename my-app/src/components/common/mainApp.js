@@ -27,6 +27,11 @@ import {connect} from 'react-redux'
 
 //var SummaryCalls=AllCalls.SummaryCalls;
 
+var host=$gl.fn.getHost();
+var port=$gl.fn.getPort()
+var protocall=$gl.fn.getProtocall();
+var url=protocall + "//" + host + ":" + port ;
+
 const mapStateToProps = function(state , owsProps){
     return {
         count : state.count,
@@ -46,10 +51,22 @@ const mapStateToProps = function(state , owsProps){
 
 var logginCheckCount=0;
 function MainApp({loggedin , login , logout , addval , theme}){
+
+    var setting_def={ 
+        defPage : "",
+        
+        loginPic : "" , hasLoginPic : false , loginPicStyle : {padding : 30 , margin : 30}
+
+    }
+
     //var userdata_temp={ details : {groups : []} , perms : {}, runlast : new Date()}
     var userdata_temp={ details : {groups : []} , perms : {}}
     var [passFocus,setPassFocus]=useState(false);
     var [userDetail,setUserDetail]=useState({ details : {groups : []} , perms : {}});
+    
+    var [settings,setSettings]=useState(_.clone(setting_def));
+
+
     var userid=$gl.getCookie("userid")
 
 
@@ -103,6 +120,70 @@ function MainApp({loggedin , login , logout , addval , theme}){
             }            
         })
     }
+    
+    var getLoginSettings=function(){       
+        var args=arguments;
+
+        var cb=function(){}
+        
+        var title="";
+        var detail=""
+        
+        if ( args.length > 0){
+            if (_.isPlainObject(args[0])){
+                if (!_.isUndefined(args[0].cb)){
+                    cb=args[0].cb
+                }
+                if (!_.isUndefined(args[0].title)){
+                    title=args[0].title
+                }
+                
+                if (!_.isUndefined(args[0].detail)){
+                    detail=args[0].detail
+                }
+            }
+
+
+            if (args.length > 1){
+                cb=args[1];
+            }
+            if (_.isFunction(args[0]) ){
+                cb=args[0]
+            }
+        }
+        
+        var fparams=new $gl.fetchPostCors();
+
+        fparams.body=JSON.stringify( { type : "getLoginPage"  } );
+        var url=protocall + "//" + host + ":" + port + "/settings";
+
+        fetch(url, fparams
+        )
+        .then(response => response.json())
+        .then(data => { 
+                cb(data);
+        })
+    }
+    var loginSettings=function(){
+        var lsettings={
+
+        }
+
+        var temp=""
+
+
+        temp="hasLoginPic"
+        if (!_.isUndefined(lsettings[temp])){
+
+        }
+        temp="loginPic"
+        if (!_.isUndefined(lsettings["temp"])){
+
+        }
+
+
+    }
+
 
     var loginstr=function(){
                                 if (loggedin){
@@ -317,9 +398,26 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                             newRoutesE.push(
                                                                 <Route key={i2} path="/" exact={true}>
                                                                     {
-                                                                        function(){
+                                                                       function(){
                                                                             if (!loggedin){
-                                                                                return ( <Login/> )
+                                                                                return ( 
+                                                                                            <div style={{padding : 15 , margin : 30}}  >
+                                                                                                <Login/>
+
+                                                                                                { 
+                                                                                                    function(){
+                                                                                                        if (settings.hasLoginPic){
+                                                                                                            return (
+                                                                                                                    <div style={settings.loginPicStyle}  >
+                                                                                                                        <img src={settings.loginPic} />
+                                                                                                                    </div>
+                                                                                                                    )
+                                                                                                        }
+                                                                                                    
+                                                                                                    }()
+                                                                                                }
+                                                                                            </div> 
+                                                                                )
                                                                             }else{
                                                                                 return ( <Mainwall/> )
                                                                             }
