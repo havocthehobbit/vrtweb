@@ -57,7 +57,7 @@ var main={
             })
 
             //other 
-                //aggregreate example - link multiple collections or chain multiple tasks/functions(link,find ,sort then group etc... )
+                //aggregrate example - link multiple collections or chain multiple tasks/functions(link,find ,sort then group etc... )
                     /* //syntax
                         db.collection(collectionName).aggregate(pipelineArray, {
                         cursor: {}
