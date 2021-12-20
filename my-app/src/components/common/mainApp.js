@@ -74,7 +74,9 @@ function MainApp({loggedin , login , logout , addval , theme}){
     useEffect(function(){        
             getUserDetail(function(){
                 
-            });        
+            }); 
+            
+            loginSettings(function(){})
 
         return function(){
 
@@ -164,13 +166,34 @@ function MainApp({loggedin , login , logout , addval , theme}){
                 cb(data);
         })
     }
-    var loginSettings=function(){
+    var loginSettings=function(cb){
         var lsettings={
 
         }
 
         var temp=""
 
+
+        getLoginSettings(function(dt){
+    
+            var temps=_.cloneDeep(settings)
+            if (dt.data.loginPage.hasLoginPic){
+
+                
+
+                
+                temps.hasLoginPic=dt.data.loginPage.hasLoginPic 
+                temps.loginPic=dt.data.loginPage.loginPic
+                temps.loginPicStyle=dt.data.loginPage.loginPicStyle
+
+               
+            }
+               
+
+            setSettings(temps)
+            
+        })
+        return;
 
         temp="hasLoginPic"
         if (!_.isUndefined(lsettings[temp])){

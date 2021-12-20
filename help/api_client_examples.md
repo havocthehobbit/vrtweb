@@ -1,6 +1,6 @@
 /login
 ========
-    purpose : 
+    details : 
     ------------
         to get JWT token to use with site api's
     
@@ -10,16 +10,24 @@
         curl -H "Origin: *"   -H "Access-Control-Request-Method: POST"   -H "Access-Control-Request-Headers: X-Requested-With" -H "Content-Type: application/json"   -X POST   --data '{ "userid" : "johndoe" , "password" : "abc123"  }'  http://hostIP:3001/login
 
     returns
-    ========>>>>>>
-        
+    --------->>>>>>        
 
         {"data":{"loggedin":true,"auth":true,"token":"???storeThisSafelyForLaterUse"},"status":0,"error":"","sent_resposne":true}
 
 /users
+    details :
+    -----------
+        gets user details such as groups , roles and programs users can access
+
     curl (shell)
     ------------------
 
         curl  -H "Access-Control-Request-Method: POST" -H "Content-Type: application/json" -H "x-auth-token: ?????RANDOM_VALID_JWT_TOKEN?????"  -X POST --data '{  "cmd" : "getUserDetail"  }'  http://hostIP:3001/users
+
+    returns
+    --------->>>>>>
+
+    {"data":{"groups":["admin","users"],"roles":{"admin":{"name":"johndoe","programs":["admingeneralpage"]},"users":{"name":"users","programs":["news"]}}},"status":0,"error":""}
 
 /news  
 ========
@@ -49,3 +57,7 @@
         }).catch((err)=>{
             cb({},err)
         })
+
+
+    returns
+    --------->>>>>>

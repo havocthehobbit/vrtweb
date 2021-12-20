@@ -125,11 +125,51 @@ var main={
                     type : "get", // get or post
                     cb : function(req, res, corestuff){ // or fn or callback that will run once route is called , // corestuff ,gives you some extra modules , parameters and values to use 
                         res.send("testing test4")
-                    } 
+                    }
 
 
                 } // add as many routes as you want in this array, and change name and route string values to your liking
-                
+                ,{   
+                    name  : "apitest4",
+                    route : "/apitest4", // if route not included it will defualt to to name
+                    type : "post", // get or post
+                    cb : function(req, res, corestuff){ // or fn or callback that will run once route is called , // corestuff ,gives you some extra modules , parameters and values to use 
+                        var bd=req.body
+
+                        corestuff.mds.users.verifyLoginAPI({ req : req},function(vd){ // api validation
+                             if (vd.allowed){ // do something if token valid
+                                     //console.log(JSON.stringify(vd.details,null,2))
+                                     if (req.body.type==="get"){
+                                         res.jsonp({ loggedin : true })
+                                         return
+                                     }
+                                     if (req.body.type==="add"){
+                                         res.jsonp({})
+                                         return
+                                     }
+                                     
+ 
+ 
+                                     
+                                     res.jsonp({ "defualt" : "did nothing"})
+                                     return
+                                     
+                             }else{ // no token included do something else
+                                 if (req.body.type==="get"){
+                                     res.jsonp({ loggedin : false})
+                                     return
+                                 }
+                                 
+ 
+                                 res.jsonp({ "defualt" : "did nothing"})
+                                 return
+                             }
+                        })
+                    } 
+ 
+ 
+                } // add as many routes as you want in this array, and change name and route string values to your liking
+                   
             ]
         
 }

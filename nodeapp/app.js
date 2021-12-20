@@ -856,6 +856,7 @@ app.post("/login" ,function(req , res){
    
     loginUser( req.body , {req : req , res : res} , function(ret_data){
         //console.log( "---" ,ret_data)
+        
         res.jsonp(ret_data)
 
     } )
@@ -908,6 +909,7 @@ var loginUser=function( params ){
     //console.log("all users " , data.data)
      
     var login_confirmed=false;
+    var found_userid=false
     mds.users.fetchUsersDetails( {} , function(data){
         if (_.isUndefined(data)){
             data=data2;
@@ -919,6 +921,7 @@ var loginUser=function( params ){
                 data.data.map(function(r,i){
                    
                     if (r.userid===bd.userid){
+                        found_userid=true
                         if (debug_0["login"]["token"]["on"] ){
                             //console.log( "user auth1 : "," " , r.userid , " pass_db : " , r.password , " pass_inp body " , bd.password)
                         }
@@ -971,26 +974,40 @@ var loginUser=function( params ){
                         }else{
                             if (!ret_data.sent_resposne){
                                 ret_data.sent_resposne=true
-                                 //cb(ret_data)
+                                ret_data.error="bad userid or password"
+                                cb(ret_data)
                             }
-                        }
-                    }else{
-                        if (!ret_data.sent_resposne){
-                            ret_data.sent_resposne=true
-                            //cb(ret_data) 
                         }
                     }
                 })
+
+                if (!login_confirmed){
+                    if (!ret_data.sent_resposne){
+                        ret_data.sent_resposne=true
+                        cb(ret_data) 
+                    }
+                    return
+                }
+                if (!found_userid){
+                    if (!ret_data.sent_resposne){
+                        ret_data.sent_resposne=true
+                        ret_data.error="bad userid or password"
+                        cb(ret_data) 
+                    }
+                    return
+                }
             }else{
                 if (!ret_data.sent_resposne){
                     ret_data.sent_resposne=true
-                   //cb(ret_data)
+                    ret_data.error="password not entered"
+                   cb(ret_data)
                 }
             }
         }else{
             if (!ret_data.sent_resposne){
                 ret_data.sent_resposne=true
-                //cb(ret_data)
+                ret_data.error="userid not entered"
+                cb(ret_data)
             }
         }
    
