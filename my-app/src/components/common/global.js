@@ -141,7 +141,7 @@ if (process.env.NODE_ENV !== 'production') {
 $gl.host=getHost();
 $gl.port=getPort()
 $gl.protocall=getProtocall();
-
+$gl.url=$gl.protocall + "//" + $gl.host + ":" + $gl.port ;
 
 var fetchPerms=function(){
     var cb=()=>{};        
@@ -181,6 +181,8 @@ var fetchPerms=function(){
     .then(response => response.json())
     .then(data => {             
             cb(data);
+    }).catch(function(err){
+        cb({},{err : err});
     })
 
 

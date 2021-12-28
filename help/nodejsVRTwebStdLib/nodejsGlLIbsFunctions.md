@@ -50,9 +50,11 @@
 
     sdate-
         ...
-    stime-
+    stime
         ...
-
+    dateDiff -
+        ( date1, date2 [, params][,cb]) --> { diff : 0s ,}
+        ...
     uuid - generate uunique uid uuid V1
         () --> returns str
         ...

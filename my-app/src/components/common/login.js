@@ -111,7 +111,8 @@ export const isAuth=function(){
         .then(data => { 
             cb(data);
         } ).catch(error => {
-            console.log(error);
+            cb({}, { err : error});
+            //console.log(error);
         })
 
 }

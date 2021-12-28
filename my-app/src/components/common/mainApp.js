@@ -164,6 +164,8 @@ function MainApp({loggedin , login , logout , addval , theme}){
         .then(response => response.json())
         .then(data => { 
                 cb(data);
+        }).catch(function(err){
+            cb({},{err : err});
         })
     }
     var loginSettings=function(cb){
