@@ -289,7 +289,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                             var or_menu_width=menu_width;
                               
                             var all_menus_arr=[]
-                            var key_menu=0
+                            var key_menu=5
                             if (true){
                                 all_menus_arr.push(
                                     <div key={++key_menu}

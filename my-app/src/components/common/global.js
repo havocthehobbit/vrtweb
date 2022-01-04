@@ -9,7 +9,188 @@ var $gl={
 
 }
 
-var csv_parse=function( csv ,fn1){
+$gl.ex=function(a){ // exists
+   return !_.isUndefined(a)
+}
+
+$gl.buffStrtoString=function(a){
+    return a.toString()
+}
+
+$gl.filterlines=function(text, searchstring,linesafter){
+    var haslineAfter=false
+    if (!_.isUndefined(linesafter)){
+        haslineAfter=true
+    }
+
+    var textArray=text.split("\n")
+    var newArr=[]
+    var counfFound=0
+    var foundfirst=-1
+
+    _.each(textArray,function(v,i){
+        var found=v.search(searchstring)
+
+        if (counfFound>0){
+           if (haslineAfter){
+            found=1
+
+           }                
+        }
+        if (found>0){
+            if (counfFound===1){
+                foundfirst=i
+            }
+
+
+           
+            newArr.push(v)
+            haslineAfter=true
+            counfFound++
+            if (counfFound>linesafter){haslineAfter=false}
+            
+        }
+
+    })
+
+
+   var newtext=""
+
+    newtext=newArr.join( "\n")
+
+    return newtext
+}
+
+$gl.filterlinesRange=function(text, searchstringFrom,searchstringTo){    
+
+    var newArr=[]
+    var counfFound=0
+    var foundfirst=-1
+ 
+    var rx=new RegExp( "(?<=" + searchstringFrom + "s*\).*?(?=\s*" + searchstringTo + ")" , "s")
+    
+
+   var newtext=""
+
+   newtext=text.match(rx)
+
+    console.log("test" ,newtext )
+
+    return newtext
+}
+
+$gl.xmlparse=function(xmlString){
+    var parser = new DOMParser();
+
+
+    return parser.parseFromString(xmlString,"text/xml")
+}
+
+
+function xmlToJson(xml) {
+   
+    // Create the return object
+    var obj = {};
+
+    if (xml.nodeType == 1) { // element
+        // do attributes
+        if (xml.attributes.length > 0) {
+        obj["@attributes"] = {};
+            for (var j = 0; j < xml.attributes.length; j++) {
+                var attribute = xml.attributes.item(j);
+                obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+            }
+        }
+    } else if (xml.nodeType == 3) { // text
+        obj = xml.nodeValue;
+    }
+
+    // do children
+    if (xml.hasChildNodes()) {
+        for(var i = 0; i < xml.childNodes.length; i++) {
+            var item = xml.childNodes.item(i);
+            var nodeName = item.nodeName;
+            if (typeof(obj[nodeName]) == "undefined") {
+                obj[nodeName] = xmlToJson(item);
+            } else {
+                if (typeof(obj[nodeName].push) == "undefined") {
+                    var old = obj[nodeName];
+                    obj[nodeName] = [];
+                    obj[nodeName].push(old);
+                }
+                obj[nodeName].push(xmlToJson(item));
+            }
+        }
+    }
+    var sanitiseRTrec=function(obj){
+        var o=obj
+        var parentnameiter="unknown"
+        var parent={}
+        if (arguments.length>1){
+            parentnameiter=arguments[2]
+            parent=arguments[1]
+        }else{
+
+        }
+        _.each(o,function(r,p){
+            if (_.isPlainObject(r)){
+
+
+                sanitiseRTrec(r,o , p)
+
+            }else if (_.isArray(r)){
+
+                sanitiseRTrec(r,o,p)
+
+            }else{
+               
+                if ( p==="#text"){
+                    //console.log("#t")
+                    var value=_.cloneDeep(r)                    
+                    //delete parent["#text"]
+                    parent["new"]=value
+                }
+            }
+
+        })
+        
+    }
+
+    // #todo #rt fix #text issue
+    /*
+    var sanitiseRT=function(obj){
+        sanitiseRTrec(obj)
+    }
+
+    sanitiseRT(obj)
+    */
+   
+    return obj;
+}
+
+$gl.xmlToJson=xmlToJson
+
+
+
+function PasswordSimplGen(cb){
+    var psw=""
+     psw=Math.random().toString(36).slice(-8);
+     
+     setTimeout( function(){
+ 
+             psw+=Math.random().toString(36).slice(-8);
+              cb( psw )
+     },2000 )
+ 
+ 
+    
+ 
+ }
+ $gl.simpRandPass=PasswordSimplGen
+
+
+
+ $gl.csv_parse=function( csv ,fn1){
     var cb=function(){}
     if (!_.isUndefined(fn1)){ 
         cb=fn1;
@@ -21,6 +202,8 @@ var csv_parse=function( csv ,fn1){
                 cb(records)
             })
 }
+
+
 
 
 function getCookie(name) {

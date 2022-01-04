@@ -1,4 +1,4 @@
-import { useEffect, useState,Component} from "react"
+import { useEffect, useState,useRef,useMemo,useCallback,Component} from "react"
 //import {connect} from 'react-redux'
 import _, { set } from "lodash"
 import $gl from "./global"
@@ -256,5 +256,116 @@ export const Download=function(props){
                     >download</button>
                 </div>
 
+    )
+}
+
+export const Vbt=function(props){ // vrt button
+    var desc="click me"
+
+    var initme=useRef(true)
+
+    useEffect(function(){
+        if (initme.current){
+
+            initme.current=false
+        }
+    })
+
+    var onClick=function(){
+
+    }
+
+
+    if (props.onClick){
+        if (_.isFunction(props.onClick)){
+            onClick=props.onClick
+        }
+    }
+
+    var endpoint="/"
+    var url=$gl.url;
+
+    if (props.api){
+        if (_.isString(props.api)){
+            endpoint=props.api;
+        }
+
+        if (_.isPlainObject(props.api)){
+
+        }
+    }
+
+    var data={}
+    if (props.data){
+        if (_.isPlainObject(props.data)){
+
+        }
+
+    }
+
+    var cb
+    if (props.cb){
+        if (_.isFunction(props.cb)){
+            cb=props.cb
+        }
+    }
+
+
+    url=url+ endpoint;
+
+    return (
+        <div>
+            <button style={props.style}
+                onClick={
+                    onClick={
+                        function(e){
+                                    onClick(e)
+                                }
+                    }
+                }
+            >{desc}</button>
+        </div>
+    )
+}
+
+
+export const Vtb=function(props){ // vrt table
+    var desc="click me"
+
+    var initme=useRef(true)
+
+    useEffect(function(){
+        if (initme.current){
+
+            initme.current=false
+        }
+    })
+
+    var theader=function(){
+
+    }()
+
+    var tbody=function(){
+        
+    }()
+
+    
+
+    var onClick=function(){ }
+
+
+    return (
+        <div>
+            <table style={props.style}
+                onClick={
+                    onClick
+                }
+            >
+                {theader}
+
+                {tbody}
+
+            </table>
+        </div>
     )
 }
