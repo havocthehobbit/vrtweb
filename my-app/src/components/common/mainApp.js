@@ -1,7 +1,7 @@
 import '../../App.css';
 import '../../css_general/general.css';
 
-import { useState , useEffect}  from 'react'
+import { useState , useEffect,LazyLoad,Suspense}  from 'react'
 
 //import { BrowserRouter as Router, NavLink } from 'react-router-dom';
 import { Router, NavLink } from 'react-router-dom';
@@ -435,6 +435,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                                                                             return (
                                                                                                                     <div style={settings.loginPicStyle}  >
                                                                                                                         <img src={settings.loginPic} />
+                                                                                                                        
                                                                                                                     </div>
                                                                                                                     )
                                                                                                         }
