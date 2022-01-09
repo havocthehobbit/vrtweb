@@ -21,4 +21,5 @@ rsync -avgpour ../my-app/package.json ./backupdir/my-app
 rsync -avgpour ../my-app/src/components/custom ./backupdir/my-app/src/components
 
 rsync -avgpour ../nodeapp/l_node_modules_auto*  ./backupdir/nodeapp
+rsync -avgpour ../nodeapp/package.json  ./backupdir/nodeapp
 

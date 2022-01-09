@@ -16,6 +16,7 @@ import Settings from './settings'
 import Codegenc from './codegenc'
 
 import {customMenu} from  "../custom/custommenus"
+import {Frontpage} from  "../custom/frontpage"
 
 import $gl from "./global"
 
@@ -289,7 +290,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                             var or_menu_width=menu_width;
                               
                             var all_menus_arr=[]
-                            var key_menu=5
+                            var key_menu=15
                             if (true){
                                 all_menus_arr.push(
                                     <div key={++key_menu}
@@ -399,7 +400,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                             
                                             _.each( customMenu,function(r,i){
                                                 newRoutesE.push(
-                                                    <Route key={i} path={"/" + r.name} exact={true}>
+                                                    <Route key={i+500} path={"/" + r.name} exact={true}>
                                                         {
                                                             function(){                               
                                                                 if (loggedin){
@@ -427,21 +428,23 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                                             if (!loggedin){
                                                                                 return ( 
                                                                                             <div style={{padding : 15 , margin : 30}}  >
-                                                                                                <Login/>
-
-                                                                                                { 
-                                                                                                    function(){
-                                                                                                        if (settings.hasLoginPic){
-                                                                                                            return (
-                                                                                                                    <div style={settings.loginPicStyle}  >
-                                                                                                                        <img src={settings.loginPic} />
-                                                                                                                        
-                                                                                                                    </div>
-                                                                                                                    )
-                                                                                                        }
-                                                                                                    
-                                                                                                    }()
-                                                                                                }
+                                                                                                <div style={{position : "absolute"}}>
+                                                                                                   
+                                                                                                    { 
+                                                                                                        function(){
+                                                                                                            if (settings.hasLoginPic){
+                                                                                                                return (
+                                                                                                                        <div style={settings.loginPicStyle}  >
+                                                                                                                            <img src={settings.loginPic} />
+                                                                                                                            
+                                                                                                                        </div>
+                                                                                                                        )
+                                                                                                            }
+                                                                                                        
+                                                                                                        }()
+                                                                                                    }
+                                                                                                </div> 
+                                                                                                <Frontpage theme={{ theme : theme }}/>
                                                                                             </div> 
                                                                                 )
                                                                             }else{
