@@ -176,6 +176,8 @@ function Login({loggedin , login , logout , addval}){
     var [userinp,setUserinp]=useState(getCookie("userid"))
     var [passinp,setPassinp]=useState("")
     
+    var props=arguments[0]
+
     useEffect(function(){       
 
     },[])
@@ -240,20 +242,66 @@ function Login({loggedin , login , logout , addval}){
         setpassfocus=false
     }
 
-   
+    var style={}
+    if (props.style){
+        style=props.style
+    }
+
+    var style_account={}
+    if (props.style_account){
+        style_account=props.style_account
+    }
+
+    var style_account_label={}
+    if (props.style_account_label){
+        style_account_label=props.style_account_label
+    }
+
+    var account_label="userid/email"
+    if (props.account_label){
+        account_label=props.account_label
+    }
+
+    var style_password={}
+    if (props.style_password){
+        style_password=props.style_password
+    }
+
+    var style_password_label={}
+    if (props.style_password_label){
+        style_password_label=props.style_password_label
+    }
+
+    var password_label="password"
+    if (props.password_label){
+        password_label=props.password_label
+    }
+
+
+    var style_button={}
+    if (props.button){
+        style_button=props.button
+    }
+
+    var button_label="login"
+    if (props.button_label){
+        button_label=props.button_label
+    }
 
     return (
-        <div>
-            <label>userid/email</label>
-            <input  type='input' value={userinp}
+        <div style={style} >
+            <label style={style_account_label}>{account_label}</label>
+            <input  style={style_account} 
+                    type='input' value={userinp}
                     onChange={
                         function(e){
                             setUserinp(e.target.value )
                         }
                     }
             />
-            <label>password</label>
-            <input  type='password' 
+            <label style={style_password_label}>{password_label}</label>
+            <input  style={style_password} 
+                    type='password' 
                     autoFocus
                     onChange={
                         function(e){
@@ -275,19 +323,21 @@ function Login({loggedin , login , logout , addval}){
                         }
                     }
             />
-            <input value='login' type='button'  onClick={
-                                    function(){
-                                        loginUser( { userid : userinp, password : passinp} , function(dt){
-                                            console.log(dt)
-                                            if (dt.data.loggedin===true){
-                                                var token=dt.data.token;                                                
-                                                createCookie("userid" , userinp)                                                
-                                                login({"type" : "login"})                                                
-                                            }
-                                           
-                                        })
-                                    }
-                                } 
+            <input style={style_button} 
+                    value={button_label}
+                    type='button'  onClick={
+                        function(){
+                            loginUser( { userid : userinp, password : passinp} , function(dt){
+                                console.log(dt)
+                                if (dt.data.loggedin===true){
+                                    var token=dt.data.token;                                                
+                                    createCookie("userid" , userinp)                                                
+                                    login({"type" : "login"})                                                
+                                }
+                                
+                            })
+                        }
+                    } 
             
             />           
 
