@@ -98,6 +98,9 @@ function MainApp({loggedin , login , logout , addval , theme}){
 
     var [displayMenu,set_displayMenu]=useState(displayMenu_def);
 
+    var [hoverMenuCurr,set_hoverMenuCurr]=useState({ name : ""});
+    var [selectMenuCurr,set_selectMenuCurr]=useState({ name : ""});
+
 
 
 
@@ -306,7 +309,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                     if (loggedin){ 
 
                         return ( 
-                            <div style={{ left : "40%",position : "relative"}}>
+                            <div style={{ zIndex:999, right : "5%",position : "absolute"}}>
                                 <label>loggedin : {loginstr } </label>
                                                             
                                 <input type='button' defaultValue='logout'  onClick={
@@ -368,8 +371,8 @@ function MainApp({loggedin , login , logout , addval , theme}){
                             mmenuStyle.main={ width:"80%",zIndex :999}
 
                             
-                            mmenuStyle.main1={ position : "relative" , margin : 4,  width : or_menu_width , height : menu_height }
-                            mmenuStyle.main2={ position : "absolute" ,top : 0,  margin : 4,  width : menu_width  } 
+                            mmenuStyle.main0={ position : "relative" , margin : 4,  width : or_menu_width , height : menu_height }
+                            mmenuStyle.main1={ position : "absolute" ,top : 0,  margin : 4,  width : menu_width  } 
 
                             mmenuStyle.main_inst= ctdivs_style_small  
 
@@ -377,12 +380,9 @@ function MainApp({loggedin , login , logout , addval , theme}){
                             if (!_.isUndefined(displayMenu.menuStyle)){
                                 mmenuStyle.main=displayMenu.menuStyle.main
                                 mmenuStyle.main0=_.merge({ position : "relative" , margin : 4,  width : or_menu_width , height : menu_height }, displayMenu.menuStyle.main0 )
-                                mmenuStyle.main1=_.merge({ position : "absolute" ,top : 0,  margin : 4,  width : menu_width  } , displayMenu.menuStyle.main0)
+                                mmenuStyle.main1=_.merge({ position : "absolute" ,top : 0,  margin : 4,  width : menu_width  } , displayMenu.menuStyle.main1)
 
-                                mmenuStyle.main_inst=_.merge( ctdivs_style_small  ,displayMenu.menuStyle.main_inst )
-
-                                console.log("mmenuStyle.main1 " , mmenuStyle.main1)
-                                console.log("mmenuStyle.main2 " , mmenuStyle.main2)
+                                mmenuStyle.main_inst=_.merge( ctdivs_style_small  ,displayMenu.menuStyle.main_inst )                               
                               
                             }
 
@@ -396,18 +396,34 @@ function MainApp({loggedin , login , logout , addval , theme}){
                             
 
                             if (true){
-                                if (displayMenu.all["mainwall"].active){
+                                var mymenuname="mainwall"
+                                if (displayMenu.all[mymenuname].active){
+
+                                    var newStyleIns=_.clone(mmenuStyle.main_inst)
+                                    
+                                    if ( hoverMenuCurr.name===mymenuname){
+                                        newStyleIns.background="orange"
+                                    }
+                                    if ( selectMenuCurr.name===mymenuname){
+                                        newStyleIns.background="lightblue"
+                                    }
+
                                     all_menus_arr.push(
                                         <div key={++key_menu}
                                             onClick={getUserDetail}
+                                            style={{position : "relative" }}
                                         >
                                             { /* <Link to={`${url}/3-1`}>Sub-page-1</Link> */ }
-                                            <Link to='/mainwall'><div style={ mmenuStyle.main_inst} 
-                                                    
-                                            >
+                                            <Link to={'/' + mymenuname} myname={mymenuname} onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } >
+                                                <div style={ newStyleIns} 
+                                                    myname={mymenuname}
+                                                    onMouseEnter={(e)=>{set_hoverMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
+                                                    onMouseLeave={(e)=>{ set_hoverMenuCurr({ name : "" }) }}
+                                                    onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
+                                                >
                                                         <HomeOutlined style={{color : "mediumseagreen" }}/>
                                                         home
-                                                    </div>
+                                                </div>
                                             </Link> 
                                         </div>
                                     )
@@ -424,10 +440,31 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                 }
                             })
                             if (internal_dev){
-                                if (displayMenu.all["codegen"].active){
+                                var mymenuname="codegen"
+                                if (displayMenu.all[mymenuname].active){
+
+                                    var newStyleIns=_.clone(mmenuStyle.main_inst)
+                                    
+                                    if ( hoverMenuCurr.name===mymenuname){
+                                        newStyleIns.background="orange"
+                                    }
+                                    if ( selectMenuCurr.name===mymenuname){
+                                        newStyleIns.background="lightblue"
+                                    }
+
                                     all_menus_arr.push(
-                                        <div key={++key_menu}>
-                                            <Link to='/codegen'><div style={mmenuStyle.main_inst} >Code Gen</div></Link> 
+                                        <div key={++key_menu} style={{position : "relative" }} >
+                                            <Link to={'/' + mymenuname} myname={mymenuname} onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } >
+                                                <div style={ newStyleIns} 
+                                                    myname={mymenuname}
+                                                    onMouseEnter={(e)=>{set_hoverMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
+                                                    onMouseLeave={(e)=>{ set_hoverMenuCurr({ name : "" }) }}
+                                                    onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
+                                                
+                                                >
+                                                    Code Gen
+                                                </div>
+                                            </Link> 
                                         </div>
                                     )
                                 }
@@ -450,11 +487,28 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                 }
 
                                 if (isAllowed){
-                                    
+                                    var newStyleIns=mmenuStyle.main_inst
+                                    if ( !_.isUndefined(r.style)){
+                                        newStyleIns=_.merge(_.clone(mmenuStyle.main_inst),r.style)
+                                       
+                                    }
+                                    if ( hoverMenuCurr.name===r.name){
+                                        newStyleIns.background="orange"
+                                    }
+                                    if ( selectMenuCurr.name===r.name){
+                                        newStyleIns.background="lightblue"
+                                    }
                                     all_menus_arr.push(
-                                        <div key={++key_menu}>                                            
-                                            <div key={++key_menu}>
-                                                <Link to={"/"+ r.name}><div style={mmenuStyle.main_inst} >{r.label}</div></Link> 
+                                        <div key={++key_menu} style={{position : "relative" }} >                                            
+                                            <div key={++key_menu}   >
+                                                <Link to={"/"+ r.name} myname={mymenuname} onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } >
+                                                    <div style={newStyleIns}  
+                                                        myname={r.name}
+                                                        onMouseEnter={(e)=>{set_hoverMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
+                                                        onMouseLeave={(e)=>{ set_hoverMenuCurr({ name : "" }) }}
+                                                        onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
+                                                    >{r.label}</div>
+                                                </Link> 
                                             </div>
                                         </div>
                                                     
@@ -463,13 +517,31 @@ function MainApp({loggedin , login , logout , addval , theme}){
                             })
                             
                             if (true){
-                                if (displayMenu.all["settings"].active){
+                                var mymenuname="settings"
+                                if (displayMenu.all[mymenuname].active){
+
+                                    var newStyleIns=_.clone(mmenuStyle.main_inst)
+                                    
+                                    if ( hoverMenuCurr.name===mymenuname){
+                                        newStyleIns.background="orange"
+                                    }
+                                    if ( selectMenuCurr.name===mymenuname){
+                                        newStyleIns.background="lightblue"
+                                    }
+
                                     all_menus_arr.push(
-                                        <div key={++key_menu}>
+                                        <div key={++key_menu} style={{position : "relative" }} >
                                             { /* <Link to={`${url}/3-1`}>Sub-page-1</Link> */ }
-                                            <Link to='/settings'><div style={mmenuStyle.main_inst} >
-                                                <SettingOutlined style={{color : "mediumseagreen" }}/>
-                                                settings</div>
+                                            <Link to={'/' + mymenuname}  myname={mymenuname} onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } >
+                                                <div style={ newStyleIns} 
+                                                    myname={mymenuname}
+                                                    onMouseEnter={(e)=>{set_hoverMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
+                                                    onMouseLeave={(e)=>{ set_hoverMenuCurr({ name : "" }) }}
+                                                    onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
+                                                >
+                                                    <SettingOutlined style={{color : "mediumseagreen" }}/>
+                                                    settings
+                                                </div>
                                             </Link> 
                                         </div>
                                                     
@@ -478,16 +550,14 @@ function MainApp({loggedin , login , logout , addval , theme}){
                             }                            
                             
                             return ( 
-                                <div style={mmenuStyle.main} >
-                                    <nav>
-                                        <div style={mmenuStyle.main0}></div>
-                                        <div style={mmenuStyle.main1}>
-                                            
-                                            {all_menus_arr}
-                                            
-                                        </div>
-
-                                    </nav>
+                                <div className={"menu_main"} style={mmenuStyle.main} >
+                                    
+                                        <div className={"menu_main0"} style={mmenuStyle.main0}></div>
+                                        <div className={"menu_main1"} style={mmenuStyle.main1}>
+                                            {/*<nav>  */}
+                                                {all_menus_arr}
+                                            {/*</nav>  */}
+                                        </div>                                   
                                 </div>
 
 

@@ -17,7 +17,7 @@ var myNewComponentA=function(){
     )
 }(); 
 
-customMenuA.push({ cmpt : myNewComponentA, name : "myNewComponent",label : "myNewComponent123" , accessLvl : {} , group : "" }) // group ,relates to user groups who are allowed to view this , leave blank for everyone
+customMenuA.push({ cmpt : myNewComponentA, name : "myNewComponent",label : "myNewComponent123" , style : {}, accessLvl : {} , group : "" }) // group ,relates to user groups who are allowed to view this , leave blank for everyone
 */
 
 export const customMenu=customMenuA;

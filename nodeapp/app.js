@@ -187,6 +187,8 @@ depcy.add({ name : "cmmode", file : "../my-app/src/components/custom/cmmode.js" 
 depcy.add({ name : "frontpage", file : "../my-app/src/components/custom/frontpage.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/frontpage.js" } })
 depcy.add({ name : "frontpage", file : "../my-app/src/components/custom/globalStateReducer.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/globalStateReducer.js" } })
 depcy.add({ name : "customPageMainApp", file : "../my-app/src/components/custom/customPageMainApp.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/customPageMainApp.js" } })
+depcy.add({ name : "custommenus", file : "../my-app/src/components/custom/custommenus.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/custommenus.js" } })
+depcy.add({ name : "cmmode", file : "../my-app/src/components/custom/cmmode.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/cmmode.js" } })
 
 
 depcy.init()
@@ -412,6 +414,15 @@ var template_o={
 
 }
 
+
+app.get("/*" ,function(req , res){
+    //res.sendFile(path.join(__dirname, pub ), function(err) {
+    res.sendFile( pub + "/" + "index.html" , function(err) {
+        //if (err) {
+        //  res.status(500).send(err)
+        //}
+      })
+})
 
 app.post("/news" ,function(req , res){
         

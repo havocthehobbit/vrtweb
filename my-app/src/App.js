@@ -14,7 +14,7 @@ function App({ loggedin, login }) {
   
   return (
     <Provider store={store}>
-      <div className="App">
+      <div style={{position : "relative" , margin : 0, padding : 0}} className="App">
         <MainApp/>
       </div>
     </Provider>
