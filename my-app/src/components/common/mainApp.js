@@ -4,19 +4,27 @@ import '../../css_general/general.css';
 import { useState , useEffect,LazyLoad,Suspense}  from 'react'
 
 //import { BrowserRouter as Router, NavLink } from 'react-router-dom';
-import { Router, NavLink } from 'react-router-dom';
-import { Link, Switch, Route , Redirect, useRouteMatch, useParams } from 'react-router-dom';
+//import {  } from 'react-router-dom';
+import { Router, NavLink,Link, Switch, Route , Redirect, useRouteMatch, useParams  } from 'react-router-dom';
 import history from "./routerHist";
 
 import Login ,  {isAuth , logout as logoutuser } from './login'
+
 import Mainwall from './mainwall'
 import Settings from './settings'
+import {NotFound} from './404notfound'
+import {EmptyCpt} from './empty'
+
+
+
+
 //import AllCalls from './impdata1'
 
 import Codegenc from './codegenc'
 
 import {customMenu} from  "../custom/custommenus"
-import {Frontpage} from  "../custom/frontpage"
+import  {Frontpage} from  "../custom/frontpage"
+import {CustomPageMainApp} from '../custom/customPageMainApp'
 
 import $gl from "./global"
 
@@ -25,6 +33,8 @@ import _ from "lodash"
 import { HomeOutlined , SettingOutlined } from '@ant-design/icons'
 
 import {connect} from 'react-redux'
+import mainwall from './mainwall';
+
 
 //var SummaryCalls=AllCalls.SummaryCalls;
 
@@ -50,6 +60,20 @@ const mapStateToProps = function(state , owsProps){
 }
 
 
+var displayMenu_def={
+    Home : undefined,
+    all : {
+        mainwall : { active : false  , e : Mainwall},
+        codegen : { active : false , e :  Codegenc},
+        settings : { active : false , e : Settings},
+        empty : { active : false , e : EmptyCpt},
+        notfound : { active : false , e : NotFound},
+        customPageMainApp : { active : false , e : CustomPageMainApp}
+
+        
+    }
+}
+
 var logginCheckCount=0;
 function MainApp({loggedin , login , logout , addval , theme}){
 
@@ -60,12 +84,26 @@ function MainApp({loggedin , login , logout , addval , theme}){
 
     }
 
+    
+
     //var userdata_temp={ details : {groups : []} , perms : {}, runlast : new Date()}
     var userdata_temp={ details : {groups : []} , perms : {}}
     var [passFocus,setPassFocus]=useState(false);
     var [userDetail,setUserDetail]=useState({ details : {groups : []} , perms : {}});
     
     var [settings,setSettings]=useState(_.clone(setting_def));
+
+
+    var [homePage,set_homePage]=useState('customPageMainApp');
+
+    var [displayMenu,set_displayMenu]=useState(displayMenu_def);
+
+
+
+
+    
+
+
 
 
     var userid=$gl.getCookie("userid")
@@ -191,9 +229,32 @@ function MainApp({loggedin , login , logout , addval , theme}){
 
                
             }
-               
+
+            temps.defPage=dt.data.defPage
+            temps.displayMenu=dt.data.displayMenu
+            
+            
+            
+
+
 
             setSettings(temps)
+            if ( temps.defPage!==""){
+                set_homePage(temps.defPage)
+            }
+            var  l_displayMenu={...displayMenu}
+
+            _.each(l_displayMenu.all,function(r,pname){
+                l_displayMenu.all[pname].active =temps.displayMenu.all[pname].active
+            })
+
+            if (!_.isUndefined(dt.data.displayMenu.menuStyle)){
+                l_displayMenu.menuStyle=dt.data.displayMenu.menuStyle
+            }
+
+            set_displayMenu(l_displayMenu)
+
+
             
         })
         return;
@@ -225,6 +286,17 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     return "logged out"
                                 } 
     }();
+
+    
+    if (!_.isUndefined(displayMenu.all[homePage])){
+        displayMenu.Home=displayMenu.all[homePage].e
+    }else{
+        //displayMenu.all[homePage]={ active : true , e : NotFound }
+        displayMenu.Home=displayMenu.all["notfound"].e
+    }
+    
+
+
 
     return (
         <div style={{ position : "relative"}} >
@@ -290,22 +362,56 @@ function MainApp({loggedin , login , logout , addval , theme}){
                             var or_menu_width=menu_width;
                               
                             var all_menus_arr=[]
+
+
+                            var mmenuStyle={};
+                            mmenuStyle.main={ width:"80%",zIndex :999}
+
+                            
+                            mmenuStyle.main1={ position : "relative" , margin : 4,  width : or_menu_width , height : menu_height }
+                            mmenuStyle.main2={ position : "absolute" ,top : 0,  margin : 4,  width : menu_width  } 
+
+                            mmenuStyle.main_inst= ctdivs_style_small  
+
+                            
+                            if (!_.isUndefined(displayMenu.menuStyle)){
+                                mmenuStyle.main=displayMenu.menuStyle.main
+                                mmenuStyle.main0=_.merge({ position : "relative" , margin : 4,  width : or_menu_width , height : menu_height }, displayMenu.menuStyle.main0 )
+                                mmenuStyle.main1=_.merge({ position : "absolute" ,top : 0,  margin : 4,  width : menu_width  } , displayMenu.menuStyle.main0)
+
+                                mmenuStyle.main_inst=_.merge( ctdivs_style_small  ,displayMenu.menuStyle.main_inst )
+
+                                console.log("mmenuStyle.main1 " , mmenuStyle.main1)
+                                console.log("mmenuStyle.main2 " , mmenuStyle.main2)
+                              
+                            }
+
+                            
+
+
+
+
                             var key_menu=15
+
+                            
+
                             if (true){
-                                all_menus_arr.push(
-                                    <div key={++key_menu}
-                                        onClick={getUserDetail}
-                                    >
-                                        { /* <Link to={`${url}/3-1`}>Sub-page-1</Link> */ }
-                                        <Link to='/mainwall'><div style={ctdivs_style_small} 
-                                                
+                                if (displayMenu.all["mainwall"].active){
+                                    all_menus_arr.push(
+                                        <div key={++key_menu}
+                                            onClick={getUserDetail}
                                         >
-                                                    <HomeOutlined style={{color : "mediumseagreen" }}/>
-                                                     home
-                                                </div>
-                                        </Link> 
-                                    </div>
-                                )
+                                            { /* <Link to={`${url}/3-1`}>Sub-page-1</Link> */ }
+                                            <Link to='/mainwall'><div style={ mmenuStyle.main_inst} 
+                                                    
+                                            >
+                                                        <HomeOutlined style={{color : "mediumseagreen" }}/>
+                                                        home
+                                                    </div>
+                                            </Link> 
+                                        </div>
+                                    )
+                                }
                             } 
 
                           
@@ -318,11 +424,13 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                 }
                             })
                             if (internal_dev){
-                                all_menus_arr.push(
-                                    <div key={++key_menu}>
-                                        <Link to='/codegen'><div style={ctdivs_style_small} >Code Gen</div></Link> 
-                                    </div>
-                                )
+                                if (displayMenu.all["codegen"].active){
+                                    all_menus_arr.push(
+                                        <div key={++key_menu}>
+                                            <Link to='/codegen'><div style={mmenuStyle.main_inst} >Code Gen</div></Link> 
+                                        </div>
+                                    )
+                                }
                             }
 
                          
@@ -342,10 +450,11 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                 }
 
                                 if (isAllowed){
+                                    
                                     all_menus_arr.push(
                                         <div key={++key_menu}>                                            
                                             <div key={++key_menu}>
-                                                <Link to={"/"+ r.name}><div style={ctdivs_style_small} >{r.label}</div></Link> 
+                                                <Link to={"/"+ r.name}><div style={mmenuStyle.main_inst} >{r.label}</div></Link> 
                                             </div>
                                         </div>
                                                     
@@ -354,23 +463,25 @@ function MainApp({loggedin , login , logout , addval , theme}){
                             })
                             
                             if (true){
-                                all_menus_arr.push(
-                                    <div key={++key_menu}>
-                                        { /* <Link to={`${url}/3-1`}>Sub-page-1</Link> */ }
-                                        <Link to='/settings'><div style={ctdivs_style_small} >
-                                            <SettingOutlined style={{color : "mediumseagreen" }}/>
-                                            settings</div>
-                                        </Link> 
-                                    </div>
-                                                
-                                )
+                                if (displayMenu.all["settings"].active){
+                                    all_menus_arr.push(
+                                        <div key={++key_menu}>
+                                            { /* <Link to={`${url}/3-1`}>Sub-page-1</Link> */ }
+                                            <Link to='/settings'><div style={mmenuStyle.main_inst} >
+                                                <SettingOutlined style={{color : "mediumseagreen" }}/>
+                                                settings</div>
+                                            </Link> 
+                                        </div>
+                                                    
+                                    )
+                                }
                             }                            
                             
                             return ( 
-                                <div style={{ width:"80%",zIndex :999}} >
+                                <div style={mmenuStyle.main} >
                                     <nav>
-                                        <div style={{ position : "relative" , margin : 4,  width : or_menu_width , height : menu_height }}></div>
-                                        <div style={{ position : "absolute" ,top : 0,  margin : 4,  width : menu_width  }}>
+                                        <div style={mmenuStyle.main0}></div>
+                                        <div style={mmenuStyle.main1}>
                                             
                                             {all_menus_arr}
                                             
@@ -398,7 +509,9 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     {
                                         function(){
                                             
-                                            _.each( customMenu,function(r,i){
+                                            _.each( customMenu,function(r,i){                                               
+                                                //displayMenu.all[r.name]={ active : r.active, e : r.cmpt  } // cant use with react to set custom ,throws bad component error ,page from custommenu.js
+                                
                                                 newRoutesE.push(
                                                     <Route key={i+500} path={"/" + r.name} exact={true}>
                                                         {
@@ -418,14 +531,18 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                             var i2=10000
 
                                             return(
-                                                <Switch>
+                                                <Switch> 
                                                     {
                                                         function(){
                                                             newRoutesE.push(
                                                                 <Route key={i2} path="/" exact={true}>
                                                                     {
                                                                        function(){
+                                                                           
+                                                                                
                                                                             if (!loggedin){
+
+                                                                                
                                                                                 return ( 
                                                                                             <div style={{padding : 15 , margin : 30}}  >
                                                                                                 <div style={{position : "absolute"}}>
@@ -448,7 +565,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                                                             </div> 
                                                                                 )
                                                                             }else{
-                                                                                return ( <Mainwall/> )
+                                                                                return ( <displayMenu.Home/> )
                                                                             }
                                                                         }
                                                                     }
@@ -458,59 +575,64 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                     }
                                                     {
                                                         function(){
-                                                            newRoutesE.push(
-                                                                <Route key={i2} path="/mainwall" exact={true}>
-                                                                    {
-                                                                        function(){
-                                                                            if (loggedin){
-                                                                                return ( <Mainwall/> )
-                                                                            }else{
-                                                                                return ( <Redirect to="/" /> )
+                                                            if (displayMenu.all["mainwall"].active){
+                                                                newRoutesE.push(
+                                                                    <Route key={i2} path="/mainwall" exact={true}>
+                                                                        {
+                                                                            function(){
+                                                                                if (loggedin){
+                                                                                    return ( <displayMenu.Home/> )
+                                                                                }else{
+                                                                                    return ( <Redirect to="/" /> )
+                                                                                }
                                                                             }
                                                                         }
-                                                                    }
-                                                                </Route>
-                                                            )
+                                                                    </Route>
+                                                                )
+                                                            }
                                                         }()
                                                     }
                                                     {
                                                         function(){
-                                                            newRoutesE.push(
-                                                                <Route key={i2} path="/codegen" exact={true}>
-                                                                    {
-                                                                        function(){
-                                                                            if (loggedin){
-                                                                                return ( 
-                                                                                    <div>                                           
-                                                                                        <Codegenc/> 
-                                                                                    </div>
-                                                                                    )
-                                                                            }else{
-                                                                                return ( <Redirect to="/" /> )
+                                                            if (displayMenu.all["codegen"].active){
+                                                                newRoutesE.push(
+                                                                    <Route key={i2} path="/codegen" exact={true}>
+                                                                        {
+                                                                            function(){
+                                                                                if (loggedin){
+                                                                                    return ( 
+                                                                                        <div>                                           
+                                                                                            <Codegenc/> 
+                                                                                        </div>
+                                                                                        )
+                                                                                }else{
+                                                                                    return ( <Redirect to="/" /> )
+                                                                                }
                                                                             }
                                                                         }
-                                                                    }
-                                                                </Route> 
-                                                            )
+                                                                    </Route> 
+                                                                )
+                                                            }
                                                         }()
                                                     }                                                    
                                                    
                                                     {
                                                         function(){
-                    
-                                                            newRoutesE.push(
-                                                                <Route key={i2} path="/Settings" exact={true}>
-                                                                    {
-                                                                        function(){                               
-                                                                            if (loggedin){
-                                                                                return ( <Settings/> )
-                                                                            }else{
-                                                                                return ( <Redirect to="/" /> )
+                                                            if (displayMenu.all["codegen"].active){
+                                                                newRoutesE.push(
+                                                                    <Route key={i2} path="/Settings" exact={true}>
+                                                                        {
+                                                                            function(){                               
+                                                                                if (loggedin){
+                                                                                    return ( <Settings/> )
+                                                                                }else{
+                                                                                    return ( <Redirect to="/" /> )
+                                                                                }
                                                                             }
-                                                                        }
-                                                                    }                       
-                                                                </Route>
-                                                            )
+                                                                        }                       
+                                                                    </Route>
+                                                                )
+                                                            }
                                                         }()
                                                     }
 

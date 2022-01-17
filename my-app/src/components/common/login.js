@@ -6,10 +6,6 @@ import $gl from "./global"
 import _ from "lodash"
 
 
-var host=$gl.fn.getHost();
-var port=$gl.fn.getPort()
-var protocall=$gl.fn.getProtocall();
-
 const mapStateToProps = function(state , owsProps){
     return {
         count : state.count,
@@ -26,41 +22,6 @@ const mapStateToProps = function(state , owsProps){
 }
 
 
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
-function createCookie(name,value,days) {
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 *1000));
-        var expires = "; expires=" + date.toGMTString();
-    } else {
-        var expires = "";
-    }
-    document.cookie = name + "=" + value + expires + "; path=/";
-}
-
-function readCookie(name) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0;i < ca.length;i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') {
-            c = c.substring(1,c.length);
-        }
-        if (c.indexOf(nameEQ) == 0) {
-            return c.substring(nameEQ.length,c.length);
-        }
-    }
-    return null;
-}
-
-function eraseCookie(name) {
-    createCookie(name,"",-1);
-}
 
 export const isAuth=function(){
 
@@ -93,7 +54,7 @@ export const isAuth=function(){
         }
     }
     
-    var url=protocall + "//" + host + ":" + port + "/isAuth"; 
+    var url=$gl.url + "/isAuth"; 
     fetch(url, {
         method: 'POST',
         mode: 'cors',
@@ -146,7 +107,7 @@ export const logout=function(){
         }
     }
     
-    var url=protocall + "//" + host + ":" + port + "/logout"; 
+    var url=$gl.url + "/logout"; 
     fetch(url , {
         method: 'POST',
         mode: 'cors',
@@ -173,7 +134,7 @@ export const logout=function(){
 }
 
 function Login({loggedin , login , logout , addval}){
-    var [userinp,setUserinp]=useState(getCookie("userid"))
+    var [userinp,setUserinp]=useState($gl.getCookie("userid"))
     var [passinp,setPassinp]=useState("")
     
     var props=arguments[0]
@@ -213,7 +174,7 @@ function Login({loggedin , login , logout , addval}){
                 }
             }
             
-            var url=protocall + "//" + host + ":" + port + "/login"; 
+            var url=$gl.url + "/login"; 
             fetch(url , {
                 method: 'POST',
                 mode: 'cors',
@@ -314,7 +275,7 @@ function Login({loggedin , login , logout , addval}){
                                 loginUser( { userid : userinp, password : passinp} , function(dt){                              
                                     if (dt.data.loggedin===true){
                                         var token=dt.data.token;                                        
-                                        createCookie("userid" , userinp)                                        
+                                        $gl.createCookie("userid" , userinp)                                        
                                         login({"type" : "login"})                                                
                                     }
                                    
@@ -328,10 +289,10 @@ function Login({loggedin , login , logout , addval}){
                     type='button'  onClick={
                         function(){
                             loginUser( { userid : userinp, password : passinp} , function(dt){
-                                console.log(dt)
+                                
                                 if (dt.data.loggedin===true){
                                     var token=dt.data.token;                                                
-                                    createCookie("userid" , userinp)                                                
+                                    $gl.createCookie("userid" , userinp)                                                
                                     login({"type" : "login"})                                                
                                 }
                                 

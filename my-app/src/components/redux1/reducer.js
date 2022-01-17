@@ -1,3 +1,6 @@
+import _ from "lodash"
+import {globalState}  from "../custom/globalStateReducer"
+
 var initialState = {
     count:0,
     loggedin: false,
@@ -6,10 +9,14 @@ var initialState = {
     global:{}
 }
 
+_.merge(initialState , _.cloneDeep(globalState.initialState))
 
 const myReducer=function(state =initialState , action ){
     const newState={...state} //works for short function type ()=>{}
     //var newState=state;
+
+    globalState.myReducer(newState , action)
+   
 
     if ( action.type=== 'addval' ){
       newState.count=newState.count  + 2
@@ -33,7 +40,9 @@ const myReducer=function(state =initialState , action ){
       console.log(action.payload)
     }
 
-   
+    
+  
+
     return  newState;
 }
 

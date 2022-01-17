@@ -23,3 +23,6 @@ rsync -avgpour ../my-app/src/components/custom ./backupdir/my-app/src/components
 rsync -avgpour ../nodeapp/l_node_modules_auto*  ./backupdir/nodeapp
 rsync -avgpour ../nodeapp/package.json  ./backupdir/nodeapp
 
+#rsync -avgpour ./backupdir /mnt/c/nodeproj/backup/localvrtweb
+#zip -ru  /mnt/c/nodeproj/backup/backupdir$(date +%Y%m).zip  /mnt/c/nodeproj/backup/localvrtweb/backupdir
+# $(date +%Y%m%d%H%M%S)
