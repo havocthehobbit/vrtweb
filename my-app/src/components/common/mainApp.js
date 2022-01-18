@@ -340,6 +340,9 @@ function MainApp({loggedin , login , logout , addval , theme}){
                             var Linkstyle={color : textcolor};
                             var ctdivs_style={ color : menutextcolor , float : "left"  , width : 90, height : 30 , textAlign : "center" , padding : 5 , background : "lightgrey" , border : "solid thin grey" };
                             
+                            var menuHoverStyle={ background : "orange" }
+                            var menuSelectStyle={ background : "lightblue"}
+
                             //theme
                             if ( theme==="dark"){
                                 ctdivs_style.color="white"
@@ -382,8 +385,10 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                 mmenuStyle.main0=_.merge({ position : "relative" , margin : 4,  width : or_menu_width , height : menu_height }, displayMenu.menuStyle.main0 )
                                 mmenuStyle.main1=_.merge({ position : "absolute" ,top : 0,  margin : 4,  width : menu_width  } , displayMenu.menuStyle.main1)
 
-                                mmenuStyle.main_inst=_.merge( ctdivs_style_small  ,displayMenu.menuStyle.main_inst )                               
-                              
+                                mmenuStyle.main_inst=_.merge( ctdivs_style_small  ,displayMenu.menuStyle.main_inst )  
+
+                                menuHoverStyle=displayMenu.menuStyle.hover
+                                menuSelectStyle=displayMenu.menuStyle.select
                             }
 
                             
@@ -402,10 +407,10 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     var newStyleIns=_.clone(mmenuStyle.main_inst)
                                     
                                     if ( hoverMenuCurr.name===mymenuname){
-                                        newStyleIns.background="orange"
+                                        newStyleIns=_.merge(newStyleIns,menuHoverStyle )
                                     }
                                     if ( selectMenuCurr.name===mymenuname){
-                                        newStyleIns.background="lightblue"
+                                        newStyleIns=_.merge(newStyleIns,menuSelectStyle )
                                     }
 
                                     all_menus_arr.push(
@@ -446,12 +451,12 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     var newStyleIns=_.clone(mmenuStyle.main_inst)
                                     
                                     if ( hoverMenuCurr.name===mymenuname){
-                                        newStyleIns.background="orange"
+                                        newStyleIns=_.merge(newStyleIns,menuHoverStyle )
                                     }
                                     if ( selectMenuCurr.name===mymenuname){
-                                        newStyleIns.background="lightblue"
+                                        newStyleIns=_.merge(newStyleIns,menuSelectStyle )
                                     }
-
+                                        console.log(newStyleIns.background ," - " ,menuHoverStyle)
                                     all_menus_arr.push(
                                         <div key={++key_menu} style={{position : "relative" }} >
                                             <Link to={'/' + mymenuname} myname={mymenuname} onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } >
@@ -488,15 +493,16 @@ function MainApp({loggedin , login , logout , addval , theme}){
 
                                 if (isAllowed){
                                     var newStyleIns=_.clone(mmenuStyle.main_inst)
+                                    var mymenuname=r.name
                                     if ( !_.isUndefined(r.style)){
                                         newStyleIns=_.merge(_.clone(mmenuStyle.main_inst),r.style)
                                        
                                     }
-                                    if ( hoverMenuCurr.name===r.name){
-                                        newStyleIns.background="orange"
+                                    if ( hoverMenuCurr.name===mymenuname){
+                                        newStyleIns=_.merge(newStyleIns,menuHoverStyle )
                                     }
-                                    if ( selectMenuCurr.name===r.name){
-                                        newStyleIns.background="lightblue"
+                                    if ( selectMenuCurr.name===mymenuname){
+                                        newStyleIns=_.merge(newStyleIns,menuSelectStyle )
                                     }
                                     all_menus_arr.push(
                                         <div key={++key_menu} style={{position : "relative" }} >                                            
@@ -523,10 +529,10 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     var newStyleIns=_.clone(mmenuStyle.main_inst)
                                     
                                     if ( hoverMenuCurr.name===mymenuname){
-                                        newStyleIns.background="orange"
+                                        newStyleIns=_.merge(newStyleIns,menuHoverStyle )
                                     }
                                     if ( selectMenuCurr.name===mymenuname){
-                                        newStyleIns.background="lightblue"
+                                        newStyleIns=_.merge(newStyleIns,menuSelectStyle )
                                     }
 
                                     all_menus_arr.push(
