@@ -391,7 +391,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     menuHoverStyle=displayMenu.menuStyle.hover
                                 }
 
-                                if (!_.isUndefined(displayMenu.menuStyle)){
+                                if (!_.isUndefined(displayMenu.menuStyle.select)){
                                     menuSelectStyle=displayMenu.menuStyle.select
                                 }
                                 
