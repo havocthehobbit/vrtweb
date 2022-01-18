@@ -501,7 +501,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     all_menus_arr.push(
                                         <div key={++key_menu} style={{position : "relative" }} >                                            
                                             <div key={++key_menu}   >
-                                                <Link to={"/"+ r.name} myname={mymenuname} onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } >
+                                                <Link to={"/"+ r.name} myname={r.name} onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } >
                                                     <div style={newStyleIns}  
                                                         myname={r.name}
                                                         onMouseEnter={(e)=>{set_hoverMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
