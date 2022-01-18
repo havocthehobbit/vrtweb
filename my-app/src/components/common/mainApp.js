@@ -487,7 +487,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                 }
 
                                 if (isAllowed){
-                                    var newStyleIns=mmenuStyle.main_inst
+                                    var newStyleIns=_.clone(mmenuStyle.main_inst)
                                     if ( !_.isUndefined(r.style)){
                                         newStyleIns=_.merge(_.clone(mmenuStyle.main_inst),r.style)
                                        
