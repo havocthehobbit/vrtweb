@@ -387,8 +387,14 @@ function MainApp({loggedin , login , logout , addval , theme}){
 
                                 mmenuStyle.main_inst=_.merge( ctdivs_style_small  ,displayMenu.menuStyle.main_inst )  
 
-                                menuHoverStyle=displayMenu.menuStyle.hover
-                                menuSelectStyle=displayMenu.menuStyle.select
+                                if (!_.isUndefined(displayMenu.menuStyle.hover)){
+                                    menuHoverStyle=displayMenu.menuStyle.hover
+                                }
+
+                                if (!_.isUndefined(displayMenu.menuStyle)){
+                                    menuSelectStyle=displayMenu.menuStyle.select
+                                }
+                                
                             }
 
                             
