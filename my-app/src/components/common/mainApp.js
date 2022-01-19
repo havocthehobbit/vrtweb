@@ -388,11 +388,11 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                 mmenuStyle.main_inst=_.merge( ctdivs_style_small  ,displayMenu.menuStyle.main_inst )  
 
                                 if (!_.isUndefined(displayMenu.menuStyle.hover)){
-                                    menuHoverStyle=displayMenu.menuStyle.hover
+                                    menuHoverStyle=_.merge(menuHoverStyle,displayMenu.menuStyle.hover)
                                 }
 
-                                if (!_.isUndefined(displayMenu.menuStyle.select)){
-                                    menuSelectStyle=displayMenu.menuStyle.select
+                                if (!_.isUndefined(displayMenu.menuStyle.select)){                                   
+                                    menuSelectStyle=_.merge(menuSelectStyle,displayMenu.menuStyle.select)
                                 }
                                 
                             }
