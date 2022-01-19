@@ -20,8 +20,10 @@
                 "color???" : "orange" , "float" : "left"  , "width" : 90, "height" : 20 , "textAlign" : "center" , 
                 "padding" : 5 , "background" : "blue" , "border" : "solid thin grey",
                 "borderRadius" : 10
-            }
+            },
             
+            "hover" : {}, 
+            "select" : {}
             
         }
     },
