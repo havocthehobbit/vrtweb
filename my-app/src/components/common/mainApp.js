@@ -1,7 +1,7 @@
 import '../../App.css';
 import '../../css_general/general.css';
 
-import { useState , useEffect,LazyLoad,Suspense}  from 'react'
+import { useState , useEffect,LazyLoad,Suspense,useRef}  from 'react'
 
 //import { BrowserRouter as Router, NavLink } from 'react-router-dom';
 //import {  } from 'react-router-dom';
@@ -103,7 +103,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
 
 
 
-
+    var initlogin=(useRef(0))
     
 
 
@@ -113,7 +113,18 @@ function MainApp({loggedin , login , logout , addval , theme}){
 
 
     
-    useEffect(function(){        
+    useEffect(function(){       
+            initlogin.current++
+            if (initlogin.current===1){                
+                var menuCookie=$gl.cookie("currMainMenu")
+                /*
+                if (!_.isUndefined(menuCookie)){
+                    return ( <Redirect to={"/" + menuCookie } /> )
+                }else{
+                    return ( <Redirect to="/" /> )
+                }
+                */
+            } 
             getUserDetail(function(){
                 
             }); 
@@ -305,14 +316,26 @@ function MainApp({loggedin , login , logout , addval , theme}){
         <div style={{ position : "relative"}} >
              {                
                 function(){ 
-                    
+                    var logoutStyle={ zIndex:999, right : "5%",position : "absolute"}
+                    var logoutStyleLabel={}
+                    var logoutStyleButton={}
                     if (loggedin){ 
-
+                        if (!_.isUndefined(displayMenu.menuStyle)){
+                            if (!_.isUndefined(displayMenu.menuStyle.lougoutStyle)){
+                                logoutStyle=_.merge(logoutStyle,displayMenu.menuStyle.lougoutStyle)
+                            }
+                            if (!_.isUndefined(displayMenu.menuStyle.logoutStyleLabel)){
+                                logoutStyleLabel=_.merge(logoutStyleLabel,displayMenu.menuStyle.logoutStyleLabel)
+                            }
+                            if (!_.isUndefined(displayMenu.menuStyle.lougoutStyleButton)){
+                                logoutStyleButton=_.merge(logoutStyleButton,displayMenu.menuStyle.lougoutStyleButton)
+                            }
+                        }
                         return ( 
-                            <div style={{ zIndex:999, right : "5%",position : "absolute"}}>
-                                <label>loggedin : {loginstr } </label>
+                            <div style={logoutStyle}>
+                                <label style={logoutStyleLabel} >loggedin : {loginstr } </label>
                                                             
-                                <input type='button' defaultValue='logout'  onClick={
+                                <input style={logoutStyleButton} type='button' defaultValue='logout'  onClick={
                                                         function(){
 
                                                             logoutuser({} , function(){
@@ -430,7 +453,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                     myname={mymenuname}
                                                     onMouseEnter={(e)=>{set_hoverMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
                                                     onMouseLeave={(e)=>{ set_hoverMenuCurr({ name : "" }) }}
-                                                    onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
+                                                    onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) ; $gl.cookie( "currMainMenu" , e.target.getAttribute("myname"))  }  } 
                                                 >
                                                         <HomeOutlined style={{color : "mediumseagreen" }}/>
                                                         home
@@ -462,7 +485,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     if ( selectMenuCurr.name===mymenuname){
                                         newStyleIns=_.merge(newStyleIns,menuSelectStyle )
                                     }
-                                        console.log(newStyleIns.background ," - " ,menuHoverStyle)
+                                        
                                     all_menus_arr.push(
                                         <div key={++key_menu} style={{position : "relative" }} >
                                             <Link to={'/' + mymenuname} myname={mymenuname} onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } >
@@ -470,7 +493,8 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                     myname={mymenuname}
                                                     onMouseEnter={(e)=>{set_hoverMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
                                                     onMouseLeave={(e)=>{ set_hoverMenuCurr({ name : "" }) }}
-                                                    onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
+                                                    onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) ; $gl.cookie( "currMainMenu" , e.target.getAttribute("myname"))  }  } 
+
                                                 
                                                 >
                                                     Code Gen
@@ -518,7 +542,8 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                         myname={r.name}
                                                         onMouseEnter={(e)=>{set_hoverMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
                                                         onMouseLeave={(e)=>{ set_hoverMenuCurr({ name : "" }) }}
-                                                        onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
+                                                        onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) ; $gl.cookie( "currMainMenu" , e.target.getAttribute("myname"))  }  } 
+
                                                     >{r.label}</div>
                                                 </Link> 
                                             </div>
@@ -549,7 +574,8 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                     myname={mymenuname}
                                                     onMouseEnter={(e)=>{set_hoverMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
                                                     onMouseLeave={(e)=>{ set_hoverMenuCurr({ name : "" }) }}
-                                                    onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
+                                                    onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) ; $gl.cookie( "currMainMenu" , e.target.getAttribute("myname"))  }  } 
+
                                                 >
                                                     <SettingOutlined style={{color : "mediumseagreen" }}/>
                                                     settings
@@ -600,7 +626,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                             function(){                               
                                                                 if (loggedin){
                                                                     return ( <div>{r.cmpt}</div> )
-                                                                }else{
+                                                                }else{                                                                    
                                                                     return ( <Redirect to="/" /> )
                                                                 }
                                                             }
@@ -647,6 +673,14 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                                                             </div> 
                                                                                 )
                                                                             }else{
+                                                                                /* //later implement a remember last menu setting per a user  
+                                                                                var menuCookie=$gl.cookie("currMainMenu")
+                                                                                if (!_.isUndefined(menuCookie)){
+                                                                                    return ( <Redirect to={"/" + menuCookie } /> )
+                                                                                }else{
+                                                                                    return ( <Redirect to="/" /> )
+                                                                                }
+                                                                                */
                                                                                 return ( <displayMenu.Home/> )
                                                                             }
                                                                         }

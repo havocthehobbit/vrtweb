@@ -182,8 +182,7 @@ function Login({loggedin , login , logout , addval}){
                 body: JSON.stringify(
                     { "userid" : userid, password : password , "loginFnType" : loginFnType }
                 ),
-                headers: {
-                    //'x-auth-token': getCookie("token"),
+                headers: {                    
                     'Access-Control-Allow-Origin':'*',
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'                

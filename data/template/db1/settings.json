@@ -1,5 +1,6 @@
 {   
     "defPage" : "mainwall",
+    "__def_age_comment__" : "customPageMainApp/mainwall - customise first page on login (CustomPageMainApp.js) to customise unlogged in page edit (frontpage.js) not this property  ",
     "displayMenu" : {        
         "all" : {
             "mainwall" : { "active" : true  },
@@ -23,7 +24,12 @@
             },
             
             "hover" : {}, 
-            "select" : {}
+            "select" : {},
+
+            "lougoutStyle" : {}, 
+            "logoutStyleLabel" : {}, 
+            
+            "lougoutStyleButton" : {}
             
         }
     },

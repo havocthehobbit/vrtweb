@@ -35,11 +35,11 @@ function Settings({ global , globalChange , theme ,themeChange}){
     var [themeval,changeThemeVal]=useState(theme)
     var [fpImage,setFPImage]=useState("")
 
-    console.log( "themeval : " , themeval , theme)
+    //console.log( "themeval : " , themeval , theme)
 
     
     useEffect(()=>{
-        console.log( "themeval UE : " , themeval , theme)
+        //console.log( "themeval UE : " , themeval , theme)
         changeThemeVal(theme)
 
         testmain_count++
