@@ -125,7 +125,7 @@ class Rcm extends React.Component {
         this.state={ uuid : "" , name : name , type : "", lang : lang, showmenu : showmenu
                      , displaySnippets : false
                      , snippetCurrentLang : "js",snippetCurrentCodeName : "" ,  snippetCurrentCode : "" 
-                    , snippetPos : "left"
+                    , snippetPos : "left" , style : style
                 }
         
         this.ed = {};
@@ -183,7 +183,7 @@ class Rcm extends React.Component {
             snippetsPos={ left : undefined , right : 0}
         }
 
-
+        var cmstyle=tt.state.style
         var codemirrorOptions={
             mode: tt.state.lang, 
             /* mode: "javascript", */ 
@@ -433,6 +433,7 @@ class Rcm extends React.Component {
 
 
                 <CodeMirrorControl
+                    style={cmstyle}
                     editorDidMount={(editor) => { tt.ed = editor } }                    
                     value={jstest}
                     options={codemirrorOptions}                   

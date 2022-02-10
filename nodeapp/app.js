@@ -317,6 +317,15 @@ var server = http.listen( $vserv.data.port , $vserv.data.host  , function () {
         })
         // end of dynamic modules routes
 
+        app.get("/*" ,function(req , res){ // defualt 404 route
+            //res.sendFile(path.join(__dirname, pub ), function(err) {
+            res.sendFile( pub + "/" + "index.html" , function(err) {
+                //if (err) {
+                //  res.status(500).send(err)
+                //}
+              })
+        })
+
 });
 
 
@@ -415,14 +424,7 @@ var template_o={
 }
 
 
-app.get("/*" ,function(req , res){
-    //res.sendFile(path.join(__dirname, pub ), function(err) {
-    res.sendFile( pub + "/" + "index.html" , function(err) {
-        //if (err) {
-        //  res.status(500).send(err)
-        //}
-      })
-})
+
 
 app.post("/news" ,function(req , res){
         

@@ -83,6 +83,73 @@
     tsv_to_csv - 
         (jsObj , cb)
 
+    batchRunTimed - 
+        waterfall timed kick off a number of functions  evey few seconds
+        (params, runitems_arr ,cb , cb_end){ // waterfall timed kick off 
+             cb - function that will be kicked off every time , // you can add a secand parameter and run .next() member funciton to force it to run next function instead of waiting for interval
+             cb_end , function that will be kicked off at the end 
+            params -  {  count : 3,interval : 3000} // count , how many at a time to kick off  // interval - time to wait before kicking off the next batch
+
+                example 1 : 
+                            batchRun( 
+                                        {  
+                                            count : 3,interval : 3000 , 
+                                            
+                                        } , 
+                                        custtest , 
+                                        function(ret , next){ // ret - current array item ,   next.arr_len - remainder arr items left 
+                                            // console.log( "running : ", new Date(), " - " ,ret)
+                                            //or
+                                            setTimeout(function(){ // essentionl is the FTP replacement funciton
+                                                console.log( "running : ", new Date(), " - " ,ret)
+                                                
+                                            },2000)
+                                            
+                                        }, 
+                                        function(){
+                                            console.log( "...done" )
+                                        }
+                                )
+
+                example 2 : 
+                            batchRun( 
+                                        {  
+                                            count : 3,interval : 3000 , 
+                                            waitfornext : true
+                                        } , 
+                                        custtest , 
+                                        function(ret , next){                                       
+                                            setTimeout(function(){ // for example ,you could replace this with a FTP replacement funciton
+                                                console.log( "running : ", new Date(), " - " ,ret)
+                                                next.next() // this will kick off the next one once the last one is finished
+                                            },2000)
+                                            
+                                        }, 
+                                        function(){
+                                            console.log( "...done" )
+                                        }
+                                )
+
+                example 3 : run one after eachother 
+
+                            batchRun( 
+                                        {  
+                                            count : 3,interval : 3000 ,                                
+                                        } , 
+                                        custtest , 
+                                        function(ret , next){
+                                            console.log( "running : ", new Date(), " - " ,ret)
+
+                                            next.next()
+
+                                            return
+                                        
+                                        }, 
+                                        function(){
+                                            console.log( "...done" )
+                                        }
+                                )
+
     searchJS -
         ...
         searchJS( [{ name :"joane"} , { name : "rob" }] ,"j" , "name" )
