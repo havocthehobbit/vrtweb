@@ -137,20 +137,74 @@ var depcy={
         this.recs.forEach(function(r,i){
             var status=true
             var type="f"
+            if (r.type==="mkdir" || r.type==="md"){
+                if ($gl.mds.fs.existsSync(r.dir)) {
+                    status=true 
+                    type="md"                  
+                }else{
+                    status=false
+                    type="md"   
+                    console.log(`\n\n\nerror : ${r.dir} doenst exists\n\n\n`)
+                }
+            }
+            if (r.type==="dir" || r.type==="d"){
+                if ($gl.mds.fs.existsSync(r.dir)) {
+                    status=true 
+                    type="d"                  
+                }else{
+                    status=false
+                    type="d"   
+                    console.log(`\n\n\nerror : ${r.dir} doenst exists\n\n\n`)
+                }
+            }
             if (r.type==="file" || r.type==="f"){
                 if ($gl.mds.fs.existsSync(r.file)) {
                     status=true 
                     type="f"                  
                 }else{
                     status=false
+                    type="f"
                     console.log(`\n\n\nerror : ${r.file} doenst exists\n\n\n`)
                 }
             }
 
             if (!status){
-                console.log(`updating from template file : ${r.file}` )
+                if (type==="md"){
+                    console.log(`updating from template directory : ${r.dir}` )
+                    if (r.res.action==="makedir"){
+
+                        if (!_.isUndefined(r.test)){
+                            if (r.test){
+                                return;
+                            }
+                        }
+
+                        var cmdinit=`mkdir -p ${r.dir}`
+                        console.log(cmdinit)
+                        $gl.shell(cmdinit , function(result){ console.log("shell result : " ,result)})
+                        
+                    }
+                }
+
+                if (type==="d"){
+                    console.log(`updating from template directory : ${r.dir}` )
+                    if (r.res.action==="copydir"){
+
+                        if (!_.isUndefined(r.test)){
+                            if (r.test){
+                                return;
+                            }
+                        }
+
+                        var cmdinit=`mkdir -p ${r.dir} ;cp -Rp ${r.res.src } ${r.dir}`
+                        console.log(cmdinit)
+                        $gl.shell(cmdinit , function(result){ console.log("shell result : " ,result)})
+                        
+                    }
+                }
 
                 if (type==="f"){
+                    console.log(`updating from template file : ${r.file}` )
                     if (r.res.action==="fetchtemplate"){
 
                         if (!_.isUndefined(r.test)){
@@ -159,9 +213,9 @@ var depcy={
                             }
                         }
 
-                        var cmdinit=`cp -Rp ${r.res.src } ${r.file}`
+                        var cmdinit=`cp -p ${r.res.src } ${r.file}`
                         console.log(cmdinit)
-                        $gl.shell(cmdinit , function(result){ console.log("shell resukt : " ,result)})
+                        $gl.shell(cmdinit , function(result){ console.log("shell result : " ,result)})
                         
                     }
                 }
@@ -181,7 +235,28 @@ var depcy={
 
 
 }
+// ./install_update/templates/my-app/package.json
+// ./install_update/templates/nodeapp/package.json
 
+
+
+depcy.add({ name : "nodejspackages", file : "../nodeapp/package.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../install_update/templates/nodeapp/package.json" } })
+depcy.add({ name : "reactjspackages", file : "../my-app/package.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../install_update/templates/my-app/package.json" } })
+
+depcy.add({ name : "addonsInstallNewDir", dir : "../addons/install" , type :  "md" , res : { action : "makedir"  } })
+depcy.add({ name : "addonsArchiveNewDir", dir : "../addons/archive" , type :  "md" , res : { action : "makedir"  } })
+depcy.add({ name : "addonsFaieldNewDir", dir : "../addons/failed" , type :  "md" , res : { action : "makedir"  } })
+depcy.add({ name : "addonsFaieldNewDir", dir : "../addons/temp" , type :  "md" , res : { action : "makedir"  } })
+depcy.add({ name : "addonsReg", file : "../addons/reg.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../addons/templates/reg.json" } })
+
+
+depcy.add({ name : "datasettings", file : "../data/settings.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../data/template/settings.json" } })
+
+depcy.add({ name : "datadb1", dir : "../data/db1" , type :  "d" , res : { action : "copydir" , src : "../data/template/db1" } })
+
+depcy.add({ name : "datadbs", dir : "../data/dbs" , type :  "md" , res : { action : "makedir"  } })
+
+depcy.add({ name : "custommenusNewDir", dir : "../my-app/src/components/custom" , type :  "md" , res : { action : "makedir"  } })
 depcy.add({ name : "custommenus", file : "../my-app/src/components/custom/custommenus.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/custommenus.js" } })
 depcy.add({ name : "cmmode", file : "../my-app/src/components/custom/cmmode.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/cmmode.js" } })
 depcy.add({ name : "frontpage", file : "../my-app/src/components/custom/frontpage.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/frontpage.js" } })
@@ -190,8 +265,55 @@ depcy.add({ name : "customPageMainApp", file : "../my-app/src/components/custom/
 depcy.add({ name : "custommenus", file : "../my-app/src/components/custom/custommenus.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/custommenus.js" } })
 depcy.add({ name : "cmmode", file : "../my-app/src/components/custom/cmmode.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/cmmode.js" } })
 
+depcy.add({ name : "clientelectronEjs", file : "../clients/electron/app/public/electron.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../clients/electron/app/public/templates/electron.js" } })
+depcy.add({ name : "clientelectronPreLdjs", file : "../clients/electron/app/public/preload.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../clients/electron/app/public/templates/preload.js" } })
+depcy.add({ name : "clientelectronPackage", file : "../clients/electron/app/package.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../clients/electron/app/templates/package.json" } })
+
+
 
 depcy.init()
+
+// install plugin
+var installaddon=function(){
+
+}
+//check if empty
+var addoninstallpath="../addons/install"
+fs.readdir(addoninstallpath, function(err, files) {
+    if (err) {
+       // some sort of error
+       console.log( "addons/install - error : " , err)
+    } else {
+       if (!files.length) {
+           // directory appears to be empty
+       }else{
+            // process each one
+            console.log("found plugins")
+            console.log("files : " , files)
+            files.forEach(function(f,i){
+                var fpath=addoninstallpath + "/" + f
+                var isFile=true
+                var stat=fs.lstatSync( fpath);
+                if (stat.isDirectory()) {                    
+                    isFile=false
+                }
+
+                if (isFile){
+                    if (f.endsWith(".vrt")){ // compressed addon
+
+                    }
+                }else{
+
+                }
+
+
+
+
+            })
+
+       }
+    }
+});
 
 
 

@@ -1,0 +1,24 @@
+##VRT
+
+
+first install yarn 
+npm i -g yarn
+
+
+if "node_modules" is does not exist yet then
+yarn
+
+
+#to start 
+"yarn electron:start"
+
+#sometime standard "yarn electron:start" script doesnt work , so then start react and npm seperatly
+#to start react on 3000
+yart start 
+#to start electron
+yarn electronmon . public\electron.js concurrently -k "cross-env BROWSER=none yarn start"
+
+
+extra
+#if electron mon isnt install and you get an erro try add it as a dev dependency
+yarn add -D concurrently cross-env electron electron-builder electronmon wait-on
