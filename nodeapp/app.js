@@ -1,131 +1,10 @@
 console.log(new Date())
 
+
 var $gl = require("./l_node_modules/global.js").gl;
-var lib_settings = require("./l_node_modules/global.js").settings;
-var $vserv =new lib_settings()
-
-var express = $gl.mds.express
-var app = express();
-var protocolH=$vserv.data.httpProtoString
-var http
-if (protocolH==="http"){
-    http = $gl.mds.http.Server(app);
-}else {   
-    var sslkey= $gl.mds.fs.readFileSync($vserv.data.sslkey);
-    var sslcert= $gl.mds.fs.readFileSync($vserv.data.sslcert);
-    http = $gl.mds.https.Server({ key : sslkey , cert : sslcert },app);
-    
-
-}
-
 var fs = $gl.mds.fs;
 var path =$gl.mds.path;
-
 var _ = $gl.mds.lodash;
-
-var cookieParser = $gl.mds.cookieParser;
-var cookieExpires = 315360000000 //10 * 365 * 24 * 60 * 60 * 1000 === 315360000000, or 10 years in milliseconds
-if (!_.isUndefined($vserv.data.cookieExpires)){
-    cookieExpires=$vserv.data.cookieExpires
-}
-
-
-const multer = $gl.mds.multer;
-
-var jwt = $gl.mds.jsonwebtoken;
-jwtoptions=$vserv.data.jwtoptions
-
-var $test_data = require("./l_node_modules/test_data.js").test_data;
-
-app.use(cookieParser($vserv.data.cookieSecret));
-
-app.use(express.json());		// no longer need body parser , its built into express now .
-app.use(express.urlencoded({extended: true})); //Parse URL-encoded bodies
-
-//var csv = require("csv");
-
-
-var cors = $gl.mds.cors;
-const { emitKeypressEvents } = $gl.mds.readline;
-
-var cors_param={
-                    origin: [
-                                /http/     // regular expression to allow any source server anything cause * is not allowed
-                            ]
-                    , credentials: true
-                    ,methods: ["GET", "POST"]
-                }
-var cors_paramsF1=cors( cors_param ) 
-app.use( "*" , cors_paramsF1 );
-
-const io = $gl.mds.socketio(http,  { cors : cors_param } );
-
-var mdsfn={} ;
-var mds={} ;
-var mdsc={} ;
-var auto_mod_folders=[]
-
-
-var temp_DIR = path.join(__dirname, 'l_node_modules_fn');
-mdsfn=$gl.autoLoadModules(temp_DIR , true);
-if(false){
-    //LoadModules(DIR );
-    //console.log( "mds : " , mds)
-    //mds.testmod2.al3()
-
-    //mdsfn=$gl.autoLoadModules(temp_DIR , true);
-    console.log( "mds : " , mdsfn)
-    mdsfn.al3()
-}
-/*
-var temp_DIR = path.join(__dirname, 'l_node_modules_auto');
-mds=$gl.autoLoadModules(temp_DIR);
-if (false){    
-    console.log( "mds : " , mds)
-    mds.testmod2.al3()
-}
-*/
-
-var temp_DIR = path.join(__dirname, 'l_node_modules_auto');
-mds=$gl.autoLoadModules(temp_DIR, {vserv : $vserv});
-if (false){    
-    console.log( "mds : " , mds)
-    mds.testmod2.al3()
-}
-// load auto_custom_ libs
-var stat=fs.lstatSync("./");
-var files=fs.readdirSync("./");
-
-_.each( files  , function(f,i){
-//if (stat.isDirectory()) {
-    var stat=fs.lstatSync(f) 
-    if (stat.isDirectory()) {
-        if (f.startsWith("l_node_modules_auto_") ){
-            auto_mod_folders.push(f)
-            console.log( "f " , f )
-        }
-    }
-//}
-})
-
-_.each(auto_mod_folders , function(file,i){ // if starts with  l_node_modules_auto_ then auto load file in 
-    
-    var temp_DIR = path.join(__dirname, file);
-    mdsc=$gl.autoLoadModules(temp_DIR,{ vserv : $vserv});
-    mds=_.merge(mds, mdsc)
-})
-
-
-var reactbuildpath=__dirname + "/" + ".." + "/" +  "my-app" + "/" + "build"
-var pub= path.resolve( reactbuildpath );
-
-app.use(express.static('public'));
-
-app.use(  express.static(pub ) );
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 //////// init dependancies ////
@@ -272,6 +151,131 @@ depcy.add({ name : "clientelectronPackage", file : "../clients/electron/app/pack
 
 
 depcy.init()
+
+var lib_settings = require("./l_node_modules/global.js").settings;
+var $vserv =new lib_settings()
+
+var express = $gl.mds.express
+var app = express();
+var protocolH=$vserv.data.httpProtoString
+var http
+if (protocolH==="http"){
+    http = $gl.mds.http.Server(app);
+}else {   
+    var sslkey= $gl.mds.fs.readFileSync($vserv.data.sslkey);
+    var sslcert= $gl.mds.fs.readFileSync($vserv.data.sslcert);
+    http = $gl.mds.https.Server({ key : sslkey , cert : sslcert },app);
+    
+
+}
+
+
+
+var cookieParser = $gl.mds.cookieParser;
+var cookieExpires = 315360000000 //10 * 365 * 24 * 60 * 60 * 1000 === 315360000000, or 10 years in milliseconds
+if (!_.isUndefined($vserv.data.cookieExpires)){
+    cookieExpires=$vserv.data.cookieExpires
+}
+
+
+const multer = $gl.mds.multer;
+
+var jwt = $gl.mds.jsonwebtoken;
+jwtoptions=$vserv.data.jwtoptions
+
+var $test_data = require("./l_node_modules/test_data.js").test_data;
+
+app.use(cookieParser($vserv.data.cookieSecret));
+
+app.use(express.json());		// no longer need body parser , its built into express now .
+app.use(express.urlencoded({extended: true})); //Parse URL-encoded bodies
+
+//var csv = require("csv");
+
+
+var cors = $gl.mds.cors;
+const { emitKeypressEvents } = $gl.mds.readline;
+
+var cors_param={
+                    origin: [
+                                /http/     // regular expression to allow any source server anything cause * is not allowed
+                            ]
+                    , credentials: true
+                    ,methods: ["GET", "POST"]
+                }
+var cors_paramsF1=cors( cors_param ) 
+app.use( "*" , cors_paramsF1 );
+
+const io = $gl.mds.socketio(http,  { cors : cors_param } );
+
+var mdsfn={} ;
+var mds={} ;
+var mdsc={} ;
+var auto_mod_folders=[]
+
+
+var temp_DIR = path.join(__dirname, 'l_node_modules_fn');
+mdsfn=$gl.autoLoadModules(temp_DIR , true);
+if(false){
+    //LoadModules(DIR );
+    //console.log( "mds : " , mds)
+    //mds.testmod2.al3()
+
+    //mdsfn=$gl.autoLoadModules(temp_DIR , true);
+    console.log( "mds : " , mdsfn)
+    mdsfn.al3()
+}
+/*
+var temp_DIR = path.join(__dirname, 'l_node_modules_auto');
+mds=$gl.autoLoadModules(temp_DIR);
+if (false){    
+    console.log( "mds : " , mds)
+    mds.testmod2.al3()
+}
+*/
+
+var temp_DIR = path.join(__dirname, 'l_node_modules_auto');
+mds=$gl.autoLoadModules(temp_DIR, {vserv : $vserv});
+if (false){    
+    console.log( "mds : " , mds)
+    mds.testmod2.al3()
+}
+// load auto_custom_ libs
+var stat=fs.lstatSync("./");
+var files=fs.readdirSync("./");
+
+_.each( files  , function(f,i){
+//if (stat.isDirectory()) {
+    var stat=fs.lstatSync(f) 
+    if (stat.isDirectory()) {
+        if (f.startsWith("l_node_modules_auto_") ){
+            auto_mod_folders.push(f)
+            console.log( "f " , f )
+        }
+    }
+//}
+})
+
+_.each(auto_mod_folders , function(file,i){ // if starts with  l_node_modules_auto_ then auto load file in 
+    
+    var temp_DIR = path.join(__dirname, file);
+    mdsc=$gl.autoLoadModules(temp_DIR,{ vserv : $vserv});
+    mds=_.merge(mds, mdsc)
+})
+
+
+var reactbuildpath=__dirname + "/" + ".." + "/" +  "my-app" + "/" + "build"
+var pub= path.resolve( reactbuildpath );
+
+app.use(express.static('public'));
+
+app.use(  express.static(pub ) );
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 // install plugin
 var installaddon=function(){
