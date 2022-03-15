@@ -1,5 +1,35 @@
 console.log(new Date())
 
+var  execSync = require('child_process').execSync;
+
+process.argv.forEach(function (val, index, array) {
+    if (index > 1){
+        //console.log("prompt : ", index + ': ' + val);
+    }
+    
+    
+    if (val==="-h" || val==="-help" || val==="--help"){
+        var help= `--------HELP------\n` 
+            help+=`====================\n` 
+            help+=`-dip : overide data/settings with default IP address\n` 
+            help+=`port : overide data/settings port\n` 
+            help+=`\n` 
+            help+=`-npmnode : install react packages\n` 
+            help+=`-npmreact : install react packages\n` 
+            console.log( help )
+        process.exit()
+    }
+    
+    if (val==="-npmnode" || val==="--npmnode" ){
+        var shellinst=execSync(`npm install --save --force`)
+        console.log(shellinst)
+    }
+    if (val==="-npmreact" || val==="--npmreact" ){
+        var shellinst=execSync(`cd ../my-app ; npm install --save --force`)
+        console.log(shellinst)
+    }
+
+});
 
 var $gl = require("./l_node_modules/global.js").gl;
 var fs = $gl.mds.fs;
@@ -9,151 +39,119 @@ var _ = $gl.mds.lodash;
 
 //////// init dependancies ////
 
+var depcy=new $gl.depcy()
 
-var depcy={
-    recs : [],
-    check : function(){
-        this.recs.forEach(function(r,i){
-            var status=true
-            var type="f"
-            if (r.type==="mkdir" || r.type==="md"){
-                if ($gl.mds.fs.existsSync(r.dir)) {
-                    status=true 
-                    type="md"                  
-                }else{
-                    status=false
-                    type="md"   
-                    console.log(`\n\n\nerror : ${r.dir} doenst exists\n\n\n`)
-                }
-            }
-            if (r.type==="dir" || r.type==="d"){
-                if ($gl.mds.fs.existsSync(r.dir)) {
-                    status=true 
-                    type="d"                  
-                }else{
-                    status=false
-                    type="d"   
-                    console.log(`\n\n\nerror : ${r.dir} doenst exists\n\n\n`)
-                }
-            }
-            if (r.type==="file" || r.type==="f"){
-                if ($gl.mds.fs.existsSync(r.file)) {
-                    status=true 
-                    type="f"                  
-                }else{
-                    status=false
-                    type="f"
-                    console.log(`\n\n\nerror : ${r.file} doenst exists\n\n\n`)
-                }
-            }
+if (true){
+    depcy.add({ name : "nodejspackages", file : "../nodeapp/package.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../install_update/templates/nodeapp/package.json" } })
+    depcy.add({ name : "reactjspackages", file : "../my-app/package.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../install_update/templates/my-app/package.json" } })
 
-            if (!status){
-                if (type==="md"){
-                    console.log(`updating from template directory : ${r.dir}` )
-                    if (r.res.action==="makedir"){
+    depcy.add({ name : "addonsInstallNewDir", dir : "../addons/install" , type :  "md" , res : { action : "makedir"  } })
+    depcy.add({ name : "addonsArchiveNewDir", dir : "../addons/archive" , type :  "md" , res : { action : "makedir"  } })
+    depcy.add({ name : "addonsFaieldNewDir", dir : "../addons/failed" , type :  "md" , res : { action : "makedir"  } })
+    depcy.add({ name : "addonsFaieldNewDir", dir : "../addons/temp" , type :  "md" , res : { action : "makedir"  } })
+    depcy.add({ name : "addonsReg", file : "../addons/reg.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../addons/templates/reg.json" } })
 
-                        if (!_.isUndefined(r.test)){
-                            if (r.test){
-                                return;
-                            }
-                        }
 
-                        var cmdinit=`mkdir -p ${r.dir}`
-                        console.log(cmdinit)
-                        $gl.shell(cmdinit , function(result){ console.log("shell result : " ,result)})
-                        
-                    }
-                }
+    depcy.add({ name : "datasettings", file : "../data/settings.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../data/template/settings.json" } })
 
-                if (type==="d"){
-                    console.log(`updating from template directory : ${r.dir}` )
-                    if (r.res.action==="copydir"){
+    depcy.add({ name : "datadb1", dir : "../data/db1" , type :  "d" , res : { action : "copydir" , src : "../data/template/db1" } })
 
-                        if (!_.isUndefined(r.test)){
-                            if (r.test){
-                                return;
-                            }
-                        }
+    depcy.add({ name : "datadbs", dir : "../data/dbs" , type :  "md" , res : { action : "makedir"  } })
 
-                        var cmdinit=`mkdir -p ${r.dir} ;cp -Rp ${r.res.src } ${r.dir}`
-                        console.log(cmdinit)
-                        $gl.shell(cmdinit , function(result){ console.log("shell result : " ,result)})
-                        
-                    }
-                }
+    depcy.add({ name : "custommenusNewDir", dir : "../my-app/src/components/custom" , type :  "md" , res : { action : "makedir"  } })
+    depcy.add({ name : "custommenus", file : "../my-app/src/components/custom/custommenus.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/custommenus.js" } })
+    depcy.add({ name : "cmmode", file : "../my-app/src/components/custom/cmmode.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/cmmode.js" } })
+    depcy.add({ name : "frontpage", file : "../my-app/src/components/custom/frontpage.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/frontpage.js" } })
+    depcy.add({ name : "frontpage", file : "../my-app/src/components/custom/globalStateReducer.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/globalStateReducer.js" } })
+    depcy.add({ name : "customPageMainApp", file : "../my-app/src/components/custom/customPageMainApp.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/customPageMainApp.js" } })
+    depcy.add({ name : "custommenus", file : "../my-app/src/components/custom/custommenus.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/custommenus.js" } })
+    depcy.add({ name : "cmmode", file : "../my-app/src/components/custom/cmmode.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/cmmode.js" } })
 
-                if (type==="f"){
-                    console.log(`updating from template file : ${r.file}` )
-                    if (r.res.action==="fetchtemplate"){
+    depcy.add({ name : "clientelectronEjs", file : "../clients/electron/app/public/electron.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../clients/electron/app/public/templates/electron.js" } })
+    depcy.add({ name : "clientelectronPreLdjs", file : "../clients/electron/app/public/preload.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../clients/electron/app/public/templates/preload.js" } })
+    depcy.add({ name : "clientelectronPackage", file : "../clients/electron/app/package.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../clients/electron/app/templates/package.json" } })
 
-                        if (!_.isUndefined(r.test)){
-                            if (r.test){
-                                return;
-                            }
-                        }
+    depcy.check()
+    
+    ////////
 
-                        var cmdinit=`cp -p ${r.res.src } ${r.file}`
-                        console.log(cmdinit)
-                        $gl.shell(cmdinit , function(result){ console.log("shell result : " ,result)})
-                        
-                    }
-                }
+    var templatePckJsn= JSON.parse( $gl.mds.fs.readFileSync("../install_update/templates/nodeapp/package.json" , 'utf8') );
+    var PckJsn= JSON.parse( $gl.mds.fs.readFileSync("./package.json", 'utf8') );
+   
+    var hasnewPckjsn=false
+    _.each(templatePckJsn.dependencies ,(v , p)=>{
+        if (_.isUndefined(  PckJsn.dependencies[p] )){
+            hasnewPckjsn=true
+            console.log("please install --> nodeapp : npm i -s " , p ,    "     # ( " ,v, " ) ")
+        }        
 
-            }
-            
-
-        })
-        
-    },
-    add : function(rec){
-        this.recs.push(rec)
-    },
-    init : function(){
-        this.check()
+    })
+    if (hasnewPckjsn){
+        console.log("\n\n\n=========!!!!!!!!!!==========\n\n")
     }
-
-
 }
-// ./install_update/templates/my-app/package.json
-// ./install_update/templates/nodeapp/package.json
+
+//$gl.mds.prompt.start();
+//var prompt=$gl.mds.prompt
+
+//prompt.get("name", function(err, result) {
+//    console.log("Your name is ",result.name)
+//});
+
+
+//process.exit()
+
+
+var onSIGEND=function(){
+    console.log("!!!!! killed  process")
+}
+
+process.on('SIGTERM', () => {
+    //server.close(() => {
+      console.log('Process terminated')
+      onSIGEND()
+    //})
+})
 
 
 
-depcy.add({ name : "nodejspackages", file : "../nodeapp/package.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../install_update/templates/nodeapp/package.json" } })
-depcy.add({ name : "reactjspackages", file : "../my-app/package.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../install_update/templates/my-app/package.json" } })
 
-depcy.add({ name : "addonsInstallNewDir", dir : "../addons/install" , type :  "md" , res : { action : "makedir"  } })
-depcy.add({ name : "addonsArchiveNewDir", dir : "../addons/archive" , type :  "md" , res : { action : "makedir"  } })
-depcy.add({ name : "addonsFaieldNewDir", dir : "../addons/failed" , type :  "md" , res : { action : "makedir"  } })
-depcy.add({ name : "addonsFaieldNewDir", dir : "../addons/temp" , type :  "md" , res : { action : "makedir"  } })
-depcy.add({ name : "addonsReg", file : "../addons/reg.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../addons/templates/reg.json" } })
-
-
-depcy.add({ name : "datasettings", file : "../data/settings.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../data/template/settings.json" } })
-
-depcy.add({ name : "datadb1", dir : "../data/db1" , type :  "d" , res : { action : "copydir" , src : "../data/template/db1" } })
-
-depcy.add({ name : "datadbs", dir : "../data/dbs" , type :  "md" , res : { action : "makedir"  } })
-
-depcy.add({ name : "custommenusNewDir", dir : "../my-app/src/components/custom" , type :  "md" , res : { action : "makedir"  } })
-depcy.add({ name : "custommenus", file : "../my-app/src/components/custom/custommenus.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/custommenus.js" } })
-depcy.add({ name : "cmmode", file : "../my-app/src/components/custom/cmmode.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/cmmode.js" } })
-depcy.add({ name : "frontpage", file : "../my-app/src/components/custom/frontpage.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/frontpage.js" } })
-depcy.add({ name : "frontpage", file : "../my-app/src/components/custom/globalStateReducer.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/globalStateReducer.js" } })
-depcy.add({ name : "customPageMainApp", file : "../my-app/src/components/custom/customPageMainApp.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/customPageMainApp.js" } })
-depcy.add({ name : "custommenus", file : "../my-app/src/components/custom/custommenus.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/custommenus.js" } })
-depcy.add({ name : "cmmode", file : "../my-app/src/components/custom/cmmode.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/cmmode.js" } })
-
-depcy.add({ name : "clientelectronEjs", file : "../clients/electron/app/public/electron.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../clients/electron/app/public/templates/electron.js" } })
-depcy.add({ name : "clientelectronPreLdjs", file : "../clients/electron/app/public/preload.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../clients/electron/app/public/templates/preload.js" } })
-depcy.add({ name : "clientelectronPackage", file : "../clients/electron/app/package.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../clients/electron/app/templates/package.json" } })
-
-
-
-depcy.init()
 
 var lib_settings = require("./l_node_modules/global.js").settings;
 var $vserv =new lib_settings()
+
+
+
+process.argv.forEach(function (val, index, array) {
+    if (index > 1){
+        //console.log("prompt : ", index + ': ' + val);
+    }
+    
+
+    
+    if (val==="--setup" || val==="-setup"){
+        console.log( "setting up")
+        process.exit()
+    }
+
+    if (val==="--dip" || val==="-dip"){
+        //console.log( "setting up")
+        var newIP=execSync(`ip a l | grep "net " | grep eth | grep -v grep |tr '/' ' ' |awk '{ print $2 }'`)
+        newIP=newIP.toString().replace("\n" , "" ).trim()
+        console.log( "newIP : " , newIP )
+        $vserv.data.host=newIP
+    }
+
+    if (val==="--port" || val==="-port"){
+        $vserv.data.port=parseInt(array[index + 1 ] )
+    }
+
+    // ip a l | grep "net " | grep eth | grep -v grep |tr '/' ' ' |awk '{ print $2 }'
+});
+
+
+
+
 
 var express = $gl.mds.express
 var app = express();
@@ -167,7 +165,7 @@ if (protocolH==="http"){
     http = $gl.mds.https.Server({ key : sslkey , cert : sslcert },app);
     
 
-}
+} 
 
 
 
