@@ -32,3 +32,4 @@ gl.mds. -
     tesseract.js - text to image 
     node-schedule - scheduling tasks to kick off at certain time
     fuse.js - fuzzy search
+    yauzl & yazl - unzip and zip 
