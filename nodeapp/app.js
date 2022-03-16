@@ -12,10 +12,13 @@ process.argv.forEach(function (val, index, array) {
         var help= `--------HELP------\n` 
             help+=`====================\n` 
             help+=`-dip : overide data/settings with default IP address\n` 
-            help+=`port : overide data/settings port\n` 
+            help+=`-port : overide data/settings port\n` 
             help+=`\n` 
             help+=`-npmnode : install react packages\n` 
             help+=`-npmreact : install react packages\n` 
+            help+=`-npmreactbuild : npm build run react \n` 
+
+            
             console.log( help )
         process.exit()
     }
@@ -26,6 +29,11 @@ process.argv.forEach(function (val, index, array) {
     }
     if (val==="-npmreact" || val==="--npmreact" ){
         var shellinst=execSync(`cd ../my-app ; npm install --save --force`)
+        console.log(shellinst)
+    }
+
+    if (val==="-npmreactbuild" || val==="--npmreactbuild" ){
+        var shellinst=execSync(`cd ../my-app ; npm run build`)
         console.log(shellinst)
     }
 
