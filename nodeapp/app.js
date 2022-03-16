@@ -81,7 +81,7 @@ if (true){
 
     depcy.check()
     
-    ////////
+    //////// node js compare template package.json to custom current
 
     var templatePckJsn= JSON.parse( $gl.mds.fs.readFileSync("../install_update/templates/nodeapp/package.json" , 'utf8') );
     var PckJsn= JSON.parse( $gl.mds.fs.readFileSync("./package.json", 'utf8') );
@@ -91,6 +91,49 @@ if (true){
         if (_.isUndefined(  PckJsn.dependencies[p] )){
             hasnewPckjsn=true
             console.log("please install --> nodeapp : npm i -s " , p ,    "     # ( " ,v, " ) ")
+        }        
+
+    })
+    if (hasnewPckjsn){
+        console.log("\n\n\n=========!!!!!!!!!!==========\n\n")
+    }
+
+    // your custom added packages 
+    var hasnewPckjsn=false
+    _.each(PckJsn.dependencies ,(v , p)=>{
+        if (_.isUndefined( templatePckJsn.dependencies[p] )){
+            hasnewPckjsn=true
+            console.log("your custom added packagesl --> nodeapp : npm i -s " , p ,    "     # ( " ,v, " ) ")
+        }        
+
+    })
+    if (hasnewPckjsn){
+        console.log("\n\n\n=========!!!!!!!!!!==========\n\n")
+    }
+
+    /////// react js compare template package.json to custom current
+
+    var RtemplatePckJsn= JSON.parse( $gl.mds.fs.readFileSync("../install_update/templates/my-app/package.json" , 'utf8') );
+    var RPckJsn= JSON.parse( $gl.mds.fs.readFileSync("../my-app/package.json", 'utf8') );
+   
+    var hasnewPckjsn=false
+    _.each(RtemplatePckJsn.dependencies ,(v , p)=>{
+        if (_.isUndefined(  RPckJsn.dependencies[p] )){
+            hasnewPckjsn=true
+            console.log("please install --> my-app (reacjs) : npm i -s " , p ,    "     # ( " ,v, " ) ")
+        }        
+
+    })
+    if (hasnewPckjsn){
+        console.log("\n\n\n=========!!!!!!!!!!==========\n\n")
+    }
+
+    // your custom added packages 
+    var hasnewPckjsn=false
+    _.each(RPckJsn.dependencies ,(v , p)=>{
+        if (_.isUndefined( RtemplatePckJsn.dependencies[p] )){
+            hasnewPckjsn=true
+            console.log("your custom added packagesl --> my-app (reacjs) : npm i -s " , p ,    "     # ( " ,v, " ) ")
         }        
 
     })

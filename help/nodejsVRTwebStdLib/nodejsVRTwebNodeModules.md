@@ -1,4 +1,5 @@
 gl.mds. -
+==========
     uuid
     express
     http
@@ -25,4 +26,9 @@ gl.mds. -
     xml2js - .parseString
     dotenv
     socketio - socket.io
-        
+
+    #not in mds yet
+    ===================
+    tesseract.js - text to image 
+    node-schedule - scheduling tasks to kick off at certain time
+    fuse.js - fuzzy search
