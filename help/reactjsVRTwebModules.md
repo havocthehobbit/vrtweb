@@ -14,3 +14,6 @@ react-responsive - using media queries for screensize variables
 moment &  moment-timezone - date time management
 fuse.js - fuzzy search
 react-pdf
+
+react-diff-viewer - diff text files
+ramda - functional toolbelt

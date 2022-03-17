@@ -1,7 +1,7 @@
 console.log(new Date())
 
-var  execSync = require('child_process').execSync;
-
+var execSync=require('child_process').execSync;
+var fs=require('fs')
 process.argv.forEach(function (val, index, array) {
     if (index > 1){
         //console.log("prompt : ", index + ': ' + val);
@@ -22,17 +22,43 @@ process.argv.forEach(function (val, index, array) {
             console.log( help )
         process.exit()
     }
-    
+
+    var npmnode=false
     if (val==="-npmnode" || val==="--npmnode" ){
+        npmnode=true
+    }
+    var npmreact=false
+    if (val==="-npmreact" || val==="--npmreact" ){
+        npmreact=true
+    }
+    var npmreactbuild=false
+    if (val==="-npmreactbuild" || val==="--npmreactbuild" ){
+        npmreactbuild=true
+    }
+
+    if (val==="-install" || val==="--install" ){
+        npmnode=true ;npmreact=true ;npmreactbuild=true
+    }
+    
+
+    /////////////
+    
+    if (npmnode){
+        if (!fs.existsSync("./package.json")){
+            execSync("cp -p  ../install_update/templates/nodeapp/package.json ./package.json" )            
+        }
         var shellinst=execSync(`npm install --save --force`)
         console.log(shellinst)
     }
-    if (val==="-npmreact" || val==="--npmreact" ){
+    if (npmreact){
+        if (!fs.existsSync("../my-app/package.json")){
+            execSync("cp -p  ../install_update/templates/my-app/package.json ../my-app/package.json")            
+        }
         var shellinst=execSync(`cd ../my-app ; npm install --save --force`)
         console.log(shellinst)
     }
 
-    if (val==="-npmreactbuild" || val==="--npmreactbuild" ){
+    if (npmreactbuild){
         var shellinst=execSync(`cd ../my-app ; npm run build`)
         console.log(shellinst)
     }
@@ -382,10 +408,11 @@ var server = http.listen( $vserv.data.port , $vserv.data.host  , function () {
       var host = server.address().address ;
       var port = server.address().port ;
     
-      console.log("server is listening at " + protocolH + "://%s:%s", host, port)
+      console.log("\n\nserver is listening at " + protocolH + "://%s:%s", host, port)
       console.log(reactbuildpath)
       console.log( `if react dev mode start with (my-app/startdev.sh): export REACT_APP_DEV_NODE_PORT=${port} ; npm start `)
       console.log(new Date())
+      console.log("\n")
 
 
 
