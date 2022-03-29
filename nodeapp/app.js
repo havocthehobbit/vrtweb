@@ -78,6 +78,9 @@ var depcy=new $gl.depcy()
 if (true){
     depcy.add({ name : "nodejspackages", file : "../nodeapp/package.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../install_update/templates/nodeapp/package.json" } })
     depcy.add({ name : "reactjspackages", file : "../my-app/package.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../install_update/templates/my-app/package.json" } })
+    
+    depcy.add({ name : "nodejsstartdev", file : "../nodeapp/cstartdev.sh" , type :  "f" , res : { action : "fetchtemplate" , src : "../install_update/templates/nodeapp/cstartdev.sh" } })
+    depcy.add({ name : "reactjsstartdev", file : "../my-app/startdev.sh" , type :  "f" , res : { action : "fetchtemplate" , src : "../install_update/templates/my-app/startdev.sh" } })
 
     depcy.add({ name : "addonsInstallNewDir", dir : "../addons/install" , type :  "md" , res : { action : "makedir"  } })
     depcy.add({ name : "addonsArchiveNewDir", dir : "../addons/archive" , type :  "md" , res : { action : "makedir"  } })

@@ -6,6 +6,7 @@
 /my-app/package-lock.json
 /my-app/yarn.json
 /my-app/yarn-error.log
+/my-app/startdev.sh
 /my-app/src/components/custom
 /my-app/.pnp
 /my-app/.pnp.js
@@ -16,6 +17,7 @@
 /nodeapp/package-lock.json
 /nodeapp/yarn.json
 /nodeapp/yarn-error.log
+/nodeapp/cstartdev.sh
 
 /nodeapp/l_node_modules_auto_*
 /nodeapp/cust_folder_*
