@@ -2,68 +2,12 @@ console.log(new Date())
 
 var execSync=require('child_process').execSync;
 var fs=require('fs')
-process.argv.forEach(function (val, index, array) {
-    if (index > 1){
-        //console.log("prompt : ", index + ': ' + val);
-    }
-    
-    
-    if (val==="-h" || val==="-help" || val==="--help"){
-        var help= `--------HELP------\n` 
-            help+=`====================\n` 
-            help+=`-dip : overide data/settings with default IP address\n` 
-            help+=`-port : overide data/settings port\n` 
-            help+=`\n` 
-            help+=`-npmnode : install react packages\n` 
-            help+=`-npmreact : install react packages\n` 
-            help+=`-npmreactbuild : npm build run react \n` 
 
-            
-            console.log( help )
-        process.exit()
-    }
+var $bfns=require("./l_node_modules/basic_fns.js").main;
 
-    var npmnode=false
-    if (val==="-npmnode" || val==="--npmnode" ){
-        npmnode=true
-    }
-    var npmreact=false
-    if (val==="-npmreact" || val==="--npmreact" ){
-        npmreact=true
-    }
-    var npmreactbuild=false
-    if (val==="-npmreactbuild" || val==="--npmreactbuild" ){
-        npmreactbuild=true
-    }
+$bfns.proc_params_init()
 
-    if (val==="-install" || val==="--install" ){
-        npmnode=true ;npmreact=true ;npmreactbuild=true
-    }
-    
-
-    /////////////
-    
-    if (npmnode){
-        if (!fs.existsSync("./package.json")){
-            execSync("cp -p  ../install_update/templates/nodeapp/package.json ./package.json" )            
-        }
-        var shellinst=execSync(`npm install --save --force`)
-        console.log(shellinst)
-    }
-    if (npmreact){
-        if (!fs.existsSync("../my-app/package.json")){
-            execSync("cp -p  ../install_update/templates/my-app/package.json ../my-app/package.json")            
-        }
-        var shellinst=execSync(`cd ../my-app ; npm install --save --force`)
-        console.log(shellinst)
-    }
-
-    if (npmreactbuild){
-        var shellinst=execSync(`cd ../my-app ; npm run build`)
-        console.log(shellinst)
-    }
-
-});
+$bfns.init_depcy()
 
 var $gl = require("./l_node_modules/global.js").gl;
 var fs = $gl.mds.fs;
@@ -71,105 +15,6 @@ var path =$gl.mds.path;
 var _ = $gl.mds.lodash;
 
 
-//////// init dependancies ////
-
-var depcy=new $gl.depcy()
-
-if (true){
-    depcy.add({ name : "nodejspackages", file : "../nodeapp/package.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../install_update/templates/nodeapp/package.json" } })
-    depcy.add({ name : "reactjspackages", file : "../my-app/package.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../install_update/templates/my-app/package.json" } })
-    
-    depcy.add({ name : "nodejsstartdev", file : "../nodeapp/cstartdev.sh" , type :  "f" , res : { action : "fetchtemplate" , src : "../install_update/templates/nodeapp/cstartdev.sh" } })
-    depcy.add({ name : "reactjsstartdev", file : "../my-app/startdev.sh" , type :  "f" , res : { action : "fetchtemplate" , src : "../install_update/templates/my-app/startdev.sh" } })
-
-    depcy.add({ name : "addonsInstallNewDir", dir : "../addons/install" , type :  "md" , res : { action : "makedir"  } })
-    depcy.add({ name : "addonsArchiveNewDir", dir : "../addons/archive" , type :  "md" , res : { action : "makedir"  } })
-    depcy.add({ name : "addonsFaieldNewDir", dir : "../addons/failed" , type :  "md" , res : { action : "makedir"  } })
-    depcy.add({ name : "addonsFaieldNewDir", dir : "../addons/temp" , type :  "md" , res : { action : "makedir"  } })
-    depcy.add({ name : "addonsReg", file : "../addons/reg.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../addons/templates/reg.json" } })
-
-
-    depcy.add({ name : "datasettings", file : "../data/settings.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../data/template/settings.json" } })
-
-    depcy.add({ name : "datadb1", dir : "../data/db1" , type :  "d" , res : { action : "copydir" , src : "../data/template/db1" } })
-
-    depcy.add({ name : "datadbs", dir : "../data/dbs" , type :  "md" , res : { action : "makedir"  } })
-
-    depcy.add({ name : "custommenusNewDir", dir : "../my-app/src/components/custom" , type :  "md" , res : { action : "makedir"  } })
-    depcy.add({ name : "custommenus", file : "../my-app/src/components/custom/custommenus.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/custommenus.js" } })
-    depcy.add({ name : "cmmode", file : "../my-app/src/components/custom/cmmode.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/cmmode.js" } })
-    depcy.add({ name : "frontpage", file : "../my-app/src/components/custom/frontpage.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/frontpage.js" } })
-    depcy.add({ name : "frontpage", file : "../my-app/src/components/custom/globalStateReducer.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/globalStateReducer.js" } })
-    depcy.add({ name : "customPageMainApp", file : "../my-app/src/components/custom/customPageMainApp.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/customPageMainApp.js" } })
-    depcy.add({ name : "custommenus", file : "../my-app/src/components/custom/custommenus.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/custommenus.js" } })
-    depcy.add({ name : "cmmode", file : "../my-app/src/components/custom/cmmode.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../my-app/src/components/templates/cmmode.js" } })
-
-    depcy.add({ name : "clientelectronEjs", file : "../clients/electron/app/public/electron.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../clients/electron/app/public/templates/electron.js" } })
-    depcy.add({ name : "clientelectronPreLdjs", file : "../clients/electron/app/public/preload.js" , type :  "f" , res : { action : "fetchtemplate" , src : "../clients/electron/app/public/templates/preload.js" } })
-    depcy.add({ name : "clientelectronPackage", file : "../clients/electron/app/package.json" , type :  "f" , res : { action : "fetchtemplate" , src : "../clients/electron/app/templates/package.json" } })
-
-    depcy.check()
-    
-    //////// node js compare template package.json to custom current
-
-    var templatePckJsn= JSON.parse( $gl.mds.fs.readFileSync("../install_update/templates/nodeapp/package.json" , 'utf8') );
-    var PckJsn= JSON.parse( $gl.mds.fs.readFileSync("./package.json", 'utf8') );
-   
-    var hasnewPckjsn=false
-    _.each(templatePckJsn.dependencies ,(v , p)=>{
-        if (_.isUndefined(  PckJsn.dependencies[p] )){
-            hasnewPckjsn=true
-            console.log("please install --> nodeapp : npm i -s " , p ,    "     # ( " ,v, " ) ")
-        }        
-
-    })
-    if (hasnewPckjsn){
-        console.log("\n\n\n=========!!!!!!!!!!==========\n\n")
-    }
-
-    // your custom added packages 
-    var hasnewPckjsn=false
-    _.each(PckJsn.dependencies ,(v , p)=>{
-        if (_.isUndefined( templatePckJsn.dependencies[p] )){
-            hasnewPckjsn=true
-            console.log("your custom added packagesl --> nodeapp : npm i -s " , p ,    "     # ( " ,v, " ) ")
-        }        
-
-    })
-    if (hasnewPckjsn){
-        console.log("\n\n\n=========!!!!!!!!!!==========\n\n")
-    }
-
-    /////// react js compare template package.json to custom current
-
-    var RtemplatePckJsn= JSON.parse( $gl.mds.fs.readFileSync("../install_update/templates/my-app/package.json" , 'utf8') );
-    var RPckJsn= JSON.parse( $gl.mds.fs.readFileSync("../my-app/package.json", 'utf8') );
-   
-    var hasnewPckjsn=false
-    _.each(RtemplatePckJsn.dependencies ,(v , p)=>{
-        if (_.isUndefined(  RPckJsn.dependencies[p] )){
-            hasnewPckjsn=true
-            console.log("please install --> my-app (reacjs) : npm i -s " , p ,    "     # ( " ,v, " ) ")
-        }        
-
-    })
-    if (hasnewPckjsn){
-        console.log("\n\n\n=========!!!!!!!!!!==========\n\n")
-    }
-
-    // your custom added packages 
-    var hasnewPckjsn=false
-    _.each(RPckJsn.dependencies ,(v , p)=>{
-        if (_.isUndefined( RtemplatePckJsn.dependencies[p] )){
-            hasnewPckjsn=true
-            console.log("your custom added packagesl --> my-app (reacjs) : npm i -s " , p ,    "     # ( " ,v, " ) ")
-        }        
-
-    })
-    if (hasnewPckjsn){
-        console.log("\n\n\n=========!!!!!!!!!!==========\n\n")
-    }
-}
 
 //$gl.mds.prompt.start();
 //var prompt=$gl.mds.prompt
@@ -193,16 +38,11 @@ process.on('SIGTERM', () => {
     //})
 })
 
-
-
-
-
 var lib_settings = require("./l_node_modules/global.js").settings;
 var $vserv =new lib_settings()
 
 
-
-process.argv.forEach(function (val, index, array) {
+$bfns.params(function (val, index, array) {
     if (index > 1){
         //console.log("prompt : ", index + ': ' + val);
     }
@@ -226,11 +66,7 @@ process.argv.forEach(function (val, index, array) {
         $vserv.data.port=parseInt(array[index + 1 ] )
     }
 
-    // ip a l | grep "net " | grep eth | grep -v grep |tr '/' ' ' |awk '{ print $2 }'
 });
-
-
-
 
 
 var express = $gl.mds.express
