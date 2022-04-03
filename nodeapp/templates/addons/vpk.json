@@ -1,0 +1,38 @@
+{
+    "addonname" : "testNewmodue",
+    "desc" : "",
+    "version" : "",
+    "nodeproj" : {
+        "nodemod" : {
+            "all" : [],
+            "eg" : {
+                "all" : [
+                    {}
+                ]
+            }
+        }
+    },
+    "reactproj" : {
+        "nodemod" : {
+            "all" : [],
+            "eg" : {
+                "all" : [
+                    {}
+                ]
+            }
+        }
+    },
+    "data" : {
+        
+        "all" : []
+        
+    },
+    "runscript" : {
+        "all" : [] ,
+        "eg" : {
+            "all" : [
+                { "type" : "bash" , "cmd" : "" }
+            ]
+        }
+    }
+}

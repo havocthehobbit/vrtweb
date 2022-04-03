@@ -472,6 +472,9 @@ if (true){
     var overide_users_getGroupsFromUser=false , overide_users_getRolesFromGroups=false, overide_users_getProgramsFromRoles=false , overide_users_verifyJWTroute=false , overide_users_fetchUserDetailByUUIDSync=false
     var overide_users_sessionUserUpdate=false
 
+    var  overide_users_={}
+    overide_users_["sessionUserUpdate"]=false
+
     if (!_.isUndefined(mds.vw_overides)){
         if (!_.isUndefined(mds.vw_overides.users)){
             if (!_.isUndefined(mds.vw_overides.users.verifyJWT)){
@@ -511,91 +514,85 @@ if (true){
             }
 
             if (!_.isUndefined(mds.vw_overides.users.sessionUserUpdate)){
-                overide_users_sessionUserUpdate=true;
+                //overide_users_sessionUserUpdate=true;
+                overide_users_["sessionUserUpdate"]=true
             }
             
 
         }
     }
 
-    if (overide_users_verifyJWT){
-        mds_calls.users.verifyJWT=mds.vw_overides.users.verifyJWT
-    }else{
-        mds_calls.users.verifyJWT=mds.users.verifyJWT
-    }
+    if (true){
+        if (overide_users_verifyJWT){
+            mds_calls.users.verifyJWT=mds.vw_overides.users.verifyJWT
+        }else{
+            mds_calls.users.verifyJWT=mds.users.verifyJWT
+        }
 
-    if (overide_users_verifyLoginAPI){
-        mds_calls.users.verifyLoginAPI=mds.vw_overides.users.verifyLoginAPI
-    }else{
-        mds_calls.users.verifyLoginAPI=mds.users.verifyLoginAPI
-    }
+        if (overide_users_verifyLoginAPI){
+            mds_calls.users.verifyLoginAPI=mds.vw_overides.users.verifyLoginAPI
+        }else{
+            mds_calls.users.verifyLoginAPI=mds.users.verifyLoginAPI
+        }
 
-    var tmp="fetchUserDetail"
-    if (overide_users_fetchUserDetail){        
-        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
-    }else{
-        mds_calls.users[tmp]=mds.users[tmp]
-    }
+        var tmp="fetchUserDetail"
+        if (overide_users_fetchUserDetail){        
+            mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+        }else{
+            mds_calls.users[tmp]=mds.users[tmp]
+        }
 
-    var tmp="fetchUsersDetails"
-    if (overide_users_fetchUsersDetails){        
-        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
-    }else{
-        mds_calls.users[tmp]=mds.users[tmp]
-    }
+        var tmp="fetchUsersDetails"
+        if (overide_users_fetchUsersDetails){        
+            mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+        }else{
+            mds_calls.users[tmp]=mds.users[tmp]
+        }
 
-    var tmp="getGroupsFromUser"
-    if (overide_users_getGroupsFromUser){        
-        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
-    }else{
-        mds_calls.users[tmp]=mds.users[tmp]
-    }
+        var tmp="getGroupsFromUser"
+        if (overide_users_getGroupsFromUser){        
+            mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+        }else{
+            mds_calls.users[tmp]=mds.users[tmp]
+        }
 
-    var tmp="getRolesFromGroups"
-    if (overide_users_getRolesFromGroups){        
-        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
-    }else{
-        mds_calls.users[tmp]=mds.users[tmp]
-    }
+        var tmp="getRolesFromGroups"
+        if (overide_users_getRolesFromGroups){        
+            mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+        }else{
+            mds_calls.users[tmp]=mds.users[tmp]
+        }
 
-    var tmp="getProgramsFromRoles"
-    if (overide_users_getProgramsFromRoles){        
-        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
-    }else{
-        mds_calls.users[tmp]=mds.users[tmp]
-    }
+        var tmp="getProgramsFromRoles"
+        if (overide_users_getProgramsFromRoles){        
+            mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+        }else{
+            mds_calls.users[tmp]=mds.users[tmp]
+        }
 
-    var tmp="verifyJWTroute"
-    if (overide_users_verifyJWTroute){        
-        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
-    }else{
-        mds_calls.users[tmp]=mds.users[tmp]
-    }
+        var tmp="verifyJWTroute"
+        if (overide_users_verifyJWTroute){        
+            mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+        }else{
+            mds_calls.users[tmp]=mds.users[tmp]
+        }
 
-    var tmp="fetchUserDetailByUUIDSync"
-    if (overide_users_fetchUserDetailByUUIDSync){        
-        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
-    }else{
-        mds_calls.users[tmp]=mds.users[tmp]
-    }
+        var tmp="fetchUserDetailByUUIDSync"
+        if (overide_users_fetchUserDetailByUUIDSync){        
+            mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+        }else{
+            mds_calls.users[tmp]=mds.users[tmp]
+        }
+        
+        var tmp="sessionUserUpdate"
+        if (overide_users_[ tmp]){        
+            mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+        }else{
+            mds_calls.users[tmp]=mds.users[tmp]
+        }
     
-    var tmp="sessionUserUpdate"
-    if (overide_users_sessionUserUpdate){        
-        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
-    }else{
-        mds_calls.users[tmp]=mds.users[tmp]
-    }
-    
-
-    
-
-    
-
-    
-
-
-
-    
+        
+    }    
 
 }
 
