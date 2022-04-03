@@ -464,8 +464,140 @@ var template_o={
 
 }
 
+var mds_calls={ users : {} , news : {} , notes : {} , dates : {} , codegen : {} 
+    }
+
+if (true){
+    var overide_users_verifyJWT=false , overide_users_verifyLoginAPI=false , overide_users_fetchUserDetail=false, overide_users_fetchUsersDetails=false
+    var overide_users_getGroupsFromUser=false , overide_users_getRolesFromGroups=false, overide_users_getProgramsFromRoles=false , overide_users_verifyJWTroute=false , overide_users_fetchUserDetailByUUIDSync=false
+    var overide_users_sessionUserUpdate=false
+
+    if (!_.isUndefined(mds.vw_overides)){
+        if (!_.isUndefined(mds.vw_overides.users)){
+            if (!_.isUndefined(mds.vw_overides.users.verifyJWT)){
+                overide_users_verifyJWT=true;
+            }
+
+            if (!_.isUndefined(mds.vw_overides.users.verifyLoginAPI)){
+                overide_users_verifyLoginAPI=true;
+            }
+
+            if (!_.isUndefined(mds.vw_overides.users.fetchUserDetail)){
+                overide_users_fetchUserDetail=true;
+            }
+
+            if (!_.isUndefined(mds.vw_overides.users.fetchUsersDetails)){
+                overide_users_fetchUsersDetails=true;
+            }
+            
+            if (!_.isUndefined(mds.vw_overides.users.getGroupsFromUser)){
+                overide_users_getGroupsFromUser=true;
+            }
+
+            if (!_.isUndefined(mds.vw_overides.users.getRolesFromGroups)){
+                overide_users_getRolesFromGroups=true;
+            }
+
+            if (!_.isUndefined(mds.vw_overides.users.getProgramsFromRoles)){
+                overide_users_getProgramsFromRoles=true;
+            }
+
+            if (!_.isUndefined(mds.vw_overides.users.verifyJWTroute)){
+                overide_users_verifyJWTroute=true;
+            }
+
+            if (!_.isUndefined(mds.vw_overides.users.fetchUserDetailByUUIDSync)){
+                overide_users_fetchUserDetailByUUIDSync=true;
+            }
+
+            if (!_.isUndefined(mds.vw_overides.users.sessionUserUpdate)){
+                overide_users_sessionUserUpdate=true;
+            }
+            
+
+        }
+    }
+
+    if (overide_users_verifyJWT){
+        mds_calls.users.verifyJWT=mds.vw_overides.users.verifyJWT
+    }else{
+        mds_calls.users.verifyJWT=mds.users.verifyJWT
+    }
+
+    if (overide_users_verifyLoginAPI){
+        mds_calls.users.verifyLoginAPI=mds.vw_overides.users.verifyLoginAPI
+    }else{
+        mds_calls.users.verifyLoginAPI=mds.users.verifyLoginAPI
+    }
+
+    var tmp="fetchUserDetail"
+    if (overide_users_fetchUserDetail){        
+        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+    }else{
+        mds_calls.users[tmp]=mds.users[tmp]
+    }
+
+    var tmp="fetchUsersDetails"
+    if (overide_users_fetchUsersDetails){        
+        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+    }else{
+        mds_calls.users[tmp]=mds.users[tmp]
+    }
+
+    var tmp="getGroupsFromUser"
+    if (overide_users_getGroupsFromUser){        
+        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+    }else{
+        mds_calls.users[tmp]=mds.users[tmp]
+    }
+
+    var tmp="getRolesFromGroups"
+    if (overide_users_getRolesFromGroups){        
+        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+    }else{
+        mds_calls.users[tmp]=mds.users[tmp]
+    }
+
+    var tmp="getProgramsFromRoles"
+    if (overide_users_getProgramsFromRoles){        
+        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+    }else{
+        mds_calls.users[tmp]=mds.users[tmp]
+    }
+
+    var tmp="verifyJWTroute"
+    if (overide_users_verifyJWTroute){        
+        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+    }else{
+        mds_calls.users[tmp]=mds.users[tmp]
+    }
+
+    var tmp="fetchUserDetailByUUIDSync"
+    if (overide_users_fetchUserDetailByUUIDSync){        
+        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+    }else{
+        mds_calls.users[tmp]=mds.users[tmp]
+    }
+    
+    var tmp="sessionUserUpdate"
+    if (overide_users_sessionUserUpdate){        
+        mds_calls.users[tmp]=mds.vw_overides.users[tmp]
+    }else{
+        mds_calls.users[tmp]=mds.users[tmp]
+    }
+    
+
+    
+
+    
+
+    
 
 
+
+    
+
+}
 
 app.post("/news" ,function(req , res){
         
@@ -487,13 +619,8 @@ app.post("/news" ,function(req , res){
 
     var bd=req.body
 
-    //var token=req.headers["x-auth-token"];
-    //if (!token || _.isUndefined(token)){
-    //    token=req.cookies.token;
-    //}
-
-    //mds.users.verifyLoginAPI(token,function(tkdata){
-    mds.users.verifyLoginAPI({ req : req},function(vd){
+    
+    mds_calls.users.verifyLoginAPI({ req : req},function(vd){
         if (vd.allowed){ 
                 //console.log(JSON.stringify(vd.details,null,2))
                 if (req.body.type==="get"){
@@ -510,13 +637,7 @@ app.post("/news" ,function(req , res){
                         res.jsonp(ret_data)
                     })
                 }
-                // console.log( "getGroupsFromUser : " , mds.users.getGroupsFromUser("bob") )
-                // console.log( "getRolesFromGroups : " ,  mds.users.getRolesFromGroups( mds.users.getGroupsFromUser("bob") ) )
-                // console.log( "getProgramsFromRoles : " , mds.users.getProgramsFromRoles( mds.users.getRolesFromGroups( mds.users.getGroupsFromUser("bob") ) ) )
-
-                // console.log( "checkUserAccessToProgram : " , mds.users.checkUserAccessToProgram("bob" , ["news" , "admingeneralpage"]))
                 
-                // mds.news_o.getDemo({}, function(new_data){
        
         }else{
             res.jsonp(ret_data)
@@ -549,14 +670,14 @@ app.post("/notes" ,function(req , res){
     }
 
     var locals={};
-    mds.users.verifyJWT(token ,function(tkdata){
+    mds_calls.users.verifyJWT(token ,function(tkdata){
         if (tkdata.status==="success"){
             if ( tkdata.data.rt_jwt_isAuth ){
                 var userid=tkdata.data.userid ; 
 
                 switch(cmd){                    
                     case "getUserNotes":                        
-                        mds.users.fetchUserDetail(userid ,function(dta2){                            
+                        mds_calls.users.fetchUserDetail(userid ,function(dta2){                            
                             mds.notes.getUserNotes(dta2.uuid,function(dta){                               
                                 
                                 ret_data.data=dta;
@@ -573,7 +694,7 @@ app.post("/notes" ,function(req , res){
                         if (inp_data.type==="usermain"){
                             notetype="usermain"
                         }
-                        mds.users.fetchUserDetail(userid ,function(dta2){                            
+                        mds_calls.users.fetchUserDetail(userid ,function(dta2){                            
                             mds.notes.saveUserNote(
                                 {   useruuid : dta2.uuid,
                                     body : inp_data.data,
@@ -624,7 +745,7 @@ app.post("/codegen" ,function(req , res){
     }
     
     var locals={};
-    mds.users.verifyJWT(token ,function(tkdata){
+    mds_calls.users.verifyJWT(token ,function(tkdata){
         if (tkdata.status==="success"){
             if ( tkdata.data.rt_jwt_isAuth ){
                 var userid=tkdata.data.userid ; 
@@ -638,7 +759,7 @@ app.post("/codegen" ,function(req , res){
                             return
                         }
                         //console.log("pr.uuid "  , pr.uuid)
-                        mds.users.fetchUserDetail(userid ,function(dta2){                            
+                        mds_calls.users.fetchUserDetail(userid ,function(dta2){                            
                             mds.codegen.getProject(pr,function(dta){                               
                                 
                                 ret_data.data=dta.rec;
@@ -659,7 +780,7 @@ app.post("/codegen" ,function(req , res){
                             return
                         }
                         */
-                        mds.users.fetchUserDetail(userid ,function(dta2){                            
+                        mds_calls.users.fetchUserDetail(userid ,function(dta2){                            
                             //pr.useruuid=dta2.uuid; // add user id
                             
                             mds.codegen.listProjects(  pr
@@ -681,7 +802,7 @@ app.post("/codegen" ,function(req , res){
                             return
                         }
                         
-                        mds.users.fetchUserDetail(userid ,function(dta2){                            
+                        mds_calls.users.fetchUserDetail(userid ,function(dta2){                            
                             pr.useruuid=dta2.uuid; // add user id
                             
                             mds.codegen.saveProject(  pr
@@ -732,7 +853,7 @@ app.post("/dates" ,function(req , res){
     }
 
     var locals={};
-    mds.users.verifyJWT(token ,function(tkdata){
+    mds_calls.users.verifyJWT(token ,function(tkdata){
         if (tkdata.status==="success"){
             if ( tkdata.data.rt_jwt_isAuth ){
                 var userid=tkdata.data.userid ; 
@@ -767,7 +888,7 @@ app.post("/dates" ,function(req , res){
                             //ret_data.data.ooo=dta;
                             var arr=[]
                             _.each(dta,function(r,i){
-                                mds.users.fetchUserDetailByUUIDSync(r.uuid ,function(dta2){
+                                mds_calls.users.fetchUserDetailByUUIDSync(r.uuid ,function(dta2){
                                     var rec={}
                                     rec.name=dta2.name
                                     rec.surname=dta2.surname
@@ -799,7 +920,7 @@ app.post("/dates" ,function(req , res){
                             //ret_data.data.ooo=dta;
                             var arr=[]
                             _.each(dta,function(r,i){
-                                mds.users.fetchUserDetailByUUIDSync(r.uuid ,function(dta2){
+                                mds_calls.users.fetchUserDetailByUUIDSync(r.uuid ,function(dta2){
                                     var rec={}
                                     rec.name=dta2.name
                                     rec.surname=dta2.surname
@@ -852,8 +973,9 @@ app.post("/users" ,function(req , res){
         token=req.cookies.token;
     }
 
+
     var locals={};
-    mds.users.verifyJWT(token ,function(tkdata){
+    mds_calls.users.verifyJWT(token ,function(tkdata){
         
         //console.log( "cookies get::: " ,req.cookies ) ; //console.log( "cookiesSigned get ::: " ,req.signedCookies  ) ;      //console.log( "jwt info ::: " ,  tkdata )
 
@@ -864,10 +986,10 @@ app.post("/users" ,function(req , res){
                 switch(cmd){
                     case "getUserDetail":
                         
-                        mds.users.getGroupsFromUser(userid,function(grps){
+                        mds_calls.users.getGroupsFromUser(userid,function(grps){
                             ret_data.data.groups= grps;
                             
-                            mds.users.getRolesFromGroups( grps , function(rles){ ///console.log("2 - ",u2)
+                            mds_calls.users.getRolesFromGroups( grps , function(rles){ ///console.log("2 - ",u2)
                                 ret_data.data.roles=rles;
                                 res.jsonp(ret_data)
 
@@ -881,19 +1003,12 @@ app.post("/users" ,function(req , res){
                         break;
                     
                     case "getUserDetails":
-                        //console.log( "checkUserAccessToProgram : " , mds.users.checkUserAccessToProgram("bob" , ["news" , "admingeneralpage"]))
-                        /*
-                        var isAllowed= mds.users.checkUserAccessToProgram(userid , ["news" , "admingeneralpage"])
                         
-                        ret_data.data={ isAllowed : isAllowed };
-
-                        res.jsonp(ret_data)
-                        */
                         
-                        mds.users.getGroupsFromUser(userid,function(grps){
+                        mds_calls.users.getGroupsFromUser(userid,function(grps){
                             ret_data.data.groups= grps;
                             
-                            mds.users.fetchUserDetail(userid,function(usr){ 
+                            mds_calls.users.fetchUserDetail(userid,function(usr){ 
                                 //console.log(usr)
                                 res.jsonp(ret_data)
 
@@ -908,11 +1023,11 @@ app.post("/users" ,function(req , res){
                         break;
                     case "getProgs":
                     case "getPrograms":
-                        //var programs= mds.users.getProgramsFromRoles( mds.users.getRolesFromGroups( mds.users.getGroupsFromUser(userid) ) ) 
+                        
 
-                        mds.users.getGroupsFromUser(userid,function(u1){ //console.log("1 - ",u1)
-                            mds.users.getRolesFromGroups( u1 , function(u2){ ///console.log("2 - ",u2)
-                                mds.users.getProgramsFromRoles( u2 , function(programs){ // console.log("3 - ",programs)
+                        mds_calls.users.getGroupsFromUser(userid,function(u1){ //console.log("1 - ",u1)
+                            mds_calls.users.getRolesFromGroups( u1 , function(u2){ ///console.log("2 - ",u2)
+                                mds_calls.users.getProgramsFromRoles( u2 , function(programs){ // console.log("3 - ",programs)
                                     ret_data.data=programs;
 
                                     res.jsonp(ret_data)
@@ -1030,7 +1145,7 @@ var loginUser=function( params ){
      
     var login_confirmed=false;
     var found_userid=false
-    mds.users.fetchUsersDetails( {} , function(data){
+    mds_calls.users.fetchUsersDetails( {} , function(data){
         if (_.isUndefined(data)){
             data=data2;
         }
@@ -1079,7 +1194,7 @@ var loginUser=function( params ){
                                 //console.log( "cookies ::: " ,reqres.req.cookies )  
                                 //console.log( "cookiesSigned ::: " ,reqres.req.signedCookies  )
                                 //console.log("---1" , ret_data)
-                                mds.users.sessionUserUpdate({ userid : bd.userid, token : token , uuid :  r.uuid, curr_date : curr_date , cookie_exp_date : expires , jwtoptions },function(){
+                                mds_calls.users.sessionUserUpdate({ userid : bd.userid, token : token , uuid :  r.uuid, curr_date : curr_date , cookie_exp_date : expires , jwtoptions },function(){
                                     //console.log("---3" )    
                                 });
                                 //console.log("---2" )
@@ -1132,13 +1247,13 @@ var loginUser=function( params ){
         }
    
     })
-    //console.log( req.body )
+    //console.log( req.body )mds_calls.users
     //cb(ret_data)
     //return ret_data
 
 }
 
-app.post("/isAuth", mds.users.verifyJWTroute ,function(req,res){
+app.post("/isAuth", mds_calls.users.verifyJWTroute ,function(req,res){
     var ret_data={
         data : { loggedin : false  , auth : false },
         status : 0,
@@ -1228,7 +1343,7 @@ app.post('/uploadfiles',  function (req, res) {
     }
 
     var locals={};
-    mds.users.verifyJWT(token ,function(tkdata){
+    mds_calls.users.verifyJWT(token ,function(tkdata){
         
         //console.log( "cookies get::: " ,req.cookies ) ; //console.log( "cookiesSigned get ::: " ,req.signedCookies  ) ;      //console.log( "jwt info ::: " ,  tkdata )
 
@@ -1336,7 +1451,7 @@ app.post("/download",function(req,res){
     }
 
     var locals={};
-    mds.users.verifyJWT(token ,function(tkdata){
+    mds_calls.users.verifyJWT(token ,function(tkdata){
         
         //console.log( "cookies get::: " ,req.cookies ) ; //console.log( "cookiesSigned get ::: " ,req.signedCookies  ) ;      //console.log( "jwt info ::: " ,  tkdata )
         //console.log(" --- " , uploads_db_temp)

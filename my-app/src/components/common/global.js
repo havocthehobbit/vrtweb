@@ -3,11 +3,76 @@ import csvparse from "csv-parse"
 import { v4 as uuidv4 } from 'uuid';
 
 
-var $gl={
 
-    fn : {}
 
+var cool_native={
+    name : "cool_native",   
+    fn : {},
+
+    each : function(inst,cb){
+        if (this.isObject){
+            Object.keys(inst).forEach((v , p)=>{
+                cb(inst[v] , v) 
+            })
+        }else{
+            inst.forEach(function(v,i){ cb(v,i) })
+        }
+
+
+    },
+    isObject : function(inp){
+        var ret=false
+        if (typeof(inp)==="object"){
+            if (Array.isArray(inp)){
+                ret=false
+            }else{
+                ret =true
+            }
+
+        }
+
+        return ret
+        
+    },
+    isUndefined : function(inp){
+        var ret=false
+        if (typeof  inp=== "undefined"){
+            ret=true
+        }
+        return ret
+    },
+    isUn : function(inp){
+       return this.isUndefined(inp)
+    },
+    typeof : function(inp){
+        var t=typeof(inp)
+
+        if (t==="object"){
+            if (this.isObject()){
+                t="object"
+
+            }else{
+                t="array"
+            }
+        }
+
+        return t
+
+    },
+
+    init : function(){
+        var args=arguments;
+        var args_l=args.length;
+        var param={ name : "" }
+
+        this.l_this=this ;
+
+        
+      
+    }
 }
+var $gl=cool_native
+
 
 $gl.ex=function(a){ // exists
    return !_.isUndefined(a)

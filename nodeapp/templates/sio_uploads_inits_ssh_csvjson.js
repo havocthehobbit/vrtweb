@@ -4,6 +4,8 @@
 var _ = require("lodash");
 var $gl = require("../l_node_modules/global.js").gl; // this contanes some extra modules and standard library function that can be made to make life easier , please see help under nodejsVRTwebStdLib
 //
+var module_name="test4"
+
 var main={ 
             auto_run : function(params){  // runs as the modules starts being initialised 
                 console.log("auto_running testmodule")
@@ -176,5 +178,5 @@ var main={
 
 
  
-module.exports["test4"]=main;
+module.exports[module_name]=main;
  
