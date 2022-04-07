@@ -233,7 +233,7 @@ fs.readdir(addoninstallpath, function(err, files) {
     }
 });
 
-
+$bfns.genMenuReact()
 
 /////////////////////
 

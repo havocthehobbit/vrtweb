@@ -1,0 +1,14 @@
+import { testNewmodue } from "./testNewmodue"
+
+
+var testNewmoduemenu=function(){
+
+
+    return (
+        <div>
+            <testNewmodue/>
+        </div>
+    )
+}(); 
+
+customMenuA.push({ cmpt : testNewmoduemenu, name : "testNewmodue",label : "testNewmodue" , style : { "width???" :400 ,"background????" : "blue"}, accessLvl : {} , group : "" }) // group ,relates to user groups who are allowed to view this , leave blank for everyone
