@@ -58,7 +58,7 @@ function fetchSomething(){
 }
 
 var testmain_count=0
-export const Testmain=(props)=>{
+export const tAestNewmodue=(props)=>{
     var style={}
     if (!_.isUndefined(props.style)){
         style=props.style
@@ -80,13 +80,17 @@ export const Testmain=(props)=>{
         alert("I've joined a click")
     }
 
+    var label1=function(){
+        return <label>testNewmodue</label>
+    }()
+
     return (
         <div>
             {someval}
             <button
                 onClick={someFn /*run a function */ }
             >
-                {label}
+                {label1}
             </button>
         </div>
     )
@@ -94,7 +98,7 @@ export const Testmain=(props)=>{
 
 
 
-class Testmain2obj extends Component {
+class tAestNewmodue2obj extends Component {
     constructor(props) {
         super(props); // always needed in scontructer
         
@@ -160,4 +164,4 @@ class Testmain2obj extends Component {
     }
 }
 
-export const Testmain2=Testmain2obj
+export const tAestNewmodue2=tAestNewmodue2obj

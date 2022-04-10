@@ -524,6 +524,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                 if (isAllowed){
                                     var newStyleIns=_.clone(mmenuStyle.main_inst)
                                     var mymenuname=r.name
+                                    var active=true;
                                     if ( !_.isUndefined(r.style)){
                                         newStyleIns=_.merge(_.clone(mmenuStyle.main_inst),r.style)
                                        
@@ -534,22 +535,30 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     if ( selectMenuCurr.name===mymenuname){
                                         newStyleIns=_.merge(newStyleIns,menuSelectStyle )
                                     }
-                                    all_menus_arr.push(
-                                        <div key={++key_menu} style={{position : "relative" }} >                                            
-                                            <div key={++key_menu}   >
-                                                <Link to={"/"+ r.name} myname={r.name} onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } >
-                                                    <div style={newStyleIns}  
-                                                        myname={r.name}
-                                                        onMouseEnter={(e)=>{set_hoverMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
-                                                        onMouseLeave={(e)=>{ set_hoverMenuCurr({ name : "" }) }}
-                                                        onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) ; $gl.cookie( "currMainMenu" , e.target.getAttribute("myname"))  }  } 
+                                    if ( !_.isUndefined(r.active)){
+                                        active=r.active
+                                       
+                                    }
 
-                                                    >{r.label}</div>
-                                                </Link> 
+                                    if (active){
+                                   
+                                        all_menus_arr.push(
+                                            <div key={++key_menu} style={{position : "relative" }} >                                            
+                                                <div key={++key_menu}   >
+                                                    <Link to={"/"+ r.name} myname={r.name} onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } >
+                                                        <div style={newStyleIns}  
+                                                            myname={r.name}
+                                                            onMouseEnter={(e)=>{set_hoverMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
+                                                            onMouseLeave={(e)=>{ set_hoverMenuCurr({ name : "" }) }}
+                                                            onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) ; $gl.cookie( "currMainMenu" , e.target.getAttribute("myname"))  }  } 
+
+                                                        >{r.label}</div>
+                                                    </Link> 
+                                                </div>
                                             </div>
-                                        </div>
-                                                    
-                                    )
+                                                        
+                                        )
+                                    }
                                 }
                             })
                             

@@ -80,13 +80,17 @@ export const Testmain=(props)=>{
         alert("I've joined a click")
     }
 
+    var label1=function(){
+        return <label>testNewmodue</label>
+    }()
+
     return (
         <div>
             {someval}
             <button
                 onClick={someFn /*run a function */ }
             >
-                {label}
+                {label1}
             </button>
         </div>
     )

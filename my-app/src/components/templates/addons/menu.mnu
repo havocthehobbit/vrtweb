@@ -1,4 +1,4 @@
-import { testNewmodue } from "./testNewmodue"
+import { tAestNewmodue } from "./testNewmodue"
 
 
 var testNewmoduemenu=function(){
@@ -6,7 +6,7 @@ var testNewmoduemenu=function(){
 
     return (
         <div>
-            <testNewmodue/>
+            <tAestNewmodue/>
         </div>
     )
 }(); 
