@@ -66,6 +66,12 @@ $bfns.params(function (val, index, array) {
         $vserv.data.port=parseInt(array[index + 1 ] )
     }
 
+    if (val==="--host" || val==="-host" || val==="--hostip"){
+        
+        $vserv.data.host=array[index + 1 ] 
+        console.log("host IP : " , $vserv.data.host )
+    }
+
 });
 
 

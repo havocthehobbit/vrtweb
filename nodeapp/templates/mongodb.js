@@ -1,30 +1,57 @@
 
-
-
 var $gl = require("../l_node_modules/global.js").gl; 
 var _=$gl.mds.lodash
+var $bfns=require("../l_node_modules/basic_fns.js").main;
 
 var main={
     auto_run : function(){ 
         console.log("auto_running mongodb")
         
+        $bfns.params(function (val, index, array) {
+            if (index > 1){
+                //console.log("prompt : ", index + ': ' + val);
+            }
+            
+        
+            
+            if (val==="-mongostatus" || val==="--mongostatus"){
+                console.log("\n\n\nmongo status : " , "")
+                var shout=$bfns.shellsync( `sudo service mongodb status` +" || true ").toString()
+                console.log(shout)
+
+                console.log("\n\n\n")
+
+                process.exit()
+            }
+
+            if (val==="-mongostart" || val==="--mongostart"){
+                console.log("\n\n\nsudo mongo status : " , "")
+                var shout=$bfns.shellsync( `sudo service mongodb start` +" || true ").toString()
+                console.log(shout)
+
+                console.log("\n\n\n")
+
+                process.exit()
+            }
+        })
+
         //$gl.initMongoDBadmin({ connection : { dbhost : "" , dbport : "", dbname : ""dbuser : "" ,dbpass : ""  } } , function( mdb ){
         $gl.initMongoDB({ connection : { dbuser : "admin" , dbname : "db1"} } , function( mdb ){
 
             //console.log( "mongoddb test " , a , "err : " ,b )
-            this.db=mdb.db
-            this.dbclient=mdb.client
-            this.dbstatus=mdb.status 
+            main.db=mdb.db
+            main.dbclient=mdb.client
+            main.dbstatus=mdb.status 
 
 
             
-            console.log( "dbstatus - " , this.dbstatus)
+            console.log( "dbstatus - " , main.dbstatus , main.dbstatus )
 
             
             //everything from this point could be put in a get or post route
             /////////////////////////////////////////////////////////////////////////
-            if (!this.dbstatus){
-                console.log( "failed admin mongoDB connection" )
+            if (!main.dbstatus){
+                console.log( "!!!! failed admin mongoDB connection : " ,  "\n\n"   , mdb.err, "\n\n")
                 return
             }
 
@@ -57,7 +84,7 @@ var main={
             })
 
             //other 
-                //aggregrate example - link multiple collections or chain multiple tasks/functions(link,find ,sort then group etc... )
+                //aggregreate example - link multiple collections or chain multiple tasks/functions(link,find ,sort then group etc... )
                     /* //syntax
                         db.collection(collectionName).aggregate(pipelineArray, {
                         cursor: {}
@@ -96,45 +123,46 @@ var main={
 
         })
 
-        $gl.initMongoDBadmin({ connection : {} } , function( mdb ){
+        if (false){ // admin functionts 
+            $gl.initMongoDBadmin({ connection : {} } , function( mdb ){
 
-            //console.log( "mongoddb test " , a , "err : " ,b )
-            this.dbAdmin=mdb.db
-            this.dbclientAdmin=mdb.client
-            this.dbstatusAdmin=mdb.status
+                //console.log( "mongoddb test " , a , "err : " ,b )
+                main.dbAdmin=mdb.db
+                main.dbclientAdmin=mdb.client
+                main.dbstatusAdmin=mdb.status
 
-            console.log( "dbstatusAdmin - " , this.dbstatusAdmin)
+                console.log( "dbstatusAdmin - " , main.dbstatusAdmin)
 
-            //https://mongodb.github.io/node-mongodb-native/3.6/api/Collection.html
-            //addUser(username, password, options, callback)  // removeUser(username, options, callback)
+                //https://mongodb.github.io/node-mongodb-native/3.6/api/Collection.html
+                //addUser(username, password, options, callback)  // removeUser(username, options, callback)
 
-            if (!this.dbstatusAdmin){
-                console.log( "failed admin mongoDB connection" )
-                return
-            }
+                if (!main.dbstatusAdmin){
+                    console.log( "failed admin mongoDB connection" )
+                    return
+                }
 
-            var db=this.dbAdmin
-            db.listDatabases(function(err, dbs) {
+                var db=main.dbAdmin
+                db.listDatabases(function(err, dbs) {
 
-               var autocreateDB=[
-                   { name : "db1"}
-               ]
-                
-                if (dbs.databases.length > 0){
-                    var ds=dbs.databases
-                    //console.log( "dbs : " ,  ds)
-                    console.log( "databases : \n==============" )
-                    ds.forEach((r,i) => {
-                        console.log( "db name : " , r.name)
-                    });
-                };
-                
-                
-                
-            });
+                var autocreateDB=[
+                    { name : "db1"}
+                ]
+                    
+                    if (dbs.databases.length > 0){
+                        var ds=dbs.databases
+                        //console.log( "dbs : " ,  ds)
+                        console.log( "databases : \n==============" )
+                        ds.forEach((r,i) => {
+                            console.log( "db name : " , r.name)
+                        });
+                    };
+                    
+                    
+                    
+                });
 
-        })   
-    
+            })   
+        }
     
     }
     ,dbstatus : false
@@ -150,7 +178,26 @@ var main={
             route : "/mongodb", // if route not included it will defualt to to name
             type : "get",
             cb : function(req, res,corestuff){ // or fn or callback 
+                console.log("main.dbstatus" , main.dbstatus)
+                if ( main.dbstatus){
+                    var db=main.db
 
+
+                    var users = db.collection('users');
+
+                    users.find({}).toArray(function(err, docs) { 
+                        console.log("find users : " , err , docs)
+                        var ret=""
+
+                        //ret =`${ JSON.stringify(docs)  }`
+                        ret =docs[0].userid
+
+                        res.send( ret )
+                    })
+
+                }else{
+                    res.send("mongodb functions not working" )
+                }
                 
             
             } 
@@ -161,7 +208,7 @@ var main={
             type : "post",
             cb : function(req, res,corestuff){ // or fn or callback 
                 
-                    res.send("testing mongodb" )
+                    res.jsonp({ data : "testing mongodb" })
                 
                 
             } 
