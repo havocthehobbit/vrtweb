@@ -196,49 +196,6 @@ app.use(  express.static(pub ) );
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-// install plugin
-var installaddon=function(){
-
-}
-//check if empty
-var addoninstallpath="../addons/install"
-fs.readdir(addoninstallpath, function(err, files) {
-    if (err) {
-       // some sort of error
-       console.log( "addons/install - error : " , err)
-    } else {
-       if (!files.length) {
-           // directory appears to be empty
-       }else{
-            // process each one
-            console.log("found plugins")
-            console.log("files : " , files)
-            files.forEach(function(f,i){
-                var fpath=addoninstallpath + "/" + f
-                var isFile=true
-                var stat=fs.lstatSync( fpath);
-                if (stat.isDirectory()) {                    
-                    isFile=false
-                }
-
-                if (isFile){
-                    if (f.endsWith(".vrt")){ // compressed addon
-
-                    }
-                }else{
-
-                }
-
-
-
-
-            })
-
-       }
-    }
-});
-
 $bfns.genMenuReact()
 
 /////////////////////

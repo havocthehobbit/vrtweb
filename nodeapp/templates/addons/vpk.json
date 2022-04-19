@@ -3,7 +3,7 @@
     "desc" : "",
     "version" : "",
     "nodeproj" : {
-        "nodemod" : {
+        "nodemod" : {            
             "all" : [],
             "eg" : {
                 "all" : [
@@ -14,6 +14,7 @@
     },
     "reactproj" : {
         "nodemod" : {
+            "main" : "testNewmodue.js",
             "all" : [],
             "eg" : {
                 "all" : [
