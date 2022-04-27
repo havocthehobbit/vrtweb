@@ -211,7 +211,7 @@ function Mainwall({ global , globalChange}){
                 //}
             });
             socket.on("FromAPI", data => {
-                console.log("socket from Backend : " , data)
+                //console.log("socket from Backend : " , data)
                 setSocketIOresponse(data);
             });
         }

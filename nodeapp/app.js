@@ -335,13 +335,13 @@ var server = http.listen( $vserv.data.port , $vserv.data.host  , function () {
 
 var interval
 io.on("connection", (socket) => {
-    console.log("New socket.IO client connected");
+    //console.log("New socket.IO client connected");
     if (interval) {
       clearInterval(interval);
     }
     interval = setInterval(() => getApiAndEmit(socket), 60000);
     socket.on("disconnect", () => {
-      console.log("socket.IO Client disconnected");
+      //console.log("socket.IO Client disconnected");
       clearInterval(interval);
     });
 });
