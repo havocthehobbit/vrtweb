@@ -15,9 +15,10 @@ Getting Started ( undetailed basics )
 * install nodemon 
 * run the menu.sh script
  * type 0 to install 
+ 
 * open 2 terminals
-* start nodejs app in first terminal by nagivaging to and running startdev.sh -dip
-* start react app in second terminal by nagivgating to my-app and running startdev.sh
-* start browser with your local IP address (not localhost) on port 3000 
+  * start nodejs app in first terminal by nagivaging to and running startdev.sh -dip
+  * start react app in second terminal by nagivgating to my-app and running startdev.sh
+  * start browser with your local IP address (not localhost) on port 3000 
 
 
