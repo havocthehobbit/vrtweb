@@ -1,4 +1,4 @@
-import { tAestNewmodue } from "./testNewmodue"
+import { tAestNewmodue } from "./testNewmodue/main"
 
 
 var testNewmoduemenu=function(){

@@ -1,6 +1,6 @@
 import { useEffect, useState,Component} from "react"
 import _ from "lodash";
-import $gl from "../common/global";
+import $gl from "../../common/global";
 
 
 

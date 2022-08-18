@@ -1,5 +1,5 @@
 // example 
-//import myNewComponent from "./myNewComponent";
+//import myNewComponent from "./myNewComponent/main";
 
 
 
