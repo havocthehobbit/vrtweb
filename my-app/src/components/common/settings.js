@@ -1,6 +1,6 @@
 import { useState , useEffect}  from 'react'
-import { Link, Switch, Route , Redirect, useRouteMatch, useParams ,useHistory } from 'react-router-dom';
-import history from "./routerHist"
+//import { Link, Switch, Route , Redirect, useRouteMatch, useParams ,useHistory } from 'react-router-dom';
+//import history from "./routerHist"
 import {connect} from 'react-redux'
 import _ from "lodash";
 

@@ -1,15 +1,16 @@
-import React, { Component ,useLayoutEffect, useState, useEffect } from 'react';
+//import React , { Component ,useLayoutEffect, useState, useEffect } from 'react';
+import React from 'react';
 //import {useState , useEffect} from "react"
 import {connect} from 'react-redux'
-import _, { set } from "lodash"
+import _ from "lodash"
 import $gl from "./global"
 
 import Rcm from "./rcm"
 
 import { v4 as uuidv4 } from 'uuid';
-import jsfns from "./codegenjsfns"
+//import jsfns from "./codegenjsfns"
 
-import CWindowPF from "./cwindowpf"
+//import CWindowPF from "./cwindowpf"
 
 
 
@@ -32,7 +33,7 @@ const mapDispatchToProps = function(dispatch){
 }
 
 
-
+/*
 class Cwindow extends React.Component {
 
     constructor(props) {
@@ -83,16 +84,16 @@ class Cwindow extends React.Component {
     componentDidMount(){        
         var tt=this
         
-        /* //ignorse this state for some reason , initially renders twice , first time works second time it just forces it to true
-        if (tt.state.remMin){
-            if (tt.state.name!==""){
-                var minme=$gl.getCookie("remMin_" + tt.state.name)
-                if (!_.isUndefined(minme)){
-                    tt.setState( { minme : Boolean(minme) });
-                }
-            }
-        }
-        */
+        // //ignorse this state for some reason , initially renders twice , first time works second time it just forces it to true
+        //if (tt.state.remMin){
+        //    if (tt.state.name!==""){
+        //        var minme=$gl.getCookie("remMin_" + tt.state.name)
+        //        if (!_.isUndefined(minme)){
+        //           tt.setState( { minme : Boolean(minme) });
+        //        }
+        //   }
+        //}
+        
     }    
 
     componentDidUpdate(){
@@ -204,7 +205,7 @@ class Cwindow extends React.Component {
     }
 
 }
-
+*/
 
 var winsO=function(){
     var obj={
@@ -363,7 +364,7 @@ class Codegenc extends React.Component {
 
     var cb=function(){}
     
-    var title="";
+    //var title="";
     var proj={}
     
     if ( args.length > 0){
@@ -372,7 +373,7 @@ class Codegenc extends React.Component {
                 cb=args[0].cb
             }
             if (!_.isUndefined(args[0].title)){
-                title=args[0].title
+                //title=args[0].title
             }
             
             if (!_.isUndefined(args[0].proj)){
@@ -411,9 +412,9 @@ class Codegenc extends React.Component {
 
     var cb=function(){}
     
-    var title="";
-    var detail=""
-    var uuid=""
+    //var title="";
+    //var detail=""
+    //var uuid=""
     
     if ( args.length > 0){
         if (_.isPlainObject(args[0])){
@@ -421,14 +422,14 @@ class Codegenc extends React.Component {
                 cb=args[0].cb
             }
             if (!_.isUndefined(args[0].title)){
-                title=args[0].title
+                //title=args[0].title
             }
             
             if (!_.isUndefined(args[0].detail)){
-                detail=args[0].detail
+                //detail=args[0].detail
             }
             if (!_.isUndefined(args[0].uuid)){
-                uuid=args[0].uuid
+                //uuid=args[0].uuid
             }
         }
 
@@ -463,8 +464,8 @@ class Codegenc extends React.Component {
 
     var cb=function(){}
     
-    var title="";
-    var detail=""
+    //var title="";
+    //var detail=""
     
     if ( args.length > 0){
         if (_.isPlainObject(args[0])){
@@ -472,11 +473,11 @@ class Codegenc extends React.Component {
                 cb=args[0].cb
             }
             if (!_.isUndefined(args[0].title)){
-                title=args[0].title
+                //title=args[0].title
             }
             
             if (!_.isUndefined(args[0].detail)){
-                detail=args[0].detail
+                //detail=args[0].detail
             }
         }
 
@@ -637,7 +638,7 @@ class Codegenc extends React.Component {
                             function(){ // list projects
                                 if (tt.state.showProjectList){
                                     // loadProject(project)
-                                    var allproj=[]
+                                    //var allproj=[]
                                     var allprojE=[]                                
                                     _.each(tt.state.projects,function(r,i){
                                         allprojE.push(
@@ -759,11 +760,11 @@ class Codegenc extends React.Component {
                          onClick={ function(e){
                             // e.target.value
                             var e_uuid=e.target.getAttribute('datauid')
-                            var found=false;
+                            //var found=false;
                             var founditer=0
                             _.each(tt.state.tables,function(r,i){ // validate table name doesnt already exist 
                                 if (r.uuid===e_uuid){
-                                    found=true;
+                                    //found=true;
                                     founditer=i;
                                 }
                                 
@@ -786,7 +787,7 @@ class Codegenc extends React.Component {
                 )
             })
             
-            { /* tableCol --> colesE */ }
+            /* tableCol --> colesE */ 
             _.each(tt.state.tableCols,function(r,i){
     
                 colsE.push( 
@@ -794,11 +795,11 @@ class Codegenc extends React.Component {
                             datauid={r.uuid}
                             onClick={ function(e){
                                 var e_uuid=e.target.getAttribute('datauid')
-                                var found=false;
+                                //var found=false;
                                 var founditer=0
                                 _.each(tt.state.tableCols,function(r,i){ // validate table name doesnt already exist 
                                     if (r.uuid===e_uuid){
-                                        found=true;
+                                        //found=true;
                                         founditer=i;
                                     }
                                     
@@ -968,7 +969,7 @@ class Codegenc extends React.Component {
                                                 var colExists=false;
                                                 var existsIter=0
                                                 _.each(ltableCols,function(r,i){
-                                                    if (r.name==tt.state.tableCol.name ){
+                                                    if (r.name===tt.state.tableCol.name ){
                                                         colExists=true
                                                         existsIter=i
                                                     }
@@ -982,11 +983,11 @@ class Codegenc extends React.Component {
                                                 }
 
                                                 
-                                                var tableExists=false;
-                                                var existsIter=0
+                                                //var tableExists=false;
+                                                existsIter=0
                                                 _.each(ltables,function(r,i){
-                                                    if (r.name==tt.state.currTable ){
-                                                        tableExists=true
+                                                    if (r.name===tt.state.currTable ){
+                                                        //tableExists=true
                                                         existsIter=i
                                                     }
                                                 })
@@ -1190,8 +1191,8 @@ class Codegenc extends React.Component {
             codeItemE=function(){
                 var ed=tt.state.editor // current record editor 
                 
-                var gci= tt.state.cGroupsI
-                var gca= tt.state.cGroupsA
+                //var gci= tt.state.cGroupsI
+                //var gca= tt.state.cGroupsA
                 
                 var showrec=_.clone(defCodeItem)
 
@@ -1199,13 +1200,13 @@ class Codegenc extends React.Component {
                 var  found=false , foundrec={}
                 if (!_.isUndefined( ed.currcGroupChildrenName  ) ){
                     if (ed.currcGroupChildrenName !== ""  ){
-                        var gc;
+                        //var gc;
 
                         if (ed.currcGroupsType==="I"){
-                            gc=gci
+                            //gc=gci
                         }
                         if (ed.currcGroupsType==="A"){
-                            gc=gca
+                            //gc=gca
                         }                   
 
                         // groupI A name 
@@ -1665,8 +1666,9 @@ class Codegenc extends React.Component {
 
             //jsfns.snippet("")
 
-            var ltables=tt.state.tables;
+            //var ltables=tt.state.tables;
 
+            /*
             var listTables=function(){
                 var ret=[]
 
@@ -1678,8 +1680,9 @@ class Codegenc extends React.Component {
 
                 return ret
             }
+            */
 
-
+            /*
             var listTableAndCols=function(){
                 var ret={ tables : {}}
                 _.each(tt.state.tables,function(r,i){
@@ -1694,6 +1697,7 @@ class Codegenc extends React.Component {
                 return ret;
 
             }
+            */
 
            
              // win style    
@@ -1722,7 +1726,7 @@ class Codegenc extends React.Component {
 
                                     //code=JSON.stringify(listTables())
                                     
-                                    var tac=JSON.stringify( listTableAndCols()  ,null ,2 )
+                                    //var tac=JSON.stringify( listTableAndCols()  ,null ,2 )
 
                                     if (tt.state.GCadd){
                                         code+=`var abc\n`

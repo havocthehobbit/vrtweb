@@ -10,11 +10,11 @@ import OutOfOffice from "./outofoffice";
 import Projects from "./projects";
 import Notes from "./notes";
 
-import ComponentsAss from './assistant'
+//import ComponentsAss from './assistant'
 
 import socketIOClient from "socket.io-client";
 
-const Assistant=ComponentsAss.Assistant
+//const Assistant=ComponentsAss.Assistant
 
 var host=$gl.fn.getHost();
 var port=$gl.fn.getPort()
@@ -43,9 +43,9 @@ function fetchNews(){
 
     var cb=function(){}
     
-    var userid="";
-    var password=""
-    var loginFnType="login"
+    //var userid="";
+    //var password=""
+    //var loginFnType="login"
 
     if ( args.length > 0){
         if (_.isPlainObject(args[0])){
@@ -53,11 +53,11 @@ function fetchNews(){
                 cb=args[0].cb
             }
             if (!_.isUndefined(args[0].userid)){
-                userid=args[0].userid
+                //userid=args[0].userid
             }
             
             if (!_.isUndefined(args[0].loginFnType)){
-                loginFnType=args[0].loginFnType
+                //loginFnType=args[0].loginFnType
             }
         }
 
@@ -175,21 +175,21 @@ export const AddNews=function(){
 var initCountMainWall=0;
 function Mainwall({ global , globalChange}){
 
-    var [newsout ,newsoutSet]=useState([])
+    var [newsout ,newsoutSet]=useState([])    
     var [showAddNews ,setShowAddNews]=useState(false)
     var [canAddNews ,setCanAddNews]=useState(false)
 
     var [socketIOresponse ,setSocketIOresponse]=useState("")
-
     
-
+    if (newsout){};if (socketIOresponse){};
     useEffect(() => {
         initCountMainWall++
        
         if (initCountMainWall===1){
             fetchNews(function(ret){
                 newsarr=ret.data
-                newsoutSet(newsarr);
+                
+                newsoutSet(newsarr); 
                 
                 $gl.fetchPerms(function(perms){                
                     _.each(perms.data,(val, prop)=>{
@@ -212,7 +212,9 @@ function Mainwall({ global , globalChange}){
             });
             socket.on("FromAPI", data => {
                 //console.log("socket from Backend : " , data)
+                
                 setSocketIOresponse(data);
+                
             });
         }
 
@@ -243,6 +245,7 @@ function Mainwall({ global , globalChange}){
                                                                 
                             </div>
                         )
+                        return 0
             })
         }else{
             eArr.push(<div key="9999" >loading...news data</div>)

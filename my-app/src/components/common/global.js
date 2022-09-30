@@ -1,4 +1,4 @@
-import _, { functionsIn } from "lodash";
+import _ from "lodash";
 import csvparse from "csv-parse"
 import { v4 as uuidv4 } from 'uuid';
 
@@ -61,9 +61,9 @@ var cool_native={
     },
 
     init : function(){
-        var args=arguments;
-        var args_l=args.length;
-        var param={ name : "" }
+        //var args=arguments;
+        //var args_l=args.length;
+        //var param={ name : "" }
 
         this.l_this=this ;
 
@@ -91,7 +91,7 @@ $gl.filterlines=function(text, searchstring,linesafter){
     var textArray=text.split("\n")
     var newArr=[]
     var counfFound=0
-    var foundfirst=-1
+    //var foundfirst=-1
 
     _.each(textArray,function(v,i){
         var found=v.search(searchstring)
@@ -104,7 +104,7 @@ $gl.filterlines=function(text, searchstring,linesafter){
         }
         if (found>0){
             if (counfFound===1){
-                foundfirst=i
+                //foundfirst=i
             }
 
 
@@ -128,9 +128,9 @@ $gl.filterlines=function(text, searchstring,linesafter){
 
 $gl.filterlinesRange=function(text, searchstringFrom,searchstringTo){    
 
-    var newArr=[]
-    var counfFound=0
-    var foundfirst=-1
+    //var newArr=[]
+    //var counfFound=0
+    //var foundfirst=-1
  
     var rx=new RegExp( "(?<=" + searchstringFrom + "s*\).*?(?=\s*" + searchstringTo + ")" , "s")
     
@@ -157,7 +157,7 @@ function xmlToJson(xml) {
     // Create the return object
     var obj = {};
 
-    if (xml.nodeType == 1) { // element
+    if (xml.nodeType === 1) { // element
         // do attributes
         if (xml.attributes.length > 0) {
         obj["@attributes"] = {};
@@ -166,7 +166,7 @@ function xmlToJson(xml) {
                 obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
             }
         }
-    } else if (xml.nodeType == 3) { // text
+    } else if (xml.nodeType === 3) { // text
         obj = xml.nodeValue;
     }
 
@@ -178,7 +178,7 @@ function xmlToJson(xml) {
             if (typeof(obj[nodeName]) == "undefined") {
                 obj[nodeName] = xmlToJson(item);
             } else {
-                if (typeof(obj[nodeName].push) == "undefined") {
+                if (typeof(obj[nodeName].push) === "undefined") {
                     var old = obj[nodeName];
                     obj[nodeName] = [];
                     obj[nodeName].push(old);
@@ -187,6 +187,7 @@ function xmlToJson(xml) {
             }
         }
     }
+    /*
     var sanitiseRTrec=function(obj){
         var o=obj
         var parentnameiter="unknown"
@@ -220,6 +221,7 @@ function xmlToJson(xml) {
         })
         
     }
+    */
 
     // #todo #rt fix #text issue
     /*
@@ -264,7 +266,7 @@ function PasswordSimplGen(cb){
              columns: true
             }, function(err, records){               
                 //console.log(records)
-                cb(records)
+                cb(records,err)
             })
 }
 
@@ -282,12 +284,13 @@ $gl.fetchCookie=getCookie;
 
 
 function createCookie(name,value,days) {
+    var expires
     if (days) {
         var date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 *1000));
-        var expires = "; expires=" + date.toGMTString();
+        expires = "; expires=" + date.toGMTString();
     } else {
-        var expires = "";
+        expires = "";
     }
     document.cookie = name + "=" + value + expires + "; path=/";
 }
@@ -353,7 +356,7 @@ var getHost=()=>{
     var url= window.document.createElement('a');
     url.setAttribute('href', window.location.href)
     var host=url.hostname;
-    var port=url.port;
+    //var port=url.port;
     return host;
 }
 
@@ -363,7 +366,7 @@ $gl.fn.getHost=getHost;
 var getPort=()=>{
     var url= window.document.createElement('a');
     url.setAttribute('href', window.location.href)
-    var host=url.hostname;
+    //var host=url.hostname;
     var port=url.port;
     if (process.env.NODE_ENV !== 'production') {
       port=window["node_port"];
@@ -532,17 +535,18 @@ var batchRunTimed=function(params, runitems_arr ,cb , cb_end){ // waterfall time
         waitfornext=params.waitfornext
     }
 
-    var total=runitems_arr.length
-    var wI=0
-    var run=true
+    //var total=runitems_arr.length
+    //var wI=0
+    //var run=true
     
-    var cnt=0
+    var cnt=0  
+    if (cnt){}
     var recur= function(arr,count,cb){
         if (arr.length ===0){
             //cb_end()
             return
         }
-        cnt++
+        cnt++;
         
         var next_hasrun=false
         var next=function(){
@@ -615,6 +619,4 @@ var batchRunTimed=function(params, runitems_arr ,cb , cb_end){ // waterfall time
 }
 $gl.batchRunTimed=batchRunTimed
 
-
 export default $gl;
-

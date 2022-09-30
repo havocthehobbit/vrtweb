@@ -1,7 +1,7 @@
  
 import {useState , useEffect} from "react"
 import {connect} from 'react-redux'
-import _, { set } from "lodash"
+import _ from "lodash"
 import $gl from "./global"
 
 
@@ -43,8 +43,8 @@ function Notes({ global , globalChange}){
 
       var cb=function(){}
       
-      var title="";
-      var detail=""
+      //var title="";
+      //var detail=""
       
       if ( args.length > 0){
           if (_.isPlainObject(args[0])){
@@ -52,11 +52,11 @@ function Notes({ global , globalChange}){
                   cb=args[0].cb
               }
               if (!_.isUndefined(args[0].title)){
-                  title=args[0].title
+                  //title=args[0].title
               }
               
               if (!_.isUndefined(args[0].detail)){
-                  detail=args[0].detail
+                  //detail=args[0].detail
               }
           }
 
@@ -88,7 +88,7 @@ function Notes({ global , globalChange}){
   
         var cb=function(){}
         
-        var title="";
+        //var title="";
         var detail=""
         
         if ( args.length > 0){
@@ -97,7 +97,7 @@ function Notes({ global , globalChange}){
                     cb=args[0].cb
                 }
                 if (!_.isUndefined(args[0].title)){
-                    title=args[0].title
+                    //title=args[0].title
                 }
                 
                 if (!_.isUndefined(args[0].detail)){

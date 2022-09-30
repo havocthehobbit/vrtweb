@@ -1,14 +1,15 @@
 import '../../App.css';
 import '../../css_general/general.css';
 
-import { useState , useEffect,LazyLoad,Suspense,useRef}  from 'react'
+import { useState,useEffect,useRef}  from 'react'
 
 //import { BrowserRouter as Router, NavLink } from 'react-router-dom';
 //import {  } from 'react-router-dom';
-import { Router, NavLink,Link, Switch, Route , Redirect, useRouteMatch, useParams  } from 'react-router-dom';
+import { Router, Link, Switch, Route , Redirect} from 'react-router-dom';
 import history from "./routerHist";
 
-import Login ,  {isAuth , logout as logoutuser } from './login'
+//import Login ,  {isAuth , logout as logoutuser } from './login'
+import   {isAuth , logout as logoutuser } from './login'
 
 import Mainwall from './mainwall'
 import Settings from './settings'
@@ -33,7 +34,7 @@ import _ from "lodash"
 import { HomeOutlined , SettingOutlined } from '@ant-design/icons'
 
 import {connect} from 'react-redux'
-import mainwall from './mainwall';
+//import mainwall from './mainwall';
 
 
 //var SummaryCalls=AllCalls.SummaryCalls;
@@ -41,7 +42,7 @@ import mainwall from './mainwall';
 var host=$gl.fn.getHost();
 var port=$gl.fn.getPort()
 var protocall=$gl.fn.getProtocall();
-var url=protocall + "//" + host + ":" + port ;
+//var url=protocall + "//" + host + ":" + port ;
 
 const mapStateToProps = function(state , owsProps){
     return {
@@ -113,28 +114,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
 
 
     
-    useEffect(function(){       
-            initlogin.current++
-            if (initlogin.current===1){                
-                var menuCookie=$gl.cookie("currMainMenu")
-                /*
-                if (!_.isUndefined(menuCookie)){
-                    return ( <Redirect to={"/" + menuCookie } /> )
-                }else{
-                    return ( <Redirect to="/" /> )
-                }
-                */
-            } 
-            getUserDetail(function(){
-                
-            }); 
-            
-            loginSettings(function(){})
-
-        return function(){
-
-        }
-    },[])
+    
 
     
     var getUserDetail=function(){
@@ -172,6 +152,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
 
             }else{
                 setPassFocus(true)
+                if (passFocus){}
             }            
         })
     }
@@ -181,8 +162,8 @@ function MainApp({loggedin , login , logout , addval , theme}){
 
         var cb=function(){}
         
-        var title="";
-        var detail=""
+        //var title="";
+        //var detail=""
         
         if ( args.length > 0){
             if (_.isPlainObject(args[0])){
@@ -190,11 +171,11 @@ function MainApp({loggedin , login , logout , addval , theme}){
                     cb=args[0].cb
                 }
                 if (!_.isUndefined(args[0].title)){
-                    title=args[0].title
+                    //title=args[0].title
                 }
                 
                 if (!_.isUndefined(args[0].detail)){
-                    detail=args[0].detail
+                    //detail=args[0].detail
                 }
             }
 
@@ -221,6 +202,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
             cb({},{err : err});
         })
     }
+
     var loginSettings=function(cb){
         var lsettings={
 
@@ -285,6 +267,25 @@ function MainApp({loggedin , login , logout , addval , theme}){
 
     }
 
+    useEffect(function(){      
+             
+        initlogin.current++
+        if (initlogin.current===1){                
+            //var menuCookie=$gl.cookie("currMainMenu")
+            /*
+            if (!_.isUndefined(menuCookie)){
+                return ( <Redirect to={"/" + menuCookie } /> )
+            }else{
+                return ( <Redirect to="/" /> )
+            }
+            */
+        } 
+        getUserDetail(function(){}); 
+        
+        loginSettings(function(){})
+
+        return function(){}        
+    },[])
 
     var loginstr=function(){
                                 if (loggedin){

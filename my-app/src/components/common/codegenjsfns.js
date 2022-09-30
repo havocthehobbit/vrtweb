@@ -8,7 +8,7 @@ var jsfns_o=function(){
         snippit : {
             thisRoot : this
             ,get : function(){
-                var args=arguments;
+                //var args=arguments;
 
             }    
         }

@@ -1,7 +1,7 @@
  
 import {useState , useEffect} from "react"
 import {connect} from 'react-redux'
-import _, { set } from "lodash"
+import _ from "lodash"
 import $gl from "./global"
 
 import Rcm from "./rcm"
@@ -12,7 +12,8 @@ var host=$gl.fn.getHost();
 var port=$gl.fn.getPort()
 var protocall=$gl.fn.getProtocall();
 
-const mapStateToProps = function(state , owsProps){
+//const mapStateToProps = function(state , owsProps){
+const mapStateToProps = function(state ){
     return {
         global : state.global,
         loggedin : state.loggedin
@@ -32,7 +33,8 @@ css.inplab={ postion : "relative" , margin : 2}
 css.txt={ postion : "relative" , margin : 2, borderRadius : 3}
 
 var mounted=0
-function Codegen({ global , globalChange}){
+function Codegen(){
+//function Codegen({ global , globalChange}){
     //var [,set]=useState()
     var defeditor={ currTable : "" , currCol : "" , uuid : "" }
     var deftable={name : "" ,  description : "" ,notes : "", uuid : "" , cols : [] , index : {} }
@@ -42,12 +44,13 @@ function Codegen({ global , globalChange}){
                     tables : {}, views : {}, files : {} , paths : {}
                     
                 }
-    var deftodo={uuid : "" , "name" : "" , hasChildren : false ,type : "" , progress : { curr : 0 , total : 1} ,desc : "" ,uuidParent : ""  }
-    var defview={}
-    var defdbview={}
+    //var deftodo={uuid : "" , "name" : "" , hasChildren : false ,type : "" , progress : { curr : 0 , total : 1} ,desc : "" ,uuidParent : ""  }
+    //var defview={}
+    //var defdbview={}
 
     
-    var [notes,setNotes]=useState([])
+    //var [notes,setNotes]=useState([])
+    var [notes]=useState([])
     var [mainNote,setMainNote]=useState("")
     var [editor,setEditor]=useState(_.clone(defeditor))
     var [tables,setTables]=useState([])
@@ -56,20 +59,23 @@ function Codegen({ global , globalChange}){
     var [tableCol,setTableCol]=useState(_.clone(deftableCol))
     var [project,setProject]=useState(_.clone(defproject))
     var [projects,setProjects]=useState([])
-    var [jsNodes,setJsNodes]=useState([])
-    var [jsNode,setJsNode]=useState({})
-    var [jsReacts,setJsReacts]=useState([])
-    var [jsReact,setJsReact]=useState({})
-    var [jsMongos,setJsMongos]=useState([])
-    var [jsMongo,setJsMongo]=useState({})
-    var [Mongos,setMongos]=useState([])
-    var [Mongo,setMongo]=useState({})
-    var [todos,setTodos]=useState([])
-    var [todo,setTodo]=useState(deftodo)
-    var [views,setViews]=useState([])
-    var [view,setView]=useState(defview)
-    var [views,setViews]=useState([])
-    var [dbview,setDBview]=useState(defdbview)
+    //var [jsNodes,setJsNodes]=useState([])
+    var [jsNodes]=useState([])
+    //var [jsNode,setJsNode]=useState({})
+    //var [jsReacts,setJsReacts]=useState([])
+    var [jsReacts]=useState([])
+    //var [jsReact,setJsReact]=useState({})
+    //var [jsMongos,setJsMongos]=useState([])
+    //var [jsMongo,setJsMongo]=useState({})
+    //var [Mongos,setMongos]=useState([])
+    //var [Mongo,setMongo]=useState({})
+    //var [todos,setTodos]=useState([])
+    var [todos]=useState([])
+    //var [todo,setTodo]=useState(deftodo)
+    //var [views,setViews]=useState([])
+    //var [view,setView]=useState(defview)
+    //var [views,setViews]=useState([])
+    //var [dbview,setDBview]=useState(defdbview)
 
 
     var [showProjectList,setShowProjectList]=useState(false)
@@ -102,8 +108,8 @@ function Codegen({ global , globalChange}){
 
       var cb=function(){}
       
-      var title="";
-      var detail=""
+      //var title="";
+      //var detail=""
       
       if ( args.length > 0){
           if (_.isPlainObject(args[0])){

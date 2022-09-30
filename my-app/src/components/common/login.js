@@ -30,8 +30,8 @@ export const isAuth=function(){
     var cb=function(){}
     
     var userid="";
-    var password=""
-    var loginFnType="login"
+    //var password=""
+    //var loginFnType="login"
 
     if ( args.length > 0){
         if (_.isPlainObject(args[0])){
@@ -42,10 +42,10 @@ export const isAuth=function(){
                 userid=args[0].userid
             }
             if (!_.isUndefined(args[0].password)){
-                password=args[0].password
+                //password=args[0].password
             }
             if (!_.isUndefined(args[0].loginFnType)){
-                loginFnType=args[0].loginFnType
+                //loginFnType=args[0].loginFnType
             }
         }
 
@@ -85,8 +85,8 @@ export const logout=function(){
     var cb=function(){}
     
     var userid="";
-    var password=""
-    var loginFnType="login"
+    //var password=""
+    //var loginFnType="login"
 
     if ( args.length > 0){
         if (_.isPlainObject(args[0])){
@@ -98,7 +98,7 @@ export const logout=function(){
             }
             
             if (!_.isUndefined(args[0].loginFnType)){
-                loginFnType=args[0].loginFnType
+                //loginFnType=args[0].loginFnType
             }
         }
 
@@ -197,9 +197,9 @@ function Login({loggedin , login , logout , addval}){
        
     }
 
-    var setpassfocus=true;
+    //var setpassfocus=true;
     if (userinp==="" || _.isUndefined(userinp) ){
-        setpassfocus=false
+        //setpassfocus=false
     }
 
     var style={}
@@ -273,7 +273,7 @@ function Login({loggedin , login , logout , addval}){
                             if(e.key==="Enter"){
                                 loginUser( { userid : userinp, password : passinp} , function(dt){                              
                                     if (dt.data.loggedin===true){
-                                        var token=dt.data.token;                                        
+                                        //var token=dt.data.token;                                        
                                         $gl.createCookie("userid" , userinp)                                        
                                         login({"type" : "login"})                                                
                                     }
@@ -290,7 +290,7 @@ function Login({loggedin , login , logout , addval}){
                             loginUser( { userid : userinp, password : passinp} , function(dt){
                                 
                                 if (dt.data.loggedin===true){
-                                    var token=dt.data.token;                                                
+                                   //var token=dt.data.token;                                                
                                     $gl.createCookie("userid" , userinp)                                                
                                     login({"type" : "login"})                                                
                                 }
