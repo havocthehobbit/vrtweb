@@ -4,7 +4,7 @@
     get_json_db - load json file Async
         (filepath,callback) - 
     get_json_db_sync - 
-        [var str=](filepath,filepath[,callback]) - 
+        [var str=](filepath[,callback]) - 
     save_json_db - load json file synchronously
         (filepath,JSONdata,callback)   
     save_file -

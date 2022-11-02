@@ -1,0 +1,13 @@
+import { render, screen } from '@testing-library/react'; // to test add this and the test function as bellow then run ; CI=true npm run test or CI=true npm run test -- , the file must contain *.test.js for it to run and this line and bellow test funtion so if you want other files to be tested rename them and add this recommended code code #vrtw note
+import App from './App';
+
+
+test('renders learn react link', () => { // add this tes function 
+  render(
+    
+      <App/>
+   
+    );
+  const linkElement = screen.getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
