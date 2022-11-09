@@ -101,7 +101,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
 
     var [hoverMenuCurr,set_hoverMenuCurr]=useState({ name : ""});
     var [selectMenuCurr,set_selectMenuCurr]=useState({ name : ""});
-
+    var [main_menu_expanded , set_main_menu_expanded]=useState(true )
 
 
     var initlogin=(useRef(0))
@@ -395,7 +395,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
 
 
                             var mmenuStyle={};
-                            mmenuStyle.main={ width:"80%",zIndex :999}
+                            mmenuStyle.main={ width:"80%",zIndex :999999,displa : "inline-block"}
 
                             
                             mmenuStyle.main0={ position : "relative" , margin : 4,  width : or_menu_width , height : menu_height }
@@ -427,8 +427,70 @@ function MainApp({loggedin , login , logout , addval , theme}){
 
 
                             var key_menu=15
-
                             
+                            var main_menu_expanded_cssDisplay="block"
+                            var expanded_menu_icon="-"
+                            if (!main_menu_expanded){
+                                main_menu_expanded_cssDisplay="none"
+                                expanded_menu_icon="+"
+                            }
+
+                            if (true){
+                                var mymenuname="expand"
+                                
+                                //if (displayMenu.all[mymenuname].active){
+                                if (true){
+
+                                    var newStyleIns=_.clone(mmenuStyle.main_inst)
+                                    
+                                    if ( hoverMenuCurr.name===mymenuname){
+                                        newStyleIns=_.merge(newStyleIns,menuHoverStyle )
+                                    }
+                                    if ( selectMenuCurr.name===mymenuname){
+                                        newStyleIns=_.merge(newStyleIns,menuSelectStyle )
+                                    }
+
+                                    newStyleIns.background="grey"
+                                    newStyleIns.cursor="pointer"
+                                    
+                                    var pstyle_tmp={ pointerEvents : "none",position : "relative", fontSize : 40, fontWeight : "bold",top : -20,display : "inline-block", margin : 0 , padding : 0}
+
+                                    if (!main_menu_expanded){ 
+                                        newStyleIns.width=15
+                                        pstyle_tmp.fontSize=30
+                                        pstyle_tmp.top=-12
+                                        pstyle_tmp.left=-3
+                                    }
+
+                                    all_menus_arr.push(
+                                        <div key={++key_menu}
+                                            onClick={getUserDetail}
+                                            style={{position : "relative" }}
+                                        >
+                                            
+                                            <div to={'/' + mymenuname} myname={mymenuname} 
+                                                    onClick={
+                                                        (e)=>{
+                                                            set_selectMenuCurr({ name : e.target.getAttribute("myname")}) 
+                                                            set_main_menu_expanded(!main_menu_expanded)
+                                                        }  
+                                                    } 
+
+                                            > 
+                                                <div style={ newStyleIns} 
+                                                    myname={mymenuname}
+                                                    onMouseEnter={(e)=>{set_hoverMenuCurr({ name : e.target.getAttribute("myname")}) }  } 
+                                                    onMouseLeave={(e)=>{ set_hoverMenuCurr({ name : "" }) }}
+                                                    onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) ; $gl.cookie( "currMainMenu" , e.target.getAttribute("myname"))  }  } 
+                                                >
+                                                        
+                                                        <p style={pstyle_tmp}>{expanded_menu_icon}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                }
+                            }
 
                             if (true){
                                 var mymenuname="mainwall"
@@ -446,7 +508,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     all_menus_arr.push(
                                         <div key={++key_menu}
                                             onClick={getUserDetail}
-                                            style={{position : "relative" }}
+                                            style={{position : "relative" ,display : main_menu_expanded_cssDisplay }}
                                         >
                                             { /* <Link to={`${url}/3-1`}>Sub-page-1</Link> */ }
                                             <Link to={'/' + mymenuname} myname={mymenuname} onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } >
@@ -488,7 +550,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     }
                                         
                                     all_menus_arr.push(
-                                        <div key={++key_menu} style={{position : "relative" }} >
+                                        <div key={++key_menu} style={{position : "relative",display : main_menu_expanded_cssDisplay  }} >
                                             <Link to={'/' + mymenuname} myname={mymenuname} onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } >
                                                 <div style={ newStyleIns} 
                                                     myname={mymenuname}
@@ -544,7 +606,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     if (active){
                                    
                                         all_menus_arr.push(
-                                            <div key={++key_menu} style={{position : "relative" }} >                                            
+                                            <div key={++key_menu} style={{position : "relative",display : main_menu_expanded_cssDisplay  }} >                                            
                                                 <div key={++key_menu}   >
                                                     <Link to={"/"+ r.name} myname={r.name} onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } >
                                                         <div style={newStyleIns}  
@@ -577,7 +639,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     }
 
                                     all_menus_arr.push(
-                                        <div key={++key_menu} style={{position : "relative" }} >
+                                        <div key={++key_menu} style={{position : "relative",display : main_menu_expanded_cssDisplay  }} >
                                             { /* <Link to={`${url}/3-1`}>Sub-page-1</Link> */ }
                                             <Link to={'/' + mymenuname}  myname={mymenuname} onClick={(e)=>{set_selectMenuCurr({ name : e.target.getAttribute("myname")}) }  } >
                                                 <div style={ newStyleIns} 
@@ -597,11 +659,23 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                 }
                             }                            
                             
+                            var mmenuStyle_tmp=_.clone(mmenuStyle.main)
+                            var mmenuStyle0_tmp=_.clone(mmenuStyle.main0)
+                            var mmenuStyle1_tmp=_.clone(mmenuStyle.main1)
+                            //mmenuStyle_tmp.zIndex=999999999
+                            //mmenuStyle0_tmp.zIndex=999999999
+                            mmenuStyle1_tmp.zIndex=999999999
+                            if (!main_menu_expanded){
+                                mmenuStyle_tmp.height=30
+                                mmenuStyle0_tmp.height=0
+                                mmenuStyle1_tmp.height=0
+                                
+                            }
                             return ( 
-                                <div className={"menu_main"} style={mmenuStyle.main} >
+                                <div className={"menu_main"} style={mmenuStyle_tmp} >
                                     
-                                        <div className={"menu_main0"} style={mmenuStyle.main0}></div>
-                                        <div className={"menu_main1"} style={mmenuStyle.main1}>
+                                        <div className={"menu_main0"} style={mmenuStyle0_tmp}></div>
+                                        <div className={"menu_main1"} style={mmenuStyle1_tmp}>
                                             {/*<nav>  */}
                                                 {all_menus_arr}
                                             {/*</nav>  */}
