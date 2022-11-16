@@ -74,6 +74,60 @@ var cool_native={
 var $gl=cool_native
 
 
+var main_loop_tree=function( l_obj,l_extra_data, l_cb){ // rt's generic recursion fn
+    
+    var l_E=[] // used to generate react element objects that can be rendered
+    var txt="" // for building text trees , can be used to convert json to xml or to html or to some other text format
+    var ntd=[] // for biuilding new tree formats ,helps with converting tree data or transposing from one format to another                
+    if (_.isUndefined(l_extra_data)){
+        l_extra_data={}
+    }
+    l_extra_data.cancel_all=false
+
+    if (_.isUndefined(l_extra_data.lvl)){
+        l_extra_data.lvl=0
+    }else{
+        l_extra_data.lvl++
+    }
+
+    
+    l_extra_data.cancel=false
+    l_obj.children.forEach(function(r,i){                                
+        if (l_extra_data.cancel){ // cancel last iteration
+            return;
+        }
+        if(l_extra_data.cancel_all){
+            return;
+        }
+
+        var par=l_obj // set parent, that can be used by children call backs
+
+        var ret_temp_lE=main_loop_tree( r ,l_extra_data, l_cb  ) // children
+        var new_L_Eobj=l_cb( r ,i, ret_temp_lE.E ,ret_temp_lE.txt, ret_temp_lE.ntd,l_extra_data, par)
+        
+        if (l_extra_data.cancel){ // cancel last iteration
+            return;
+        }
+        if(l_extra_data.cancel_all){
+            return;
+        }
+
+        if ( new_L_Eobj.success ){
+            l_E.push(new_L_Eobj.E)
+            txt+=new_L_Eobj.txt                        
+            ntd.push(new_L_Eobj.treedata)
+        }
+    })
+
+    l_extra_data.children_orig=l_obj.children
+    
+
+    l_extra_data.lvl--
+    return { E :l_E , txt : txt, new_tree : ntd   }
+}
+$gl.main_loop_tree=main_loop_tree
+
+
 var tree_template_O=function(){
     var tt=this
     var obj={            
@@ -111,13 +165,11 @@ var tree_template_O=function(){
         
         mytree : {
             "children" : [], 
-            "name" : "root",
+            "name" : "root",          
             "id" : "0" ,
             "style" : {}  
         },
-        myTree_index : {
-
-        },      
+        myTree_index : {},      
         
         component_mode : "addtotree",
         modes : ["addtotree","select_tool"],
@@ -125,10 +177,8 @@ var tree_template_O=function(){
         component_selected_catagory : "code",
         component_catagories : ["code"],
 
-
         save_data : {},
         loaded_data : {},
-
 
         add_cmpt_to_tree : function(){
             var tt=this.tt
@@ -427,6 +477,7 @@ var tree_template_O=function(){
 
             }
         },
+        
         schemas : {
             myTree : {
                 schema : {
@@ -503,13 +554,15 @@ var tree_template_O=function(){
                 }
             },
 
-        components : { 
+        
+            components : { 
             all : [                                        
                 { name : "newline" , cat : "code" ,tc_code : "newline"},
                 { name : "function" , cat : "code" ,tc_code : "function"},
                
             ],
         },
+        
         components_O : function(){
             var tt=this.tt
             var t=this
@@ -895,15 +948,18 @@ var tree_template_O=function(){
             t.layout_E=(
                 <div
                     style={t.styles.layout.main}
-                >
-                    {temp.E}
+                >   
+                    <div
+                        style={t.myTree.style}
+                    >
+                        {temp.E}
+                    </div>
+                    
                 </div>
             )
 
             
         },
-
-
 
         main_loop : function( l_obj,extra_data, cb){ // rt's generic recursion fn
             var tt=this.tt
@@ -962,13 +1018,32 @@ var tree_template_O=function(){
             extra_data.lvl--
             return { E :l_E , txt : txt, new_tree : ntd   }
         },
-        main_loop_fn : function(){
+        tree_fn : function(){ // tree
             var tt=this.tt
             var t=this
 
             if (_.isUndefined(tt.state)){
                 tt={ state : t.sstate}
             }
+
+
+            /////////////////////////////////////////////
+
+            var def_bg_col="transparent"
+            var def_col="black"
+            var sel_bg_col="yellow"
+            var sel_col="black"
+
+            var cs_col=def_col;
+            var cs_bgcol=def_bg_col;
+
+            var def_bg_col_child="transparent"
+            var def_col_child="black"
+            var sel_bg_col_child="orange"
+            
+            var cs_col_child=def_col_child;
+            var cs_bgcol_child=def_bg_col_child;
+            var is_child_expanded=false;
 
             var some_extra_data_to_play_with={tmp_code_child_ret : ""}
 
@@ -985,21 +1060,7 @@ var tree_template_O=function(){
                 }
                 //////////////////////////////////////////////////////////
 
-                var def_bg_col="transparent"
-                var def_col="black"
-                var sel_bg_col="yellow"
-                var sel_col="black"
-
-                var cs_col=def_col;
-                var cs_bgcol=def_bg_col;
-
-                var def_bg_col_child="transparent"
-                var def_col_child="black"
-                var sel_bg_col_child="orange"
                 
-                var cs_col_child=def_col_child;
-                var cs_bgcol_child=def_bg_col_child;
-                var is_child_expanded=false;
 
                 var xpp=_.cloneDeep(tt.state[ "tree_expanded_paths" + t.name_code ] )
 
@@ -1137,14 +1198,68 @@ var tree_template_O=function(){
                 return { E : ret_E , success : ret_status , txt : tmp_code , tree_data : ret_treeData }
             })
 
+            var tree_root_E=function(){
+                cs_bgcol=def_bg_col;
+                if (tt.state["prop_curr_id"+ t.name_code ]==="0"){
+                    cs_bgcol=sel_bg_col
+                }
+                return (
+                    <div style={{position:"relative", fontSize : 13 ,textAlign : "left"}}>                        
+                        <div 
+                            style={{ background : cs_bgcol,position:"relative", fontSize : 13 ,textAlign : "left" ,cursor : "pointer"}}
+                            cid="0"
+                            onClick={(e)=>{
+                                e.stopPropagation();
+                                var id=e.target.getAttribute("cid")         
+
+                                    t.props.set_curr(id,function(){
+                                        var lr={}
+                                        lr["tree_current_select_type" + t.name_code ]="child"
+                                        
+                                        tt.setState(lr,function(){
+                                        
+                                        })                                        
+                                        
+                                    })
+
+                            }}
+                        
+                        >
+                            {"[/] root"}
+                            <div
+                                style={{ position : "relative", float : "right" , cursor : "se-resize"}}
+                                cid="0"  
+                            >
+                                <button  cid="0"
+                                        style={{fontSize : 10, padding : 4 ,paddingLeft : 8,paddingRight : 8, marginLeft : 3, marginRight : 3 }}
+                                        onClick={(e)=>{
+                                            e.stopPropagation();
+                                            var id=e.target.getAttribute("cid") 
+                                            t.delfromtree(id , function(){ })
+                                        }}
+                                    >del</button>
+                                </div>
+                     
+                        </div>
+                        
+                        <div style={{ position : "relative",left:7}}
+                            onClick={(e)=>{}}
+                        >
+                            {temp.E}
+                        </div>
+                    </div> 
+                )
+            }()
+           
+
 
             t.tt.textE=temp.txt
             
             t.myTree_E=(
                 <div
                     style={t.styles.myTree.main}
-                >
-                    {temp.E}
+                >   
+                    {tree_root_E}                    
                 </div>
             )
 
@@ -1159,7 +1274,7 @@ var tree_template_O=function(){
             }
             
             t.components_fn()
-            t.main_loop_fn()
+            t.tree_fn()
             t.props_fn()
             t.layout_fn()
         },
@@ -1263,7 +1378,6 @@ var tree_template_O=function(){
             cb(data)
         },
 
-
         rebuild_myTree_index_id_object_links : function(){ // rebio;d id
             var tt=this.tt
             var t=this
@@ -1353,7 +1467,6 @@ var tree_template_O=function(){
             
         },
 
-
         getTree_realpathSTR_from_ID :function(id, arg_obj){ // #todo
             var tt=this.tt
             var t=this
@@ -1368,7 +1481,6 @@ var tree_template_O=function(){
 
             return realpath_s
         },
-
         
         delete_from_treeobj_ID :function(id,arg_obj){
             var tt=this.tt
@@ -1391,8 +1503,6 @@ var tree_template_O=function(){
             })                
             
         },
-
-
 
         cut_paste_get :function(){
             var tt=this.tt
@@ -1676,10 +1786,17 @@ var tree_template_O=function(){
             if (!_.isUndefined(args[0].inst)){
                 var inst=args[0].inst
 
+                
+                var tmp="name_code"
+                if (!_.isUndefined(inst[tmp])){
+                    t[tmp]=inst[tmp]
+                }
+
                 var tmp="init"
                 if (!_.isUndefined(inst[tmp])){
                     t["init2"]=inst[tmp]
                 }
+
                 var tmp="init_first"
                 if (!_.isUndefined(inst[tmp])){
                     t[tmp]=inst[tmp]
