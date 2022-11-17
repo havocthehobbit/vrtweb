@@ -150,6 +150,43 @@
                                         }
                                 )
 
+
+    main_loop_tree -
+        recursive loop through a parent child structure of infinit depth
+        children must be an arrau of children named children,
+        data example : var data={ root : { children  : [ { name : "something",id : "123" root : { children  : [ { name : "something",id : "123" } ] } }  , { ...ither children  } ]   }}
+        usage example : 
+            var extra={}; 
+            var result=gl.main_loop_tree( data , extra ,function( r,i , l_E ,l_txt, l_ntd,extra , par ){ 
+                var ret_E
+                var ret_treeData // can be used the same ret_E , to create new tree data for conversion tree structures
+                var ret_status=true
+                var tmp_code=""
+                
+                //////////////////////////////////////////////////////////
+
+                if (_.isUndefined(extra.tmp_code_child_ret)){
+                    extra.tmp_code_child_ret=""
+                }
+                //////////////////////////////////////////////////////////
+                //// do some code - that will run on every item starting from children of root
+                    var foundDoe=""
+                    var foundDoeBool=false
+                    if (r.name==="Jon Doe"){
+                        foundDoe="this is Jon Doe"
+                    }
+                    ret_E=(
+                        <div key={i}>
+                            <label>{r.name} - { foundDoe }</label>
+                        </div>
+                    )
+
+                ////// end of main code
+
+                return { E : ret_E , success : ret_status , txt : tmp_code , tree_data : ret_treeData }
+            })
+
+
     searchJS -
         ...
         searchJS( [{ name :"joane"} , { name : "rob" }] ,"j" , "name" )

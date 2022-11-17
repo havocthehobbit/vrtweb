@@ -137,6 +137,7 @@ var tree_template_O=function(){
         props_E : undefined,
         components_E : undefined,
         layout_E : undefined,
+        text_E : undefined,
         name : "",
         name_code : "_ht_tree_",
         desc : "",
@@ -147,6 +148,7 @@ var tree_template_O=function(){
             prop_curr_parent : "0",
             tree_expanded_paths : [["root"]],
             tree_current_select_type : "cmpt",
+            tree_panel_filter_txt : "",
             prop_curr_id_child : "",
         },
         set_states_init : function(){
@@ -163,7 +165,7 @@ var tree_template_O=function(){
 
         text : "",
         
-        mytree : {
+        myTree : {
             "children" : [], 
             "name" : "root",          
             "id" : "0" ,
@@ -175,7 +177,7 @@ var tree_template_O=function(){
         modes : ["addtotree","select_tool"],
         component_mode_selected_tool : "",
         component_selected_catagory : "code",
-        component_catagories : ["code"],
+        component_catagories : [{ name : "code" ,  code : ""}],
 
         save_data : {},
         loaded_data : {},
@@ -302,7 +304,7 @@ var tree_template_O=function(){
             var args=arguments;
             var argsl=args.length;
 
-            _this.selected_catagory=args[0]
+            _this.component_selected_catagory=args[0]
             tt.forceUpdate()
 
         },
@@ -333,7 +335,7 @@ var tree_template_O=function(){
 
             var tree_arr_2E=[]
             var some_extra_data_to_play_with={tmp_code_child_ret : ""}
-            tree_arr_2E=t.mytreeloop( t.myTree ,some_extra_data_to_play_with , function(r,i , l_E ,l_txt, l_ntd,extra , par){
+            tree_arr_2E=t.main_loop( t.myTree ,some_extra_data_to_play_with , function(r,i , l_E ,l_txt, l_ntd,extra , par){
                 var ret_E
                 var ret_treeData // can be used the same ret_E , to create new tree data for conversion tree structures
                 var ret_status=true
@@ -551,6 +553,9 @@ var tree_template_O=function(){
                 layout : {
                     main : {position : "relative", width : 800,padding : 15, background : "black",border : "thin solid grey", color : "black", fontSize : 13, height : 300 ,overflow : "auto"},
 
+                },
+                text : {
+                    main : {}
                 }
             },
 
@@ -943,7 +948,7 @@ var tree_template_O=function(){
                 return { E : ret_E , success : ret_status , txt : tmp_code , tree_data : ret_treeData }
             })
 
-            //t.tt.textE=temp.txt
+            t.text=temp.txt
             
             t.layout_E=(
                 <div
@@ -959,6 +964,35 @@ var tree_template_O=function(){
             )
 
             
+        },
+        text_fn_2 :  undefined,
+        text_fn : function(){
+            var tt=this.tt
+            var t=this
+
+            if (_.isUndefined(tt.state)){
+                tt={ state : t.sstate}
+            }
+
+            if (_.isUndefined(t.text_fn_2)){
+                t.text_E=<textarea style={t.styles.text.main} value={t.text} onChange={(e)=>{}} />
+            }else{
+                var d1={ 
+                    tt : tt, 
+                    t : t , 
+                    text : t.text                  
+                }
+
+                var ret_E=undefined
+
+                var d2={ ret_E : ret_E }
+
+                t.text_fn_2(d1 , d2)
+
+                t.text_E=d2.ret_E
+            }
+
+
         },
 
         main_loop : function( l_obj,extra_data, cb){ // rt's generic recursion fn
@@ -1060,7 +1094,19 @@ var tree_template_O=function(){
                 }
                 //////////////////////////////////////////////////////////
 
-                
+                var found=false
+
+                if (  r.name.toLowerCase().includes( tt.state.tree_panel_filter_txt.toLowerCase()) ){
+                    found=true;
+                }
+
+                if ( r.type.toLowerCase().includes( tt.state.tree_panel_filter_txt.toLowerCase())){
+                    found=true;
+                }
+
+                if(tt.state.tree_panel_filter_txt===""){
+                    var found=true
+                }       
 
                 var xpp=_.cloneDeep(tt.state[ "tree_expanded_paths" + t.name_code ] )
 
@@ -1093,6 +1139,23 @@ var tree_template_O=function(){
                 if (_.isUndefined( extra.indent )){
                     extra.indent=0
                 }
+                
+                var found=false
+
+                if (  r.name.toLowerCase().includes( tt.state["tree_panel_filter_txt" + t.name_code ].toLowerCase()) ){
+                    found=true;
+                }
+
+                if ( r.type.toLowerCase().includes( tt.state["tree_panel_filter_txt" + t.name_code ].toLowerCase())){
+                    found=true;
+                }
+
+                if(tt.state["tree_panel_filter_txt" + t.name_code ]===""){
+                    var found=true
+                }  
+                
+                
+                if (found){
 
                 ////////////////
                     // main loop actions
@@ -1161,7 +1224,50 @@ var tree_template_O=function(){
                             >
                                 &nbsp; {r.type} {r.name} 
                             </div>
+
+                            <div
+                                style={{ position : "relative", float : "right" , cursor : "se-resize"}}
+                                cid={r.id}  
+                            >
+                                <button  cid={r.id}
+                                    style={{fontSize : 10, padding : 4 ,paddingLeft : 8,paddingRight : 8, marginLeft : 2, marginRight : 1 }}
+                                    onClick={(e)=>{
+                                        e.stopPropagation();
+                                        var id=e.target.getAttribute("cid") 
+                                        t.delfromtree(id , function(){ })
+                                    }}
+                                >del</button>
+                            </div>                            
+                            <div
+                                style={{ position : "relative", float : "right" , cursor : "se-resize"}}
+                                cid={r.id}  
+                            >
+                                <button  cid={r.id}
+                                    style={{fontSize : 10, padding : 4 ,paddingLeft : 8,paddingRight : 8, marginLeft : 2, marginRight : 1 }}
+                                    onClick={(e)=>{
+                                        e.stopPropagation();
+                                        var id=e.target.getAttribute("cid")  
+                                        t.cut_paste_put(id)                                              
+                                    }}
+                                >pst</button>
+                            </div>
+                            <div
+                                style={{ position : "relative", float : "right" , cursor : "se-resize"}}
+                                cid={r.id}  
+                            >
+                                <button  cid={r.id}
+                                    style={{fontSize : 10, padding : 4 ,paddingLeft : 8,paddingRight : 8, marginLeft : 2, marginRight : 1 }}
+                                    onClick={(e)=>{
+                                        e.stopPropagation();
+                                        var id=e.target.getAttribute("cid")  
+                                        t.cut_paste_get(id)                                      
+                                    }}
+                                >cut</button>
+                            </div>
+
+
                             <div style={{ clear : "both" }}/>
+
                             <div 
                                  style={{ background : cs_bgcol_child, display : is_child_expanded_css , position : "relative", left : 10 , cursor : "pointer" , width : "100%"}}
                                  cid={r.id}
@@ -1194,7 +1300,8 @@ var tree_template_O=function(){
                     )
 
                 ////////////////
-        
+                }
+
                 return { E : ret_E , success : ret_status , txt : tmp_code , tree_data : ret_treeData }
             })
 
@@ -1251,7 +1358,20 @@ var tree_template_O=function(){
                 )
             }()
            
+            var filter_E=function(){
 
+                return <div>
+                            filter : 
+                            <input 
+                                style={{ width : undefined}}
+                                onChange={(e)=>{
+                                    var lr={}
+                                    lr["tree_panel_filter_txt" + t.name_code ]=e.target.value
+                                    tt.setState(lr)
+                                }}
+                            />
+                        </div>
+            }()
 
             t.tt.textE=temp.txt
             
@@ -1259,6 +1379,7 @@ var tree_template_O=function(){
                 <div
                     style={t.styles.myTree.main}
                 >   
+                    {filter_E}
                     {tree_root_E}                    
                 </div>
             )
@@ -1277,6 +1398,7 @@ var tree_template_O=function(){
             t.tree_fn()
             t.props_fn()
             t.layout_fn()
+            t.text_fn()
         },
 
         save_data_fn: function(){
@@ -1467,6 +1589,83 @@ var tree_template_O=function(){
             
         },
 
+
+        rebuild_path_recursive: function(){ // rebio;d id
+            var tt=this.tt
+            var t=this
+
+            if (_.isUndefined(tt.state)){
+                tt={ state : t.sstate}
+            }
+
+            var args=arguments;
+            var argsl=args.length;
+
+            var data={}
+            var options={}
+
+            var cb=function(){}
+
+            if ( args.length > 0){
+                if (_.isPlainObject(args[0])){
+                    data=args[0]
+
+                    if (args.length > 1){
+                        if (_.isPlainObject(args[1])){
+                            options=args[1]
+
+                        }
+                    }
+                }
+
+
+                if (args.length > 1){
+                    if (_.isFunction(args[args.length -1]) ){
+                        cb=args[args.length -1];
+                    }
+                }
+                if (_.isFunction(args[0]) ){
+                    cb=args[0]
+                }
+            }
+            
+            var myTree_temp
+            if (_.isPlainObject(args[0])){
+                if (!_.isUndefined(args[0].myTree)){    
+                    myTree_temp=data
+                }
+            }
+
+            var e_E=[]
+            var code_txt=""
+        
+            var tree_arr_2E=[]
+                    
+            var some_extra_data_to_play_with={tmp_code_child_ret : ""}
+            tree_arr_2E=t.main_loop( myTree_temp ,some_extra_data_to_play_with , function(r,i , l_E ,l_txt, l_ntd,extra){
+                var ret_E
+                var ret_treeData // can be used the same ret_E , to create new tree data for conversion tree structures
+                var ret_status=true
+                var tmp_code=""
+                
+                //////////////////////////////////////////////////////////
+    
+                if (_.isUndefined(extra.tmp_code_child_ret)){
+                    extra.tmp_code_child_ret=""
+                }
+    
+                //////////                        
+                    t.myTree_index.id[r.id]=r // updating index                    
+                ////////////////                                    
+                
+                return { E : ret_E , success : ret_status , txt : tmp_code , tree_data : ret_treeData }
+            }
+            )
+
+            
+            
+        },
+
         getTree_realpathSTR_from_ID :function(id, arg_obj){ // #todo
             var tt=this.tt
             var t=this
@@ -1507,6 +1706,11 @@ var tree_template_O=function(){
         cut_paste_get :function(){
             var tt=this.tt
             var t=this
+
+            if (_.isUndefined(tt.state)){
+                tt={ state : t.sstate}
+            }
+
             var args=arguments;
             var argsl=args.length;
 
@@ -1514,7 +1718,12 @@ var tree_template_O=function(){
 
             t.temp.current_cp.type="cut"
             t.temp.current_cp.time=new Date()
-            t.temp.current_cp.srcID=args[0]                
+            t.temp.current_cp.srcID=args[0]   
+            
+            var name=t.myTree_index.id[args[0]].name
+            var type=t.myTree_index.id[args[0]].type
+            
+            tt.setState({ mode : "cut - " + name + " = " + type + " - " + args[0]})
             
         },
 
@@ -1524,14 +1733,21 @@ var tree_template_O=function(){
             var args=arguments;
             var argsl=args.length;
 
-            
-            t.temp.current_cp={}
+            if (_.isEmpty(t.temp.current_cp)){
+
+                return
+            }
 
             t.temp.current_cp.type="cut" // cut_batch
             t.temp.current_cp.time2=new Date()
             t.temp.current_cp.destID=args[0]
 
             t.cut(_.clone( t.temp.current_cp ) )
+
+            var name=t.myTree_index.id[args[0]].name
+            var type=t.myTree_index.id[args[0]].type
+
+            console.log( "paste - " + name + " = " + type + " - " + args[0])
         },
 
         //pasteType : "", // should be in temp
@@ -1578,9 +1794,10 @@ var tree_template_O=function(){
             
             br.name="cut_" + new Date()
             br.srcID=data.srcID
-
+            br.destID=t.temp.current_cp.destID
+            
             // 1. copy to temp
-            t.copy_branch_to_temp(br)
+            var tmp_obj=t.copy_branch_to_temp(br)
 
             // 2. delete branch from src tree
 
@@ -1589,22 +1806,63 @@ var tree_template_O=function(){
                     obj_par.children.splice( i ,1) 
                 }
             })
+
             
+            var tmp_id=tmp_obj.id
+            
+            var dobj=t.myTree_index.id[tmp_obj.destID]
+            var dobj_par=t.myTree_index.id[dobj.parent]
+
             // 3. copy to new destination from temp
+            var desttmp
+            if (tt.state["tree_current_select_type" + t.name_code]==="child"){
+                desttmp=dobj //.children
+            }else{
+                desttmp=dobj_par//.children
+            }
+            if (0===tmp_obj.destID){
+                desttmp=t.myTree
+                desttmp.children.push(tmp_obj.obj)
+            }else{
+                var destIter=desttmp.children.length
+                var found=false
+                desttmp.children.forEach((r,i)=>{
+                    if (r.id===tmp_obj.destID){
+                        destIter=i
+                        found=true
+                    }                    
+                })                
+                if (found){
+                    desttmp.children.splice( destIter,0, tmp_obj.obj)
+                }else{
+                    desttmp.children.push( tmp_obj.obj)
+                }
+                
+                
+            }
+            
+            // 4. parent...field's id value with new parent , only if its a copy , cuts/move can retain same ID
+                tmp_obj.obj.parent=desttmp.id    
 
+            // 5. rebuild id , only if its a copy , cuts/move can retain same ID
+          
+            
+            // 6. rebuild paths
 
+              t.rebuild_path_recursive(tmp_obj.obj)
 
-            // 4. rebuild id , only if its a copy , cuts/move can retain same ID
-
-
-            // 5. rebuild paths
+            // 7. look into removing expanded of deleted items 
 
             // 10. clean up
             if (status==="success"){
-                t.del_branch_from_temp(br)
+                t.del_branch_from_temp(tmp_obj)
             }else{
                 t.restore_branch_from_temp(br)
             }
+
+            t.temp.current_cp={}
+
+            tt.forceUpdate()
         },            
         copy :function(){
             var tt=this.tt
@@ -1707,6 +1965,23 @@ var tree_template_O=function(){
                     cb=args[0]
                 }
             }
+
+            var nr={}
+            var tmp={}
+
+            nr.id=$gl.uuid()
+            nr.obj=t.myTree_index.id[data.srcID]
+
+            tmp=_.merge(nr , _.cloneDeep(data) )
+
+            //tmp.treerec=t.myTree.
+
+
+            nr=tmp
+
+            t.temp[nr.id]=nr
+
+            return t.temp[nr.id]
         },
         del_branch_from_temp :function(){
             var tt=this.tt
@@ -1741,8 +2016,10 @@ var tree_template_O=function(){
                     cb=args[0]
                 }
             }
+
+            delete t.temp["data.id"]
         },
-        restore_branch_from_temp :function(){
+        restore_branch_from_temp :function(){ // #todo
             var tt=this.tt
             var t=this
             var args=arguments;
@@ -1811,6 +2088,11 @@ var tree_template_O=function(){
                 if (!_.isUndefined(inst[tmp])){
                     t[tmp].all=inst[tmp]
                 }                    
+
+                var tmp="component_catagories"
+                if (!_.isUndefined(inst[tmp])){
+                    t[tmp]=inst[tmp]
+                }
                 
                 var tmp="component_selected_catagory"
                 if (!_.isUndefined(inst[tmp])){
@@ -1825,6 +2107,11 @@ var tree_template_O=function(){
                 var tmp="props_fn"
                 if (!_.isUndefined(inst[tmp])){
                     t["props_fn_2"]=inst[tmp]
+                }
+
+                var tmp="text_fn"
+                if (!_.isUndefined(inst[tmp])){
+                    t["text_fn_2"]=inst[tmp]
                 }
 
 
