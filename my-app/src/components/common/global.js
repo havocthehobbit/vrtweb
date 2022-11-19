@@ -1247,7 +1247,7 @@ var tree_template_O=function(){
                                     onClick={(e)=>{
                                         e.stopPropagation();
                                         var id=e.target.getAttribute("cid")  
-                                        t.cut_paste_put(id)                                              
+                                        t.cutcopy_paste_put(id)                                              
                                     }}
                                 >pst</button>
                             </div>
@@ -1263,6 +1263,19 @@ var tree_template_O=function(){
                                         t.cut_paste_get(id)                                      
                                     }}
                                 >cut</button>
+                            </div>
+                            <div
+                                style={{ position : "relative", float : "right" , cursor : "se-resize"}}
+                                cid={r.id}  
+                            >
+                                <button  cid={r.id}
+                                    style={{fontSize : 10, padding : 4 ,paddingLeft : 8,paddingRight : 8, marginLeft : 2, marginRight : 1 }}
+                                    onClick={(e)=>{
+                                        e.stopPropagation();
+                                        var id=e.target.getAttribute("cid")  
+                                        t.copy_paste_get(id)                                      
+                                    }}
+                                >copy</button>
                             </div>
 
 
@@ -1602,21 +1615,26 @@ var tree_template_O=function(){
             var argsl=args.length;
 
             var data={}
+            var parObj={}
+            var parID=""
+            
             var options={}
 
             var cb=function(){}
 
             if ( args.length > 0){
                 if (_.isPlainObject(args[0])){
-                    data=args[0]
-
-                    if (args.length > 1){
-                        if (_.isPlainObject(args[1])){
-                            options=args[1]
-
-                        }
-                    }
+                    data=args[0]                    
                 }
+                if (_.isPlainObject(args[1])){
+                    parObj=args[1] 
+                    parID=parObj.id 
+                }
+                if (_.isString(args[1])){
+                    parID=args[1]                    
+                    parObj=t.myTree_index.id[parID]                  
+                }
+
 
 
                 if (args.length > 1){
@@ -1630,11 +1648,18 @@ var tree_template_O=function(){
             }
             
             var myTree_temp
-            if (_.isPlainObject(args[0])){
-                if (!_.isUndefined(args[0].myTree)){    
-                    myTree_temp=data
-                }
+            if (_.isPlainObject(args[0])){            
+                    myTree_temp=data            
+            }else{
+                return
             }
+
+
+            // rebuild for this object first before its children
+            myTree_temp.parID=parID
+            myTree_temp.path=_.clone(parObj.path)
+            myTree_temp.path.push(myTree_temp.name)
+
 
             var e_E=[]
             var code_txt=""
@@ -1642,7 +1667,7 @@ var tree_template_O=function(){
             var tree_arr_2E=[]
                     
             var some_extra_data_to_play_with={tmp_code_child_ret : ""}
-            tree_arr_2E=t.main_loop( myTree_temp ,some_extra_data_to_play_with , function(r,i , l_E ,l_txt, l_ntd,extra){
+            tree_arr_2E=t.main_loop( myTree_temp ,some_extra_data_to_play_with , function(r,i , l_E ,l_txt, l_ntd,extra,par){
                 var ret_E
                 var ret_treeData // can be used the same ret_E , to create new tree data for conversion tree structures
                 var ret_status=true
@@ -1655,7 +1680,143 @@ var tree_template_O=function(){
                 }
     
                 //////////                        
-                    t.myTree_index.id[r.id]=r // updating index                    
+                    // // t.myTree_index.id[r.id]=r // updating index                    
+                    //var id=r.id
+                    //var parid=par.id
+                   
+                    r.path=_.clone(par.path)
+                    r.path.push(r.name)
+                ////////////////                                    
+                
+                return { E : ret_E , success : ret_status , txt : tmp_code , tree_data : ret_treeData }
+            }
+            )
+
+            
+            
+        },
+
+        newIDs_recursive: function(){ // rebio;d id
+            var tt=this.tt
+            var t=this
+
+            if (_.isUndefined(tt.state)){
+                tt={ state : t.sstate}
+            }
+
+            var args=arguments;
+            var argsl=args.length;
+
+            var data={}
+            var parObj={}
+            var parID=""
+            
+            var options={}
+
+            var cb=function(){}
+
+            if ( args.length > 0){
+                if (_.isPlainObject(args[0])){
+                    data=args[0]                    
+                }
+                if (_.isPlainObject(args[1])){
+                    parObj=args[1] 
+                    parID=parObj.id 
+                }
+                if (_.isString(args[1])){
+                    parID=args[1]                    
+                    parObj=t.myTree_index.id[parID]                  
+                }
+
+
+
+                if (args.length > 1){
+                    if (_.isFunction(args[args.length -1]) ){
+                        cb=args[args.length -1];
+                    }
+                }
+                if (_.isFunction(args[0]) ){
+                    cb=args[0]
+                }
+            }
+            
+            var myTree_temp
+            if (_.isPlainObject(args[0])){            
+                    myTree_temp=data            
+            }else{
+                return
+            }
+
+
+            // rebuild for this object first before its children            
+                // id
+                    var new_id=$gl.uuid()            
+                    t.myTree_index.id[new_id]=myTree_temp
+                    myTree_temp.id=new_id
+                // new name 
+                    var r=myTree_temp
+                    var c=r
+                    var tmp_last_underscore=c.name.lastIndexOf("_")
+                    var tmp_name_without_num=c.name.substr( 0  , tmp_last_underscore)
+                    c.name=tmp_name_without_num
+                    var name=c.name;
+                    if (!_.isUndefined(t.myTree_index.name[c.name])){ // check if name exists and assign it a increment
+                        t.myTree_index["__schema__name"].cnt++ // keeps the counter to use for unique naming
+                        name=c.name + "_" + t.myTree_index["__schema__name"].cnt
+                        t.myTree_index.name[name]={ name : c.name , id : c.id }            
+                    }else{
+                        t.myTree_index["__schema__name"].cnt++
+                        t.myTree_index.name[c.name]={ name : c.name , id : c.id }
+                        
+                    }
+
+                    c.name=name
+
+
+
+
+            var e_E=[]
+            var code_txt=""
+        
+            var tree_arr_2E=[]
+                    
+            var some_extra_data_to_play_with={tmp_code_child_ret : ""}
+            tree_arr_2E=t.main_loop( myTree_temp ,some_extra_data_to_play_with , function(r,i , l_E ,l_txt, l_ntd,extra,par){
+                var ret_E
+                var ret_treeData // can be used the same ret_E , to create new tree data for conversion tree structures
+                var ret_status=true
+                var tmp_code=""
+                
+                //////////////////////////////////////////////////////////
+    
+                if (_.isUndefined(extra.tmp_code_child_ret)){
+                    extra.tmp_code_child_ret=""
+                }
+    
+                //////////                        
+                    // new id
+                        var new_id=$gl.uuid()
+                        t.myTree_index.id[new_id]=r
+                        r.id=new_id
+
+                    // new name 
+                        var c= t.myTree_index.id[new_id]
+                        var tmp_last_underscore=c.name.lastIndexOf("_")
+                        var tmp_name_without_num=c.name.substr( 0  , tmp_last_underscore)
+                        c.name=tmp_name_without_num
+                        var name=c.name;
+                        if (!_.isUndefined(t.myTree_index.name[c.name])){ // check if name exists and assign it a increment
+                            t.myTree_index["__schema__name"].cnt++ // keeps the counter to use for unique naming
+                            name=c.name + "_" + t.myTree_index["__schema__name"].cnt
+                            t.myTree_index.name[name]={ name : c.name , id : c.id }            
+                        }else{
+                            t.myTree_index["__schema__name"].cnt++
+                            t.myTree_index.name[c.name]={ name : c.name , id : c.id }
+                            
+                        }
+
+                        c.name=name
+
                 ////////////////                                    
                 
                 return { E : ret_E , success : ret_status , txt : tmp_code , tree_data : ret_treeData }
@@ -1701,7 +1862,7 @@ var tree_template_O=function(){
                 }
             })                
             
-        },
+        },       
 
         cut_paste_get :function(){
             var tt=this.tt
@@ -1747,7 +1908,75 @@ var tree_template_O=function(){
             var name=t.myTree_index.id[args[0]].name
             var type=t.myTree_index.id[args[0]].type
 
-            console.log( "paste - " + name + " = " + type + " - " + args[0])
+            //console.log( "paste - " + name + " = " + type + " - " + args[0])
+        },
+
+        copy_paste_get :function(){
+            var tt=this.tt
+            var t=this
+
+            if (_.isUndefined(tt.state)){
+                tt={ state : t.sstate}
+            }
+
+            var args=arguments;
+            var argsl=args.length;
+
+            t.temp.current_cp={}
+
+            t.temp.current_cp.type="copy"
+            t.temp.current_cp.time=new Date()
+            t.temp.current_cp.srcID=args[0]   
+            
+            var name=t.myTree_index.id[args[0]].name
+            var type=t.myTree_index.id[args[0]].type
+            
+            tt.setState({ mode : "copy - " + name + " = " + type + " - " + args[0]})
+            
+        },
+
+        copy_paste_put :function(){
+            var tt=this.tt
+            var t=this
+            var args=arguments;
+            var argsl=args.length;
+
+            if (_.isEmpty(t.temp.current_cp)){
+
+                return
+            }
+
+            t.temp.current_cp.type="copy" // cut_batch
+            t.temp.current_cp.time2=new Date()
+            t.temp.current_cp.destID=args[0]
+
+            t.copy(_.clone( t.temp.current_cp ) )
+
+            var name=t.myTree_index.id[args[0]].name
+            var type=t.myTree_index.id[args[0]].type
+
+            //console.log( "paste - " + name + " = " + type + " - " + args[0])
+        },
+
+
+        cutcopy_paste_put : function(){
+            var tt=this.tt
+            var t=this
+            var args=arguments;
+            var argsl=args.length;
+
+            if (_.isEmpty(t.temp.current_cp)){
+
+                return
+            }
+
+            if (t.temp.current_cp.type==="copy"){
+                t.copy_paste_put(args[0])
+            }
+            if (t.temp.current_cp.type==="cut"){
+                t.cut_paste_put(args[0])
+            }
+            
         },
 
         //pasteType : "", // should be in temp
@@ -1807,13 +2036,13 @@ var tree_template_O=function(){
                 }
             })
 
+            // 3. copy to new destination from temp
             
             var tmp_id=tmp_obj.id
             
             var dobj=t.myTree_index.id[tmp_obj.destID]
             var dobj_par=t.myTree_index.id[dobj.parent]
 
-            // 3. copy to new destination from temp
             var desttmp
             if (tt.state["tree_current_select_type" + t.name_code]==="child"){
                 desttmp=dobj //.children
@@ -1849,7 +2078,7 @@ var tree_template_O=function(){
             
             // 6. rebuild paths
 
-              t.rebuild_path_recursive(tmp_obj.obj)
+              t.rebuild_path_recursive(tmp_obj.obj,desttmp)
 
             // 7. look into removing expanded of deleted items 
 
@@ -1874,7 +2103,7 @@ var tree_template_O=function(){
             var options={}
 
             var cb=function(){}
-
+            
             if ( args.length > 0){
                 if (_.isPlainObject(args[0])){
                     data=args[0]
@@ -1897,7 +2126,84 @@ var tree_template_O=function(){
                     cb=args[0]
                 }
             }
-        },
+
+
+            var obj=t.myTree_index.id[data.srcID]
+            var obj_par=t.myTree_index.id[obj.parent]
+
+            var status="success"
+            var br={ id : "" , name : "" , srcID : "" , status : "success" , err : "" , data : {} }
+            
+            br.name="cut_" + new Date()
+            br.srcID=data.srcID
+            br.destID=t.temp.current_cp.destID
+            
+            // 1. copy to temp
+            var tmp_obj=t.copy_branch_to_temp(br)
+
+            // 2. delete branch from src tree , only delte for cut
+
+            
+
+            // 3. copy to new destination from temp
+            
+            var tmp_id=tmp_obj.id
+            
+            var dobj=t.myTree_index.id[tmp_obj.destID]
+            var dobj_par=t.myTree_index.id[dobj.parent]
+
+            var new_obj=_.cloneDeep(tmp_obj.obj)
+            
+            var desttmp
+            if (tt.state["tree_current_select_type" + t.name_code]==="child"){
+                desttmp=dobj //.children
+            }else{
+                desttmp=dobj_par//.children
+            }
+            if (0===tmp_obj.destID){
+                desttmp=t.myTree
+                desttmp.children.push(new_obj)
+            }else{
+                var destIter=desttmp.children.length
+                var found=false
+                desttmp.children.forEach((r,i)=>{
+                    if (r.id===tmp_obj.destID){
+                        destIter=i
+                        found=true
+                    }                    
+                })                
+                if (found){
+                    desttmp.children.splice(destIter,0,new_obj)
+                }else{
+                    desttmp.children.push(new_obj)
+                }
+                
+                
+            }
+            
+            // 4. parent...field's id value with new parent, cuts/move can retain same ID
+                //tmp_obj.obj.parent=desttmp.id    
+
+            // 5. rebuild id , only if its a copy , cuts/move can retain same ID
+                t.newIDs_recursive(new_obj)
+            
+            // 6. rebuild paths
+
+              t.rebuild_path_recursive(new_obj,desttmp)
+
+            // 7. look into removing expanded of deleted items 
+
+            // 10. clean up
+            if (status==="success"){
+                t.del_branch_from_temp(tmp_obj)
+            }else{
+                t.restore_branch_from_temp(br)
+            }
+
+           //t.temp.current_cp={}
+
+            tt.forceUpdate()
+        },   
         paste :function(){
             var tt=this.tt
             var t=this

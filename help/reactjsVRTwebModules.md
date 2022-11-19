@@ -3,7 +3,7 @@
 lodash - _ or underscore
 socket.io-client - websockets
 recharts - chart/graph library https://recharts.org/en-US/guide/getting-started
-react-flow-renderer - woekflow chart
+react-flow-renderer - workflow chart
 mathjs - maths library
 @silevis/reactgrid 
 react-export-excel
