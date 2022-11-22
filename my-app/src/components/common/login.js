@@ -1,5 +1,5 @@
   
-import { useState , useEffect}  from 'react'
+import { useState , useEffect,useRef}  from 'react'
 import {connect} from 'react-redux'
 
 import $gl from "./global" 
@@ -133,16 +133,37 @@ export const logout=function(){
 
 }
 
+var useFocus = () => {
+    const htmlElRef = useRef(null)
+    const setFocus = () => {htmlElRef.current &&  htmlElRef.current.focus()}
+
+    return [ htmlElRef, setFocus ] 
+}
+
+
+var mountcnt=0
 function Login({loggedin , login , logout , addval}){
     var [userinp,setUserinp]=useState($gl.getCookie("userid"))
     var [passinp,setPassinp]=useState("")
+    var [inputfocusB,set_inputfocusB]=useState(false)
+    var [inputRef, setInputFocus] = useFocus()
+    var [passwordRef, setPasswordFocus] = useFocus()
     
     var props=arguments[0]
 
     useEffect(function(){       
+        mountcnt++
+        if (mountcnt===1){
+            if (userinp==="" || _.isUndefined(userinp) ){                
+                setInputFocus()
+            }else{
+                setPasswordFocus()
+            }
+        
+        }
+    })
 
-    },[])
-
+    
     var loginUser=function(){
 
             var args=arguments;
@@ -203,86 +224,162 @@ function Login({loggedin , login , logout , addval}){
     }
 
     var style={}
-    if (props.style){
-        style=props.style
-    }
-
     var style_account={}
-    if (props.style_account){
-        style_account=props.style_account
-    }
-
     var style_account_label={}
-    if (props.style_account_label){
-        style_account_label=props.style_account_label
-    }
-
     var account_label="userid/email"
-    if (props.account_label){
-        account_label=props.account_label
-    }
-
     var style_password={}
-    if (props.style_password){
-        style_password=props.style_password
-    }
-
     var style_password_label={}
-    if (props.style_password_label){
-        style_password_label=props.style_password_label
-    }
-
     var password_label="password"
-    if (props.password_label){
-        password_label=props.password_label
-    }
-
-
     var style_button={}
-    if (props.button){
-        style_button=props.button
+    var button_label="login"
+    
+    if (true){
+        if (props.style){
+            style=props.style
+        }
+
+        
+        if (props.style_account){
+            style_account=props.style_account
+        }
+
+        
+        if (props.style_account_label){
+            style_account_label=props.style_account_label
+        }
+
+        
+        if (props.account_label){
+            account_label=props.account_label
+        }
+
+        
+        if (props.style_password){
+            style_password=props.style_password
+        }
+
+        
+        if (props.style_password_label){
+            style_password_label=props.style_password_label
+        }
+
+        
+        if (props.password_label){
+            password_label=props.password_label
+        }
+
+
+        
+        if (props.button){
+            style_button=props.button
+        }
+
+        
+        if (props.button_label){
+            button_label=props.button_label
+        }
     }
 
-    var button_label="login"
-    if (props.button_label){
-        button_label=props.button_label
+    var input_E
+    var password_E
+
+    
+    if (true){        
+        //setpassfocus=false
+        input_E=    <input  style={style_account} 
+                        type='input' value={userinp}
+                        ref={inputRef}
+                                           
+                        onChange={
+                            function(e){
+                                setUserinp(e.target.value )
+                            }
+                        }
+                        onKeyUp={
+                            function(e){
+                                if(e.key==="Enter"){
+                                    setPasswordFocus()
+                                }
+                            }
+                        }
+                    />
+    }else{
+        input_E=    <input  style={style_account} 
+                        type='input' value={userinp}
+                        onChange={
+                            function(e){
+                                setUserinp(e.target.value )
+                            }
+                        }
+                        onKeyUp={
+                            function(e){
+                                if(e.key==="Enter"){
+                                    set_inputfocusB(false)
+                                }
+                            }
+                        }
+                    />
     }
+    
+    if (true){ // autofocus on password if input already has a cookie value
+        
+        //setpassfocus=false
+        password_E= <input  style={style_password} 
+                        type='password' 
+                        ref={passwordRef}
+                        onChange={
+                            function(e){
+                                setPassinp(e.target.value )
+                            }
+                        }
+                        onKeyUp={
+                            function(e){
+                                if(e.key==="Enter"){
+                                    loginUser( { userid : userinp, password : passinp} , function(dt){                              
+                                        if (dt.data.loggedin===true){
+                                            //var token=dt.data.token;                                        
+                                            $gl.createCookie("userid" , userinp)                                        
+                                            login({"type" : "login"})                                                
+                                        }
+                                    
+                                    })
+                                }
+                            }
+                        }
+                    />
+    }else{
+        password_E= <input  style={style_password} 
+                        type='password' 
+                        
+                        onChange={
+                            function(e){
+                                setPassinp(e.target.value )
+                            }
+                        }
+                        onKeyUp={
+                            function(e){
+                                if(e.key==="Enter"){
+                                    loginUser( { userid : userinp, password : passinp} , function(dt){                              
+                                        if (dt.data.loggedin===true){
+                                            //var token=dt.data.token;                                        
+                                            $gl.createCookie("userid" , userinp)                                        
+                                            login({"type" : "login"})                                                
+                                        }
+                                    
+                                    })
+                                }
+                            }
+                        }
+                    />
+    }
+
 
     return (
         <div style={style} >
             <label style={style_account_label}>{account_label}</label>
-            <input  style={style_account} 
-                    type='input' value={userinp}
-                    onChange={
-                        function(e){
-                            setUserinp(e.target.value )
-                        }
-                    }
-            />
+            {input_E}
             <label style={style_password_label}>{password_label}</label>
-            <input  style={style_password} 
-                    type='password' 
-                    autoFocus
-                    onChange={
-                        function(e){
-                            setPassinp(e.target.value )
-                        }
-                    }
-                    onKeyUp={
-                        function(e){
-                            if(e.key==="Enter"){
-                                loginUser( { userid : userinp, password : passinp} , function(dt){                              
-                                    if (dt.data.loggedin===true){
-                                        //var token=dt.data.token;                                        
-                                        $gl.createCookie("userid" , userinp)                                        
-                                        login({"type" : "login"})                                                
-                                    }
-                                   
-                                })
-                            }
-                        }
-                    }
-            />
+            {password_E}
             <input style={style_button} 
                     value={button_label}
                     type='button'  onClick={
