@@ -463,7 +463,7 @@ var tree_template_O=function(){
                     var ns=_.merge(_.clone( tt.propvars) , us )
                     tt.propvars=ns
                   
-                    nst["prop_propvars_" + p]=tt.propvars[p]
+                    nst["prop_propvars_" + p + t.name_code]=tt.propvars[p]
                 })
                
                 
@@ -869,7 +869,7 @@ var tree_template_O=function(){
 
             var d2={ ret_E : ret_E }
 
-            t.props_fn_2(d1 , d2)
+            t.props_fn_2(d1 , d2,tt,t)
 
             t.props_E=( 
                 <div style={t.styles.props.main}>
