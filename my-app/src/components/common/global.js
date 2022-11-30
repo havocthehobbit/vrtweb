@@ -92,6 +92,9 @@ var main_loop_tree=function( l_obj,l_extra_data, l_cb){ // rt's generic recursio
 
     
     l_extra_data.cancel=false
+    if (!l_obj.children){
+        l_obj.children=[]    
+    }
     l_obj.children.forEach(function(r,i){                                
         if (l_extra_data.cancel){ // cancel last iteration
             return;
@@ -200,17 +203,19 @@ var tree_template_O=function(){
             if (argsl > 0){
                 if (_.isPlainObject(args[0]) ){
                     params=_.merge(_.cloneDeep(params), args[0])
-    
+                    p=params
                 }           
                 
                 
                 if (_.isString(args[0])){
-                    params.type=args[0]                
+                    params.type=args[0]    
+                    p=params            
                 }
                 if (argsl>1){
     
                     if (_.isString(args[1])){
                         params.parent=args[1]
+                        p=params      
                     }
                     if (_.isFunction(args[1])){
                         cb=args[1]
@@ -220,7 +225,9 @@ var tree_template_O=function(){
         
             }
 
-            var c=new t.components_O({ type : p.type })
+            var c
+            
+            c=new t.components_O(p)
 
             var path=[ "root" ] ;
             var parent="0" ;
@@ -242,6 +249,22 @@ var tree_template_O=function(){
                     parent=selected_parent
     
                 }
+            }else{
+                selected_parent=p.parent
+                parent=selected_parent                
+                //if (tt.state["tree_current_select_type" + t.name_code]==="cmpt"){
+                //    parent_obj=t.myTree_index.id[parent]
+                //}
+                //if (tt.state["tree_current_select_type" + t.name_code]==="child"){
+                    //parent_obj=t.myTree_index.id[tt.state["prop_curr_id" + t.name_code]]
+                    parent_obj=t.myTree_index.id[p.parent]
+                    //selected_parent=tt.state["prop_curr_id" + t.name_code]
+                    selected_parent=p.parent
+                    parent=selected_parent
+    
+                //}
+
+
             }
 
 
@@ -273,6 +296,13 @@ var tree_template_O=function(){
                 path=_.clone(parent_obj.path)
                 path.push( c.name)
                 c.path=path;
+            }
+
+            if (!_.isUndefined(p.children)){
+                p.children.forEach((r,i)=>{
+                    r.parent=c.id
+                    t.add_cmpt_to_tree(r)
+                })
             }
 
             tt.forceUpdate(()=>{
@@ -586,6 +616,7 @@ var tree_template_O=function(){
                 parent : "",
                 path : ["root"],
                 children : [],
+                children_temp : [],
                 inputs : [],
                 outputs : [],
                 tags : [],
@@ -595,7 +626,8 @@ var tree_template_O=function(){
                     var t=inst
     
                     var params={}
-    
+                    
+                    var id=""
                     if (argsl>0){
                         if (_.isPlainObject(args[0])){
                             var a=args[0];
@@ -612,6 +644,18 @@ var tree_template_O=function(){
                             if (!_.isUndefined(a[temp])){
                                 t[temp]=a[temp]
                             }
+
+                            var temp="children_temp"
+                            if (!_.isUndefined(a[temp])){
+                                t[temp]=a[temp]
+                            }                           
+                           
+
+                            var temp="id"
+                            if (!_.isUndefined(a[temp])){
+                                id=a[temp]
+                            }
+                            
     
                             
     
@@ -626,8 +670,13 @@ var tree_template_O=function(){
                             }
                         }
                     }
-    
-                    t.id=$gl.uuid()
+                    
+                    if (id===""){
+                        t.id=$gl.uuid()
+                    }else{
+                        t.id=id
+                    }
+
     
                     return t;
                 }
@@ -657,7 +706,30 @@ var tree_template_O=function(){
                             style={t.styles.components_groups.p} 
                             tc_code={r.tc_code}
                             onClick={(e)=>{
-                                    t.component_click(e.target.getAttribute("tc_code"))
+                                    var tc_code=e.target.getAttribute("tc_code")
+                                    var obj
+                                    var found=false
+                                    t.components.all.forEach((r1,i1)=>{
+                                        if (r1.tc_code===tc_code){
+                                            if (!_.isUndefined(r1.params)){                                                
+                                                found=true
+                                                obj=_.cloneDeep(r1.params)
+
+                                                if (_.isUndefined(r1.params.type)){
+                                                    obj.type=tc_code
+                                                }
+
+                                            }
+                                            
+
+                                        }
+                                    })
+                                    if (found){                                        
+                                        t.component_click(obj)
+                                    }else{
+                                        t.component_click(e.target.getAttribute("tc_code"))
+                                    }
+                                    
                                 }
                             }
                         >
@@ -882,6 +954,8 @@ var tree_template_O=function(){
 
         layout_fn_2 :  function(){},
         layout_fn : function(){
+            var args=arguments
+            var argsl=args.length
             var tt=this.tt
             var t=this
 
@@ -889,9 +963,35 @@ var tree_template_O=function(){
                 tt={ state : t.sstate}
             }
 
+            var using_default=true
+            var data={}
             var some_extra_data_to_play_with={tmp_code_child_ret : ""}
 
-            var temp=t.main_loop(t.myTree ,some_extra_data_to_play_with,function(r,i , l_E ,l_txt, l_ntd,extra , par){
+            if (argsl>0){
+                if (_.isPlainObject(args[0])){
+                    var a0=args[0]
+                    if (!_.isUndefined(a0.data)){
+                        data=a0.data
+                        using_default=false
+                    }else{
+                        console.log("argument 0 ,is an object that requires a data variable member named data eg --> layout_fn( {data : {} })")
+                    }
+
+                    if (!_.isUndefined(a0.some_extra_data_to_play_with)){
+                        some_extra_data_to_play_with=a0.some_extra_data_to_play_with
+                    }
+
+                }else{
+                    data=t.myTree    
+                }
+            }else{
+                // defualt is this tree
+                data=t.myTree
+            }
+            
+            ///////////////////////////////////////////
+
+            var temp=t.main_loop(data ,some_extra_data_to_play_with,function(r,i , l_E ,l_txt, l_ntd,extra , par){
                 var ret_E
                 var ret_treeData // can be used the same ret_E , to create new tree data for conversion tree structures
                 var ret_status=true
@@ -950,7 +1050,7 @@ var tree_template_O=function(){
 
             t.text=temp.txt
             
-            t.layout_E=(
+            var layout_E=(
                 <div
                     style={t.styles.layout.main}
                 >   
@@ -962,6 +1062,16 @@ var tree_template_O=function(){
                     
                 </div>
             )
+            if (using_default){
+                t.layout_E=layout_E
+            }else{
+                return {
+                    E : temp.E,
+                    temp : temp,
+                    layout_E : layout_E
+                }
+            }
+            
 
             
         },
@@ -1019,6 +1129,9 @@ var tree_template_O=function(){
     
             
             extra_data.cancel=false
+            if (!l_obj.children){
+                l_obj.children=[]    
+            }
             l_obj.children.forEach(function(r,i){                                
                 if (extra_data.cancel){ // cancel last iteration
                     return;
@@ -1908,7 +2021,7 @@ var tree_template_O=function(){
             var name=t.myTree_index.id[args[0]].name
             var type=t.myTree_index.id[args[0]].type
 
-            //console.log( "paste - " + name + " = " + type + " - " + args[0])
+            
         },
 
         copy_paste_get :function(){
@@ -1955,7 +2068,7 @@ var tree_template_O=function(){
             var name=t.myTree_index.id[args[0]].name
             var type=t.myTree_index.id[args[0]].type
 
-            //console.log( "paste - " + name + " = " + type + " - " + args[0])
+            
         },
 
 
@@ -2515,21 +2628,14 @@ $gl.filterlines=function(text, searchstring,linesafter){
 }
 
 $gl.filterlinesRange=function(text, searchstringFrom,searchstringTo){    
-
-    //var newArr=[]
-    //var counfFound=0
-    //var foundfirst=-1
  
-    var rx=new RegExp( "(?<=" + searchstringFrom + "s*\).*?(?=\s*" + searchstringTo + ")" , "s")
-    
+    var rx=new RegExp( "(?<=" + searchstringFrom + "s*\).*?(?=\s*" + searchstringTo + ")" , "s")   
 
    var newtext=""
 
    newtext=text.match(rx)
 
-    console.log("test" ,newtext )
-
-    return newtext
+   return newtext
 }
 
 $gl.xmlparse=function(xmlString){
@@ -2599,7 +2705,7 @@ function xmlToJson(xml) {
             }else{
                
                 if ( p==="#text"){
-                    //console.log("#t")
+                    
                     var value=_.cloneDeep(r)                    
                     //delete parent["#text"]
                     parent["new"]=value
@@ -2652,8 +2758,7 @@ function PasswordSimplGen(cb){
     }
     csvparse(csv.trim(), {
              columns: true
-            }, function(err, records){               
-                //console.log(records)
+            }, function(err, records){                               
                 cb(records,err)
             })
 }
@@ -2891,13 +2996,11 @@ var batchRunTimed=function(params, runitems_arr ,cb , cb_end){ // waterfall time
         batchRun( 
             {  count : 3,interval : 3000} , 
                 custtest , 
-                function(ret){
-                    console.log( "running : ", new Date(), " - " ,ret)
-                    return
-                
+                function(ret){                    
+                    return                
                 }, 
                 function(){
-                    console.log( "...done" )
+                    
                 }
         )
     */
