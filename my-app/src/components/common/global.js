@@ -409,6 +409,8 @@ var tree_template_O=function(){
         props : {
             name : "properties",
             type : "panel",
+            subtype : "",
+            subtypes : [],
             path : "",
             parent : "",
             tt : undefined,
@@ -449,6 +451,8 @@ var tree_template_O=function(){
                
                 tt.name=t.myTree_index.id[id].name
                 tt.type=t.myTree_index.id[id].type
+                tt.subtype=t.myTree_index.id[id].subtype
+                tt.subtypes=t.myTree_index.id[id].subtypes
                 tt.parent=t.myTree_index.id[id].parent
                 tt.path=t.myTree_index.id[id].path
                 tt.value=t.myTree_index.id[id].value
@@ -467,6 +471,8 @@ var tree_template_O=function(){
                 nst["prop_curr_name" + t.name_code]=tt.name
                 nst["prop_curr_id" + t.name_code]=tt.curr
                 nst["prop_curr_type" + t.name_code]=tt.type
+                nst["prop_curr_subtype" + t.name_code]=tt.subtype
+                nst["prop_curr_subtypes" + t.name_code]=tt.subtypes                
                 nst["prop_curr_parent" + t.name_code]=tt.parent
                 nst["prop_curr_path" + t.name_code]=tt.path
                 nst["prop_prop_value" + t.name_code]=tt.value                                 
@@ -476,7 +482,7 @@ var tree_template_O=function(){
                     var us={} ;us[p]=v
                     var ns=_.merge(_.clone( tt.style) , us )
                     tt.style=ns              
-                    nst["prop_style_" + p + t.name_code]=tt.style[p]
+                    nst["prop_style_" + p + t.name_.code]=tt.style[p]
                 })
     
     
@@ -605,6 +611,8 @@ var tree_template_O=function(){
             var inst={
                 name : "new_cmpt", // should be unique per a parent
                 type : "button",
+                subtype : "",
+                subtypes : [],
                 desc : "desc",
                 value : "",
                 value_type : "string" ,
@@ -2492,6 +2500,10 @@ var tree_template_O=function(){
                 if (!_.isUndefined(inst[tmp])){
                     t["init2"]=inst[tmp]
                 }
+                var tmp="init_after"
+                if (!_.isUndefined(inst[tmp])){
+                    t["init2"]=inst[tmp]
+                }
 
                 var tmp="init_first"
                 if (!_.isUndefined(inst[tmp])){
@@ -2562,7 +2574,7 @@ var tree_template_O=function(){
 
             t.set_states_init()   
             
-            t.init2({ args : args, t : t , argsl : argsl })
+            t.init2({ args : args, t : t , argsl : argsl },t)
 
             return t
         }
