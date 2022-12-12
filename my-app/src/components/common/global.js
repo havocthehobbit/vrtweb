@@ -406,6 +406,10 @@ var tree_template_O=function(){
 
         onClick_item : undefined,
         
+        propvars__custdyn : {},
+        propvars__custdyn__groups : {},
+        propvars__custdyn__links : {},
+
         props : {
             name : "properties",
             type : "panel",
@@ -420,7 +424,11 @@ var tree_template_O=function(){
             style :{},
             attributes :{},
             propvars :{},
-            
+            propvars__custdyn__haslinks : false,
+            propvars__custdyn : {},
+            propvars__custdyn__links : {},
+            propvars__custdyn__groups : {},
+            propvars__custdyn__order : [],
 
             set_curr : function(){
                 var t_main_reactcomponent=this.tt // 
@@ -456,12 +464,20 @@ var tree_template_O=function(){
                 tt.parent=t.myTree_index.id[id].parent
                 tt.path=t.myTree_index.id[id].path
                 tt.value=t.myTree_index.id[id].value
+                //tt.propvars__custdyn__haslinks=t.myTree_index.id[id].propvars__custdyn__haslinks
+                
                 
                 //tt.style.background=t.myTree_index.id[id].style.background
                 tt.style=_.clone(t.myTree_index.id[id].style)
                 tt.attributes=_.clone(t.myTree_index.id[id].attributes)
                 tt.propvars=_.clone(t.myTree_index.id[id].propvars)
-    
+                tt.propvars__custdyn=_.clone(t.myTree_index.id[id].propvars__custdyn)
+                tt.propvars__custdyn__links=_.clone(t.myTree_index.id[id].propvars__custdyn__links)
+                tt.propvars__custdyn__groups=_.clone(t.myTree_index.id[id].propvars__custdyn__groups)
+                
+
+                
+                
                
                 //if (!).isUndefined){
                     
@@ -475,7 +491,9 @@ var tree_template_O=function(){
                 nst["prop_curr_subtypes" + t.name_code]=tt.subtypes                
                 nst["prop_curr_parent" + t.name_code]=tt.parent
                 nst["prop_curr_path" + t.name_code]=tt.path
-                nst["prop_prop_value" + t.name_code]=tt.value                                 
+                nst["prop_prop_value" + t.name_code]=tt.value 
+                
+                                                
     
                 
                 _.each(t.myTree_index.id[id].style,(v,p)=>{
@@ -501,6 +519,41 @@ var tree_template_O=function(){
                   
                     nst["prop_propvars_" + p + t.name_code]=tt.propvars[p]
                 })
+              
+                var tmp="propvars__custdyn"
+                _.each(t.myTree_index.id[id][tmp],(v,p)=>{
+                    var us={} ;us[p]=v
+                    var ns=_.merge(_.clone( tt[tmp]) , us )
+                    tt[tmp]=ns
+                  
+                    nst["prop_" + tmp + p + t.name_code]=tt[tmp][p]
+                })
+
+                var tmp="propvars__custdyn__links"
+                _.each(t.myTree_index.id[id][tmp],(v,p)=>{
+                    var us={} ;us[p]=v
+                    var ns=_.merge(_.clone( tt[tmp]) , us )
+                    tt[tmp]=ns
+                  
+                    nst["prop_" + tmp + p + t.name_code]=tt[tmp][p]
+                })
+
+                var tmp="propvars__custdyn__groups"
+                _.each(t.myTree_index.id[id][tmp],(v,p)=>{
+                    var us={} ;us[p]=v
+                    var ns=_.merge(_.clone( tt[tmp]) , us )
+                    tt[tmp]=ns
+                  
+                    nst["prop_" + tmp + p + t.name_code]=tt[tmp][p]
+                })
+
+
+                
+
+                //propvars_custdyn__order
+                
+
+                
                
                 
                 t_main_reactcomponent.setState( 
@@ -619,6 +672,11 @@ var tree_template_O=function(){
                 id : "0",
                 style : {},
                 propvars : {},
+                propvars__custdyn__haslinks : false,
+                propvars__custdyn : {},
+                propvars__custdyn__groups : {},
+                propvars__custdyn__links : {},
+                propvars__custdyn__order : [],
                 attributes : {},
                 class : [],
                 parent : "",
@@ -1586,6 +1644,11 @@ var tree_template_O=function(){
             
             t.save_data.myTree_index=_.cloneDeep(idx)
             t.save_data.myTree=_.cloneDeep(t.myTree)
+
+            t.save_data.propvars__custdyn=_.cloneDeep(t.propvars__custdyn)
+            t.save_data.propvars__custdyn__groups=_.cloneDeep(t.propvars__custdyn__groups)
+            t.save_data.propvars__custdyn__order=_.cloneDeep(t.propvars__custdyn__order)
+
             
             cb()
             
@@ -1625,6 +1688,11 @@ var tree_template_O=function(){
             }
             
             t.myTree=data.myTree
+
+            t.propvars__custdyn=data.propvars__custdyn
+            t.propvars__custdyn__groups=data.propvars__custdyn__groups
+            t.propvars__custdyn__order=data.propvars__custdyn__order
+
 
             t.myTree_index=data.myTree_index
             t.rebuild_myTree_index_id_object_links()
