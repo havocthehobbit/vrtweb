@@ -409,6 +409,73 @@ var tree_template_O=function(){
         propvars__custdyn : {},
         propvars__custdyn__groups : {},
         propvars__custdyn__links : {},
+        calc_dynvars : function(r,recID , recName , cb_l){
+            var tt=this.tt
+            var t=this
+
+            if (_.isUndefined(tt.state)){
+                tt={ state : t.sstate}
+            }
+            var has_remotetab_linkID=false
+            if (_.isUndefined(cb_l)){
+                cb_l=()=>{}
+            }
+            
+                //nrbt1 linkname
+            if (!_.isEmpty(recID)){
+                //nrbt_li.value=r.propvars__custdyn__links.id
+                //linked_value=recID
+                has_remotetab_linkID=true
+            }
+            
+        
+
+            // set main value to linked
+            if (has_remotetab_linkID){ // #todo ,this needs to also go into the render layout
+                
+                if (!_.isUndefined(t.propvars__custdyn[recID])){
+                    var linkedremObjIDo=t.propvars__custdyn[recID]
+                    var linkedremObjID=linkedremObjIDo.source_cmpt_id
+                    //var linkedremObjPropname=linkedremObjID[]
+
+                    if (!_.isUndefined(t.myTree_index.id[linkedremObjID])){
+                        var linkedremObj=t.myTree_index.id[linkedremObjID]                                                                                                         
+                        //r.value=linkedremObj.value
+                        var par_prop_root_name="par_prop_root_name"
+                        var par_prop="par_prop"
+                        if (!_.isUndefined(linkedremObj[ linkedremObjIDo[par_prop_root_name] ])){
+                            if (!_.isUndefined(linkedremObj[ linkedremObjIDo[par_prop_root_name] ][linkedremObjIDo[par_prop]])){
+                                
+                                var tmp_par_prop_root_name=linkedremObjIDo[par_prop_root_name]
+                                var temp_par_prop=linkedremObjIDo[par_prop]
+                                
+                                var dest_par_prop_root_name=r.propvars__custdyn__links[recName].par_prop_root_name
+                                var dest_par_prop=r.propvars__custdyn__links[recName].varname
+                                //"___attributes___varname"
+                                //par_prop_root_name : "attributes"
+                                //varname : "varname"                                        
+                                var ret_r={
+                                    linkedremObjIDo : linkedremObjIDo,
+                                    linkedremObj : linkedremObj,
+
+                                    dest_par_prop_root_name :dest_par_prop_root_name,
+                                    dest_par_prop :dest_par_prop,
+
+                                    tmp_par_prop_root_name :tmp_par_prop_root_name,
+                                    temp_par_prop :  temp_par_prop,
+                                }
+                                //r[dest_par_prop_root_name][dest_par_prop]=linkedremObj[tmp_par_prop_root_name][temp_par_prop]
+                                cb_l(ret_r)
+
+                            }
+                        }
+                    //nrbt0.value=linkedremObj[nrbt0.propparentprop][nrbt0.name]
+                    ///////////linked_curr_updated_value=linkedremObj[nrbt0.propparentprop][nrbt0.name]
+                        //obj[nrbt0.propparentprop][nrbt0.name]=linkedremObj[nrbt0.propparentprop][nrbt0.name]
+                    }
+                }
+            }
+        },
 
         props : {
             name : "properties",
@@ -1650,6 +1717,17 @@ var tree_template_O=function(){
             t.save_data.propvars__custdyn__order=_.cloneDeep(t.propvars__custdyn__order)
 
             
+
+            t.states.prop_curr_id = tt.state["prop_curr_id"+ t.name_code ]
+            t.states.prop_curr_parent = tt.state["prop_curr_parent"+ t.name_code ]
+            t.states.tree_expanded_paths = tt.state["tree_expanded_paths"+ t.name_code ]//[["root"]],
+            t.states.tree_current_select_type = tt.state["tree_current_select_type"+ t.name_code ]//"cmpt"
+            t.states.tree_panel_filter_txt = tt.state["tree_panel_filter_txt"+ t.name_code ]
+            t.states.prop_curr_id_child = tt.state["prop_curr_id_child"+ t.name_code ]
+            
+            t.save_data.states=_.cloneDeep(t.states)
+
+            
             cb()
             
         },
@@ -1692,6 +1770,9 @@ var tree_template_O=function(){
             t.propvars__custdyn=data.propvars__custdyn
             t.propvars__custdyn__groups=data.propvars__custdyn__groups
             t.propvars__custdyn__order=data.propvars__custdyn__order
+            
+            t.states=data.states
+            
 
 
             t.myTree_index=data.myTree_index
@@ -1699,6 +1780,7 @@ var tree_template_O=function(){
 
             t.loaded_data=data
 
+            t.set_states_init()
             cb(data)
         },
 
