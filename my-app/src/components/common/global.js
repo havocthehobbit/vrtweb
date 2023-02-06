@@ -567,7 +567,7 @@ var tree_template_O=function(){
                     var us={} ;us[p]=v
                     var ns=_.merge(_.clone( tt.style) , us )
                     tt.style=ns              
-                    nst["prop_style_" + p + t.name_.code]=tt.style[p]
+                    nst["prop_style_" + p + t.name_code]=tt.style[p]
                 })
     
     
