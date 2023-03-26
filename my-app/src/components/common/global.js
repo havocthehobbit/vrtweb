@@ -1,5 +1,6 @@
 import _ from "lodash";
-import csvparse from "csv-parse"
+//import {parse as csvparse} from "csv-parse/sync"
+//import {parse} from "csv-parse"
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -2918,11 +2919,14 @@ function PasswordSimplGen(cb){
     if (!_.isUndefined(fn1)){ 
         cb=fn1;
     }
+
+    /*
     csvparse(csv.trim(), {
              columns: true
             }, function(err, records){                               
                 cb(records,err)
             })
+    */
 }
 
 

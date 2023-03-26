@@ -5,8 +5,8 @@ import { useState,useEffect,useRef}  from 'react'
 
 //import { BrowserRouter as Router, NavLink } from 'react-router-dom';
 //import {  } from 'react-router-dom';
-import { Router, Link, Switch, Route , Redirect} from 'react-router-dom';
-import history from "./routerHist";
+import { BrowserRouter,Router, Link, Routes , Route , Navigate as Redirect } from 'react-router-dom'; // Redirect replaced with Navigate and Switch replaced with Routes...in V6
+//import history from "./routerHist";
 
 //import Login ,  {isAuth , logout as logoutuser } from './login'
 import   {isAuth , logout as logoutuser } from './login'
@@ -353,7 +353,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                     }
                 }()
             }
-            <Router history={history}>
+            <BrowserRouter>
                 {   
                     function(){
                         if (loggedin){
@@ -705,17 +705,22 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                 //displayMenu.all[r.name]={ active : r.active, e : r.cmpt  } // cant use with react to set custom ,throws bad component error ,page from custommenu.js
                                 
                                                 newRoutesE.push(
-                                                    <Route key={i+500} path={"/" + r.name} exact={true}>
-                                                        {
-                                                            function(){                               
-                                                                if (loggedin){
-                                                                    return ( <div>{r.cmpt}</div> )
-                                                                }else{                                                                    
-                                                                    return ( <Redirect to="/" /> )
-                                                                }
+                                                    <Route key={i+500} path={"/" + r.name} exact={true}
+                                                            element={
+                                                                (
+                                                                    ()=>{                               
+                                                                        if (loggedin){
+                                                                            return ( <div>{r.cmpt}</div> )
+                                                                        }else{                                                                    
+                                                                            return ( <Redirect to="/" /> )
+                                                                        }
+                                                                    }
+                                                                )()
                                                             }
-                                                        }                       
-                                                    </Route>
+                                                    
+                                                    />
+                                                                               
+                                                    
                                                 )
 
                                             })
@@ -723,53 +728,45 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                             var i2=10000
 
                                             return(
-                                                <Switch> 
+                                                <Routes> 
                                                     {
                                                         function(){
                                                             newRoutesE.push(
-                                                                <Route key={i2} path="/" exact={true}>
-                                                                    {
-                                                                       function(){
-                                                                           
+                                                                <Route key={i2} path="/" exact={true}
+                                                                    element={     
                                                                                 
-                                                                            if (!loggedin){
-
                                                                                 
-                                                                                return ( 
-                                                                                            <div style={{padding : 15 , margin : 30}}  >
-                                                                                                <div style={{position : "absolute"}}>
-                                                                                                   
-                                                                                                    { 
-                                                                                                        function(){
-                                                                                                            if (settings.hasLoginPic){
-                                                                                                                return (
-                                                                                                                        <div style={settings.loginPicStyle}  >
-                                                                                                                            <img src={settings.loginPic} />
-                                                                                                                            
-                                                                                                                        </div>
-                                                                                                                        )
-                                                                                                            }
+                                                                                (
+                                                                                    ()=>{                                                                                
+                                                                                    if (!loggedin){
+                                                                                        return ( 
+                                                                                                    <div style={{padding : 15 , margin : 30}}  >
+                                                                                                        <div style={{position : "absolute"}}>
                                                                                                         
-                                                                                                        }()
-                                                                                                    }
-                                                                                                </div> 
-                                                                                                <Frontpage theme={{ theme : theme }}/>
-                                                                                            </div> 
-                                                                                )
-                                                                            }else{
-                                                                                /* //later implement a remember last menu setting per a user  
-                                                                                var menuCookie=$gl.cookie("currMainMenu")
-                                                                                if (!_.isUndefined(menuCookie)){
-                                                                                    return ( <Redirect to={"/" + menuCookie } /> )
-                                                                                }else{
-                                                                                    return ( <Redirect to="/" /> )
-                                                                                }
-                                                                                */
-                                                                                return ( <displayMenu.Home/> )
-                                                                            }
-                                                                        }
+                                                                                                            { 
+                                                                                                                function(){
+                                                                                                                    if (settings.hasLoginPic){
+                                                                                                                        return (
+                                                                                                                                <div style={settings.loginPicStyle}  >
+                                                                                                                                    <img src={settings.loginPic} />
+                                                                                                                                    
+                                                                                                                                </div>
+                                                                                                                                )
+                                                                                                                    }
+                                                                                                                
+                                                                                                                }()
+                                                                                                            }
+                                                                                                        </div> 
+                                                                                                        <Frontpage theme={{ theme : theme }}/>
+                                                                                                    </div> 
+                                                                                        )
+                                                                                    }else{                                                                               
+                                                                                        return ( <displayMenu.Home/> )
+                                                                                    }
+                                                                                })()                                                                        
+                                                                                
                                                                     }
-                                                                </Route>
+                                                                />
                                                             )
                                                         }()
                                                     }
@@ -777,17 +774,17 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                         function(){
                                                             if (displayMenu.all["mainwall"].active){
                                                                 newRoutesE.push(
-                                                                    <Route key={i2} path="/mainwall" exact={true}>
-                                                                        {
-                                                                            function(){
-                                                                                if (loggedin){
-                                                                                    return ( <displayMenu.Home/> )
-                                                                                }else{
-                                                                                    return ( <Redirect to="/" /> )
-                                                                                }
+                                                                    <Route key={i2} path="/mainwall" exact={true}
+                                                                            element={
+                                                                                (()=>{
+                                                                                    if (loggedin){                                                                                        
+                                                                                        return ( <displayMenu.Home/> )
+                                                                                    }else{                                                                                        
+                                                                                        return ( <Redirect to="/" /> )
+                                                                                    }
+                                                                                })()
                                                                             }
-                                                                        }
-                                                                    </Route>
+                                                                    />
                                                                 )
                                                             }
                                                         }()
@@ -796,9 +793,9 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                         function(){
                                                             if (displayMenu.all["codegen"].active){
                                                                 newRoutesE.push(
-                                                                    <Route key={i2} path="/codegen" exact={true}>
-                                                                        {
-                                                                            function(){
+                                                                    <Route key={i2} path="/codegen" exact={true}
+                                                                        element={
+                                                                            (()=>{
                                                                                 if (loggedin){
                                                                                     return ( 
                                                                                         <div>                                           
@@ -808,9 +805,9 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                                                 }else{
                                                                                     return ( <Redirect to="/" /> )
                                                                                 }
-                                                                            }
+                                                                            })()
                                                                         }
-                                                                    </Route> 
+                                                                    /> 
                                                                 )
                                                             }
                                                         }()
@@ -820,24 +817,24 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                                         function(){
                                                             if (displayMenu.all["codegen"].active){
                                                                 newRoutesE.push(
-                                                                    <Route key={i2} path="/Settings" exact={true}>
-                                                                        {
-                                                                            function(){                               
+                                                                    <Route key={i2} path="/Settings" exact={true}
+                                                                        element={
+                                                                            (()=>{                               
                                                                                 if (loggedin){
                                                                                     return ( <Settings/> )
                                                                                 }else{
                                                                                     return ( <Redirect to="/" /> )
                                                                                 }
-                                                                            }
+                                                                            })()
                                                                         }                       
-                                                                    </Route>
+                                                                    />
                                                                 )
                                                             }
                                                         }()
                                                     }
 
                                                     {newRoutesE}
-                                                </Switch>
+                                                </Routes>
                                             )
                                         }()
 
@@ -849,7 +846,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                         )  
                     }() 
                 }
-            </Router>
+            </BrowserRouter>
         </div>
 
 
