@@ -59,6 +59,8 @@
 /my-app/yarn-debug.log*
 /my-app/yarn-error.log*
 
+/my-app/.git
+
 # all data except somefiles''
 /data/settings.json
 /data/db1
