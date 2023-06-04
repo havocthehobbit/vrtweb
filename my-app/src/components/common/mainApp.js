@@ -327,7 +327,9 @@ function MainApp({loggedin , login , logout , addval , theme}){
     }
     
     
+    let fncs={
 
+    }
 
     return (
         <div style={{ position : "relative"}} >
@@ -676,11 +678,13 @@ function MainApp({loggedin , login , logout , addval , theme}){
                             //mmenuStyle0_tmp.zIndex=999999999
                             mmenuStyle1_tmp.zIndex=999999999
                             if (!main_menu_expanded){
-                                mmenuStyle_tmp.height=30
+                                //mmenuStyle_tmp.height=30
+                                mmenuStyle_tmp.height=0
                                 mmenuStyle0_tmp.height=0
-                                mmenuStyle1_tmp.height=0
-                                
+                                mmenuStyle1_tmp.height=0                                
                             }
+
+
                             return ( 
                                 <div className={"menu_main"} style={mmenuStyle_tmp} >
                                     
