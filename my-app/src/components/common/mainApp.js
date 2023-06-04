@@ -1,7 +1,7 @@
 import '../../App.css';
 import '../../css_general/general.css';
-
 import { useState,useEffect,useRef}  from 'react'
+import { ContextStore } from './contextStore/contextStore';
 
 //import { BrowserRouter as Router, NavLink } from 'react-router-dom';
 //import {  } from 'react-router-dom';
@@ -103,20 +103,12 @@ function MainApp({loggedin , login , logout , addval , theme}){
     var [selectMenuCurr,set_selectMenuCurr]=useState({ name : ""});
     var [main_menu_expanded , set_main_menu_expanded]=useState(true )
 
+    var [windowDimensions,setWindowDimensions]=useState({} )
 
     var initlogin=(useRef(0))
     
-
-
-
-
     var userid=$gl.getCookie("userid")
-
-
-    
-    
-
-    
+        
     var getUserDetail=function(){
         var cb=function(){};
         if (arguments.length>0){
@@ -279,13 +271,37 @@ function MainApp({loggedin , login , logout , addval , theme}){
                 return ( <Redirect to="/" /> )
             }
             */
+            handleResize()
         } 
+        window.addEventListener('resize', handleResize);
+        let destructHandleResize=()=>{
+            return (()=>{
+                window.removeEventListener('resize', handleResize);
+            })
+        }
+
         getUserDetail(function(){}); 
         
         loginSettings(function(){})
 
-        return function(){}        
+        return function(){
+            destructHandleResize()
+        }        
     },[])
+
+    useEffect(()=>{
+        
+    } ,[windowDimensions])
+
+    let handleResize=()=>{        
+        setWindowDimensions({windowDimensions : getWindowDimensions() })
+    }
+
+    let getWindowDimensions=()=>{
+        let width=window.innerWidth
+        let height=window.innerHeight
+        return { width : width,height : height };
+    }
 
     var loginstr=function(){
                                 if (loggedin){
@@ -310,7 +326,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
         displayMenu.Home=displayMenu.all["notfound"].e
     }
     
-
+    
 
 
     return (
@@ -419,12 +435,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     menuSelectStyle=_.merge(menuSelectStyle,displayMenu.menuStyle.select)
                                 }
                                 
-                            }
-
-                            
-
-
-
+                            }                       
 
                             var key_menu=15
                             
@@ -567,8 +578,7 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     )
                                 }
                             }
-
-                         
+                        
                             _.each( customMenu,function(r,i){
                                 var isAllowed=false;
 
@@ -696,8 +706,26 @@ function MainApp({loggedin , login , logout , addval , theme}){
                         var newRoutesE=[]
 
                         return(
-                             
-                                <div>                          
+                            <ContextStore.Provider 
+                                value={{
+                                    loggedin , login , logout,theme,
+                                    userDetail,setUserDetail,
+                                    userDetail,setUserDetail,
+                                    //homePage,set_homePage,
+                                    displayMenu,set_displayMenu,selectMenuCurr,set_selectMenuCurr,
+                                    main_menu_expanded , set_main_menu_expanded,
+
+                                    getUserDetail, getLoginSettings,loginSettings,
+                                    loginstr,
+                                    windowDimensions,setWindowDimensions ,
+
+                                    //isLoggedIn,
+                                    //isLoggedInSet,
+                                    //testStuff
+                                    
+                                }}
+                            >                 
+                                    <div>                          
                                     {
                                         function(){
                                             
@@ -841,8 +869,9 @@ function MainApp({loggedin , login , logout , addval , theme}){
                                     }
 
 
-                        </div>      
-                            
+                                </div>    
+                              
+                            </ContextStore.Provider>  
                         )  
                     }() 
                 }
